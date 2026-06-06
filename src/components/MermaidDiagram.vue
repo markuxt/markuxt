@@ -19,19 +19,28 @@ const renderId = `mermaid-${Math.random().toString(36).slice(2, 10)}`
 async function renderDiagram() {
   if (!props.code) return
   try {
+    // Wait for fonts so mermaid measures text correctly
+    await document.fonts.ready
+
     const mermaid = (await import('mermaid')).default
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: 'strict',
       theme: 'base',
       fontFamily: 'var(--font-body), sans-serif',
+      htmlLabels: true,
       themeVariables: {
         primaryColor: '#e6f7fb',
         primaryBorderColor: '#009bc1',
         primaryTextColor: '#0a2540',
         lineColor: '#64748b',
-        fontSize: '15px'
-      }
+        fontSize: '15px',
+      },
+      flowchart: {
+        htmlLabels: true,
+        useMaxWidth: false,
+        padding: 18,
+      },
     })
     const { svg: rendered } = await mermaid.render(renderId, props.code)
     svg.value = rendered
@@ -57,8 +66,27 @@ watch(() => props.code, renderDiagram)
 }
 
 .mermaid-diagram__svg :deep(svg) {
-  max-width: 100%;
   height: auto;
+}
+
+/* Prevent text clipping inside mermaid nodes */
+.mermaid-diagram__svg :deep(.node) {
+  overflow: visible;
+}
+
+.mermaid-diagram__svg :deep(.node rect),
+.mermaid-diagram__svg :deep(.node polygon),
+.mermaid-diagram__svg :deep(.node circle) {
+  overflow: visible;
+}
+
+.mermaid-diagram__svg :deep(.nodeLabel) {
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.mermaid-diagram__svg :deep(foreignObject) {
+  overflow: visible;
 }
 
 .mermaid-diagram__source {
