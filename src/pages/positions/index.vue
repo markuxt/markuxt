@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import Briefcase from '@icon-park/vue-next/lib/icons/Briefcase'
+import Briefcase from '@icon-park/vue-next/es/icons/Briefcase'
 
 const { t } = useI18n()
 const appConfig = useAppConfig()

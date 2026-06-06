@@ -88,12 +88,12 @@
 </template>
 
 <script setup lang="ts">
-import ArrowLeft from '@icon-park/vue-next/lib/icons/ArrowLeft'
-import Mail from '@icon-park/vue-next/lib/icons/Mail'
-import Google from '@icon-park/vue-next/lib/icons/Google'
-import Search from '@icon-park/vue-next/lib/icons/Search'
-import FileStaff from '@icon-park/vue-next/lib/icons/FileStaff'
-import Help from '@icon-park/vue-next/lib/icons/Help'
+import ArrowLeft from '@icon-park/vue-next/es/icons/ArrowLeft'
+import Mail from '@icon-park/vue-next/es/icons/Mail'
+import Google from '@icon-park/vue-next/es/icons/Google'
+import Search from '@icon-park/vue-next/es/icons/Search'
+import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
+import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const route = useRoute()

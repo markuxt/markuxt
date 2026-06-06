@@ -84,11 +84,11 @@
 </template>
 
 <script setup lang="ts">
-import ArrowLeft from '@icon-park/vue-next/lib/icons/ArrowLeft'
-import FileStaff from '@icon-park/vue-next/lib/icons/FileStaff'
-import Key from '@icon-park/vue-next/lib/icons/Key'
-import LinkOut from '@icon-park/vue-next/lib/icons/LinkOut'
-import Help from '@icon-park/vue-next/lib/icons/Help'
+import ArrowLeft from '@icon-park/vue-next/es/icons/ArrowLeft'
+import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
+import Key from '@icon-park/vue-next/es/icons/Key'
+import LinkOut from '@icon-park/vue-next/es/icons/LinkOut'
+import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const route = useRoute()

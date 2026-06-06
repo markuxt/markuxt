@@ -19,7 +19,7 @@ const renderId = `mermaid-${Math.random().toString(36).slice(2, 10)}`
 async function renderDiagram() {
   if (!props.code) return
   try {
-    const { default: mermaid } = await import('mermaid')
+    const mermaid = (await import('mermaid')).default
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: 'strict',

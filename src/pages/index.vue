@@ -110,7 +110,7 @@ const researchAreas = computed(() => {
     title: t(area.titleKey),
     description: t(area.descKey),
     component: defineAsyncComponent(() =>
-      import(`@icon-park/vue-next/lib/icons/${area.icon}`).then(m => m.default)
+      import(`@icon-park/vue-next/es/icons/${area.icon}`).then(m => m.default)
     ),
   }))
 })

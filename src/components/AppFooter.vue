@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import LinkOut from '@icon-park/vue-next/lib/icons/LinkOut'
+import LinkOut from '@icon-park/vue-next/es/icons/LinkOut'
 
 const { t } = useI18n()
 const appConfig = useAppConfig()

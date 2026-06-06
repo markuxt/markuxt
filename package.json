@@ -16,6 +16,7 @@
   "files": [
     "nuxt.config.ts",
     "app.config.ts",
+    "app.config.d.ts",
     "src/"
   ],
   "scripts": {

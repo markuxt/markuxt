@@ -60,9 +60,9 @@
 </template>
 
 <script setup lang="ts">
-import ArrowLeft from '@icon-park/vue-next/lib/icons/ArrowLeft'
-import FileStaff from '@icon-park/vue-next/lib/icons/FileStaff'
-import Help from '@icon-park/vue-next/lib/icons/Help'
+import ArrowLeft from '@icon-park/vue-next/es/icons/ArrowLeft'
+import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
+import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const route = useRoute()

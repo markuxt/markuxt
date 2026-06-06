@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import Help from '@icon-park/vue-next/lib/icons/Help'
+import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t, locale } = useI18n()
 const route = useRoute()

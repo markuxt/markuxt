@@ -80,11 +80,11 @@
 </template>
 
 <script setup lang="ts">
-import ArrowLeft from '@icon-park/vue-next/lib/icons/ArrowLeft'
-import FileStaff from '@icon-park/vue-next/lib/icons/FileStaff'
-import CheckCorrect from '@icon-park/vue-next/lib/icons/CheckCorrect'
-import Mail from '@icon-park/vue-next/lib/icons/Mail'
-import Help from '@icon-park/vue-next/lib/icons/Help'
+import ArrowLeft from '@icon-park/vue-next/es/icons/ArrowLeft'
+import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
+import CheckCorrect from '@icon-park/vue-next/es/icons/CheckCorrect'
+import Mail from '@icon-park/vue-next/es/icons/Mail'
+import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const route = useRoute()

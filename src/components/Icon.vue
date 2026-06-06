@@ -2,15 +2,15 @@
 import { computed } from 'vue'
 
 // Import only the icons we need from IconPark
-import ArrowLeft from '@icon-park/vue-next/lib/icons/ArrowLeft'
-import Mail from '@icon-park/vue-next/lib/icons/Mail'
-import Google from '@icon-park/vue-next/lib/icons/Google'
-import Search from '@icon-park/vue-next/lib/icons/Search'
-import FileStaff from '@icon-park/vue-next/lib/icons/FileStaff'
-import Close from '@icon-park/vue-next/lib/icons/Close'
-import HamburgerButton from '@icon-park/vue-next/lib/icons/HamburgerButton'
-import Help from '@icon-park/vue-next/lib/icons/Help'
-import LinkOut from '@icon-park/vue-next/lib/icons/LinkOut'
+import ArrowLeft from '@icon-park/vue-next/es/icons/ArrowLeft'
+import Mail from '@icon-park/vue-next/es/icons/Mail'
+import Google from '@icon-park/vue-next/es/icons/Google'
+import Search from '@icon-park/vue-next/es/icons/Search'
+import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
+import Close from '@icon-park/vue-next/es/icons/Close'
+import HamburgerButton from '@icon-park/vue-next/es/icons/HamburgerButton'
+import Help from '@icon-park/vue-next/es/icons/Help'
+import LinkOut from '@icon-park/vue-next/es/icons/LinkOut'
 
 interface Props {
   name: string

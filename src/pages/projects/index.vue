@@ -42,8 +42,8 @@
                 <h3 class="project-card__title">{{ project.title }}</h3>
                 <span v-if="project.status" class="status-badge" :class="`status-badge--${project.status}`">
                   <span class="status-badge__dot"></span>
-                  {{ statusLabels[project.status] || project.status }}
-                  <span class="tooltip tooltip--badge">{{ statusTooltips[project.status] }}</span>
+                  {{ statusLabels[project.status as ProjectStatus] || project.status }}
+                  <span class="tooltip tooltip--badge">{{ statusTooltips[project.status as ProjectStatus] }}</span>
                 </span>
               </div>
               <p class="project-card__description" v-if="project.description">
@@ -79,13 +79,13 @@
 </template>
 
 <script setup lang="ts">
-import Experiment from '@icon-park/vue-next/lib/icons/Experiment'
-import Funds from '@icon-park/vue-next/lib/icons/Funds'
-import Lightning from '@icon-park/vue-next/lib/icons/Lightning'
-import Timer from '@icon-park/vue-next/lib/icons/Timer'
-import CheckOne from '@icon-park/vue-next/lib/icons/CheckOne'
-import Setting from '@icon-park/vue-next/lib/icons/Setting'
-import Help from '@icon-park/vue-next/lib/icons/Help'
+import Experiment from '@icon-park/vue-next/es/icons/Experiment'
+import Funds from '@icon-park/vue-next/es/icons/Funds'
+import Lightning from '@icon-park/vue-next/es/icons/Lightning'
+import Timer from '@icon-park/vue-next/es/icons/Timer'
+import CheckOne from '@icon-park/vue-next/es/icons/CheckOne'
+import Setting from '@icon-park/vue-next/es/icons/Setting'
+import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 
@@ -102,20 +102,22 @@ interface Project {
 
 const config = useRuntimeConfig()
 
+type ProjectStatus = 'open' | 'ongoing' | 'completed' | 'maintained'
+
 // Status definitions with labels and meanings
 const statusLabels = computed(() => ({
   'open': t('projects.statusOpen'),
   'ongoing': t('projects.statusOngoing'),
   'completed': t('projects.statusCompleted'),
   'maintained': t('projects.statusMaintained')
-}))
+}) satisfies Record<ProjectStatus, string>)
 
 const statusTooltips = computed(() => ({
   'open': t('projects.tooltipOpen'),
   'ongoing': t('projects.tooltipOngoing'),
   'completed': t('projects.tooltipCompleted'),
   'maintained': t('projects.tooltipMaintained')
-}))
+}) satisfies Record<ProjectStatus, string>)
 
 const statusFilters = computed(() => [
   { key: 'all', name: t('projects.filterAll'), tooltip: t('projects.tooltipAll') },

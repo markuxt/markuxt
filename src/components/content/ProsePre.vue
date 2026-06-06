@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import Copy from '@icon-park/vue-next/lib/icons/Copy'
-import Check from '@icon-park/vue-next/lib/icons/Check'
+import Copy from '@icon-park/vue-next/es/icons/Copy'
+import Check from '@icon-park/vue-next/es/icons/Check'
 
 const { t } = useI18n()
 

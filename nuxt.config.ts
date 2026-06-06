@@ -163,7 +163,7 @@ export default defineNuxtConfig({
   // Vite
   vite: {
     optimizeDeps: {
-      include: ['@nuxt/content']
+      include: ['@nuxt/content', 'mermaid']
     }
   }
 })

@@ -43,8 +43,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import Mail from '@icon-park/vue-next/lib/icons/Mail'
-import Google from '@icon-park/vue-next/lib/icons/Google'
+import Mail from '@icon-park/vue-next/es/icons/Mail'
+import Google from '@icon-park/vue-next/es/icons/Google'
 
 interface Member {
   name: string
