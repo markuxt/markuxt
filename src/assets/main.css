@@ -1,0 +1,778 @@
+/* KaTeX math rendering styles */
+@import 'katex/dist/katex.min.css';
+
+/* ============================================
+   Markuxt - Global Styles
+   Design: Modern Lab (Bold, Contemporary, Dynamic)
+   ============================================ */
+
+/* CSS Custom Properties - Design System */
+:root {
+  /* Colors */
+  --color-primary: #0a2540;
+  --color-primary-light: #1a3a5c;
+  --color-accent: #00d9ff;
+  --color-accent-hover: #00b8d9;
+  --color-secondary: #009bc1;
+  --color-secondary-light: #4db8d1;
+  --color-bg: #f8fafc;
+  --color-bg-alt: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+
+  /* Typography */
+  --font-display: 'Fraunces', serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem; /* added: used by multiple pages (positions, projects, news) */
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ============================================
+   Responsive Breakpoints
+   ============================================ */
+  --breakpoint-sm: 480px;   /* Small mobile */
+  --breakpoint-md: 768px;   /* Tablet */
+  --breakpoint-lg: 1024px;  /* Desktop */
+
+  /* ============================================
+   Layout Variables
+   ============================================ */
+  --header-height: 80px;
+  --card-min-width: 280px;
+  --touch-target-size: 44px;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(rgba(10, 37, 64, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 37, 64, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+  scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Lists */
+ul {
+  margin-bottom: var(--spacing-md);
+  padding-left: 0;
+  list-style: none !important;
+}
+
+ol {
+  margin-bottom: var(--spacing-md);
+  padding-left: 0;
+  list-style: none !important;
+  counter-reset: item;
+}
+
+li {
+  margin-bottom: var(--spacing-xs);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+ul > li::before {
+  content: '•' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--color-secondary) !important;
+}
+
+ol > li::before {
+  content: counter(item) '.' !important;
+  counter-increment: item !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--color-secondary) !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure ol li doesn't get ul's bullet */
+ol li::before {
+  content: counter(item) '.' !important;
+}
+
+/* Task lists (GitHub-style checkboxes): the global `ul > li::before` bullet
+   and `li` indent don't apply here — the checkbox is the marker. Suppress the
+   blue dot and vertically center the box with its label line via flex. */
+.task-list-item {
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+  list-style: none;
+}
+
+.task-list-item::before {
+  content: none !important;
+}
+
+/* Custom checkbox: replace the native control (which is disabled/read-only for
+   markdown task lists) with a box that matches the design system. Flex-center
+   so the checkmark sits in the middle of the box on both axes. */
+.task-list-item input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0 var(--spacing-sm) 0 0;
+  background: var(--color-bg-alt);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: default;
+  transition: all var(--transition-fast);
+}
+
+/* Checked: accent fill + a CSS-drawn checkmark */
+.task-list-item input[type='checkbox']:checked {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.task-list-item input[type='checkbox']:checked::after {
+  content: '';
+  width: 0.3em;
+  height: 0.55em;
+  margin-top: -0.1em;
+  border: solid #fff;
+  border-width: 0 0.16em 0.16em 0;
+  transform: rotate(45deg);
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+/* ============================================
+   Layout
+   ============================================ */
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 896px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.section {
+  padding-top: var(--spacing-3xl);
+  padding-bottom: var(--spacing-3xl);
+}
+
+.grid {
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* ============================================
+   Components
+   ============================================ */
+
+/* IconPark / inline icon helper */
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+.icon-inline svg {
+  display: block;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-secondary) 100%
+  );
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(0, 217, 255, 0.4);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Cards */
+.card {
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-secondary);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+.badge-accent {
+  background-color: var(--color-accent);
+}
+
+.badge-muted {
+  background-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* Divider */
+.divider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-border),
+    transparent
+  );
+  margin: var(--spacing-2xl) 0;
+}
+
+/* ============================================
+   Animation Classes
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.5s ease forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.5s ease forwards;
+}
+
+/* Stagger delays */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+/* ============================================
+   Page Transitions
+   ============================================ */
+
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+.mt-xl {
+  margin-top: var(--spacing-xl);
+}
+
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.mb-xl {
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ============================================
+   Responsive Breakpoints
+   Mobile-first approach using CSS custom properties
+
+   Usage:
+   @media (min-width: var(--breakpoint-md)) { ... }
+   ============================================ */
+
+/* Small Mobile (below 480px) - default styles apply */
+
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+  .section {
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
+  }
+
+  .container,
+  .container-narrow {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+  .section {
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
+  }
+}
+
+/* ============================================
+   Reduced Motion - Accessibility
+   Respects user's preference for reduced motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Specific overrides for common animations */
+  .carousel__track,
+  .hero__shape,
+  .about-shape,
+  .floating {
+    animation: none !important;
+  }
+
+  /* Keep hover transforms for accessibility but remove transitions */
+  .btn:hover,
+  .card:hover,
+  .member-card:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   Markdown Code Blocks (ProsePre override)
+   Light theme: very light grey surface, subtle border
+   ============================================ */
+
+/* Wrapper around a highlighted code block */
+.code-block {
+  margin: var(--spacing-lg) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #f6f8fa;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Header strip: language label + copy button */
+.code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: #eaeef2;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.code-block__lang {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.code-block__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.code-block__copy:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-text);
+}
+
+.code-block__copy.is-copied {
+  color: #1a7f37;
+}
+
+/* The <pre> emitted inside our wrapper: reset chrome, keep scrolling */
+.code-block pre {
+  margin: 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  overflow-x: auto;
+  background: transparent;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-block pre code {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace;
+  font-size: inherit;
+  color: var(--color-text);
+  background: none;
+  padding: 0;
+  display: block;
+  counter-reset: line;
+}
+
+.code-block pre code .line {
+  display: block;
+}
+
+/* Line-number gutter: rendered from a CSS counter so the digits are never
+   part of the copied text (manual selection skips ::before; the copy button
+   copies the raw source). Sticky so numbers stay pinned while a long line
+   scrolls horizontally, GitHub-style. */
+.code-block pre code .line::before {
+  counter-increment: line;
+  content: counter(line);
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  width: 2.5ch;
+  margin-right: var(--spacing-md);
+  padding-right: var(--spacing-sm);
+  text-align: right;
+  color: var(--color-text-muted);
+  background: #f6f8fa;
+  border-right: 1px solid var(--color-border);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Shiki dual-theme: the parser writes both colors as CSS vars
+   (--shiki-default = github-light, --shiki-dusk = github-dark) rather than a
+   plain `color`. We render on a light surface, so use the light-theme var. */
+.code-block pre code span {
+  color: var(--shiki-default, inherit);
+}
+
+/* ============================================
+   Markdown Tables (data tables, prominent borders)
+   ============================================ */
+
+/* Markdown pipe tables always render a <thead>; raw-HTML layout tables (e.g.
+   the media-gallery image grid) do not, so :has(thead) styles only real data
+   tables and leaves layout tables borderless. */
+table:has(thead) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--spacing-lg) 0;
+  border: 2px solid var(--color-text);
+  font-size: 0.9375rem;
+}
+
+table:has(thead) th,
+table:has(thead) td {
+  border: 1px solid var(--color-text);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  vertical-align: top;
+}
+
+table:has(thead) thead th {
+  background: var(--color-bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+table:has(thead) tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* ============================================
+   KaTeX Math (rehype-katex output)
+   ============================================ */
+
+/* Display math ($$...$$) can be wider than the column; allow it to scroll
+   horizontally instead of overflowing the layout. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--spacing-sm) 0;
+  margin: var(--spacing-md) 0;
+}
+
+/* Keep inline math from inflating line-height */
+.katex {
+  font-size: 1.05em;
+  line-height: normal;
+}
+
