@@ -1,8 +1,8 @@
 /**
- * Resolve a relative image path from content frontmatter to an absolute /_content/ URL.
+ * Resolve a relative image path from content frontmatter to an absolute /_markuxt/ URL.
  *
  * Authors write `image: photo.webp` in frontmatter; this function converts it
- * to `/_content/members/staff/photo.webp` based on the source file location.
+ * to `/_markuxt/members/staff/photo.webp` based on the source file location.
  *
  * Supports `../` for cross-directory references (e.g. shared placeholders).
  * Absolute paths (`/...`, `http...`) pass through unchanged.
@@ -31,5 +31,5 @@ export function resolveContentImage(
     else if (seg !== '.') resolved.push(seg)
   }
 
-  return '/_content/' + resolved.join('/')
+  return '/_markuxt/' + resolved.join('/')
 }

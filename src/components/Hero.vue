@@ -72,7 +72,6 @@
 <script setup lang="ts">
 import Left from '@icon-park/vue-next/lib/icons/Left'
 import Right from '@icon-park/vue-next/lib/icons/Right'
-import carouselManifest from '~/content/carousel-manifest.json'
 
 interface Props {
   badge?: string
@@ -97,19 +96,22 @@ withDefaults(defineProps<Props>(), {
 const config = useRuntimeConfig()
 const appConfig = useAppConfig()
 
-// Carousel images are auto-detected from content/assets/carousel/ at build time
+// Load carousel manifest at runtime from public/
+const { data: carouselManifest } = await useFetch<CarouselImage[]>('/carousel-manifest.json', {
+  default: () => []
+})
+
+// Carousel images are auto-detected from assets/carousel/ at build time
 // Simply add/remove images in that directory and rebuild to update the carousel
-// Filename (without extension) is used as the caption, e.g., "lab-1.webp" -> "Lab 1"
 const carouselImages = computed((): CarouselImage[] => {
   const basePath = config.app.baseURL || '/'
   const base = basePath === '/' ? '' : basePath
 
-  // Use auto-generated manifest from build hook
-  const manifest = carouselManifest as CarouselImage[]
+  const manifest = carouselManifest.value
 
   // If no images found, return placeholder
-  if (manifest.length === 0) {
-    const fallback = appConfig.markuxt?.carousel?.fallbackImage || '/_content/assets/default.jpg'
+  if (!manifest || manifest.length === 0) {
+    const fallback = (appConfig.markuxt as Record<string, any>)?.carousel?.fallbackImage || '/images/default.jpg'
     return [{
       src: `${base}${fallback}`,
       alt: t('hero.placeholderAlt'),
