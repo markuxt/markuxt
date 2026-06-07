@@ -10,9 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/markuxt/markuxt.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "files": [
     "nuxt.config.ts",
     "app.config.ts",
