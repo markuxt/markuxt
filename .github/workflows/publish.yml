@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to publish (e.g. 1.2.3 or v1.2.3)'
+        description: "Version to publish (e.g. 1.2.3 or v1.2.3)"
         required: true
         type: string
 
@@ -108,8 +108,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: npmrc
-        run: cat ~/.npmrc
+      - run: pwd
+        
+      - run: ls -la
+
+      - run: cat .npmrc || true
 
       - name: Publish to npm
         run: npm publish --access public --provenance
