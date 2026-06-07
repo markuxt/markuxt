@@ -16,11 +16,12 @@
       <div class="footer__links">
         <h4 class="footer__heading">{{ t('footer.quickLinks') }}</h4>
         <nav class="footer__nav">
-          <NuxtLink to="/members" class="footer__link">{{ t('nav.members') }}</NuxtLink>
-          <NuxtLink to="/publications" class="footer__link">{{ t('nav.publications') }}</NuxtLink>
-          <NuxtLink to="/projects" class="footer__link">{{ t('nav.projects') }}</NuxtLink>
-          <NuxtLink to="/positions" class="footer__link">{{ t('nav.positions') }}</NuxtLink>
-          <NuxtLink to="/news" class="footer__link">{{ t('nav.news') }}</NuxtLink>
+          <NuxtLink
+            v-for="item in quickLinks"
+            :key="item.to"
+            :to="item.to"
+            class="footer__link"
+          >{{ t(item.labelKey) }}</NuxtLink>
         </nav>
       </div>
 
@@ -68,6 +69,11 @@ const currentYear = new Date().getFullYear()
 
 const contactEmail = computed(() => appConfig.markuxt?.contact?.email || '')
 const externalUrl = computed(() => appConfig.markuxt?.contact?.externalUrl || '')
+
+// Quick links from navigation config (exclude home)
+const quickLinks = computed(() =>
+  (appConfig.markuxt?.navigation || []).filter(item => item.to !== '/')
+)
 </script>
 
 <style scoped>
