@@ -69,7 +69,7 @@ const appConfig = useAppConfig()
 const logoSrc = computed(() => {
   const basePath = config.app.baseURL || '/'
   const base = basePath.endsWith('/') ? basePath : basePath + '/'
-  const src = appConfig.markuxt?.logo?.src || ''
+  const src = appConfig.markuxt?.logo?.src || '/images/logo.png'
   return base + src.replace(/^\//, '')
 })
 

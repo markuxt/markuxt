@@ -103,7 +103,7 @@ const carouselImages = computed((): CarouselImage[] => {
   const base = basePath === '/' ? '' : basePath
 
   if (!images || images.length === 0) {
-    const fallback = (appConfig.markuxt as Record<string, any>)?.carousel?.fallbackImage || '/images/default.jpg'
+    const fallback = (appConfig.markuxt as Record<string, any>)?.carousel?.fallbackImage || '/images/logo.png'
     return [{
       src: `${base}${fallback}`,
       alt: t('hero.placeholderAlt'),
