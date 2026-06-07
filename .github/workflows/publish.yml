@@ -30,16 +30,6 @@ jobs:
           echo "plain=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
       - name: Update package.json version
         run: |
           node -e "
@@ -48,9 +38,6 @@ jobs:
             pkg.version = '${{ steps.version.outputs.plain }}';
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Commit and tag
         run: |
@@ -62,13 +49,6 @@ jobs:
           git tag ${{ steps.version.outputs.tag }}
           git push origin ${{ steps.version.outputs.tag }}
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-dist
-          path: .
-          retention-days: 1
-
   publish-gpr:
     needs: prepare
     runs-on: ubuntu-latest
@@ -76,10 +56,15 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          name: package-dist
+          ref: ${{ needs.prepare.outputs.tag }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -87,6 +72,9 @@ jobs:
           node-version: "20"
           registry-url: "https://npm.pkg.github.com"
           scope: "@markuxt"
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Publish to GitHub Packages
         run: npm publish --access public
@@ -100,10 +88,15 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          name: package-dist
+          ref: ${{ needs.prepare.outputs.tag }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -111,6 +104,9 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
           scope: "@markuxt"
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Publish to npm
         run: npm publish --access public --provenance
