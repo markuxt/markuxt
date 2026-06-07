@@ -1,6 +1,6 @@
 {
   "name": "@hnrobert/markuxt",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A Markdown-first academic portal framework for laboratories, research groups, and knowledge communities, powered by Nuxt.",
   "author": "hnrobert",
   "license": "Apache-2.0",
