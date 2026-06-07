@@ -1,6 +1,6 @@
 <template>
   <section class="hero">
-    <div class="container">
+    <div class="container hero__container">
       <div class="hero__grid">
       <div class="hero__content">
         <span class="hero__badge">{{ badge || t('hero.badge') }}</span>
@@ -182,6 +182,10 @@ onUnmounted(() => {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
   opacity: 0.03;
   z-index: -1;
+}
+
+.hero__container {
+  padding-inline: var(--spacing-2xl);
 }
 
 .hero__grid {
@@ -393,6 +397,10 @@ onUnmounted(() => {
     min-height: auto;
     padding-top: calc(var(--header-height) + var(--spacing-xl));
     padding-bottom: var(--spacing-2xl);
+  }
+
+  .hero__container {
+    padding-inline: var(--spacing-xl);
   }
 
   .hero__grid {
