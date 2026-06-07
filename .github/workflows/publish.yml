@@ -21,7 +21,7 @@ jobs:
       tag: ${{ steps.version.outputs.tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,6 +33,16 @@ jobs:
           echo "plain=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
       - name: Update package.json version
         run: |
           node -e "
@@ -41,6 +51,9 @@ jobs:
             pkg.version = '${{ steps.version.outputs.plain }}';
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Commit and tag
         run: |
@@ -52,29 +65,28 @@ jobs:
           git tag ${{ steps.version.outputs.tag }}
           git push origin ${{ steps.version.outputs.tag }}
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: package-dist
+          path: .
+          retention-days: 1
+
   publish-gpr:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v8
         with:
-          ref: ${{ needs.prepare.outputs.tag }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+          name: package-dist
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
           registry-url: "https://npm.pkg.github.com"
           scope: "@markuxt"
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Publish to GitHub Packages
         run: npm publish --access public
@@ -85,25 +97,17 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v8
         with:
-          ref: ${{ needs.prepare.outputs.tag }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+          name: package-dist
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
           scope: "@markuxt"
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Publish to npm
         run: npm publish --access public --provenance
