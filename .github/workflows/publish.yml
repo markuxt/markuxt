@@ -108,11 +108,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - run: pwd
-        
-      - run: ls -la
-
-      - run: cat .npmrc || true
-
       - name: Publish to npm
-        run: npm publish --access public --provenance
+        run: npm publish
+        env:
+          NPM_CONFIG_PROVENANCE: "true"

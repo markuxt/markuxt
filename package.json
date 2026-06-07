@@ -10,6 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/markuxt/markuxt.git"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "nuxt.config.ts",
     "app.config.ts",
