@@ -73,8 +73,11 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup Node.js for npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
       - name: Publish to npm
-        run: |
-          npm config set registry https://registry.npmjs.org
-          npm config delete @markuxt:registry
-          npm publish --access public --provenance
+        run: npm publish --access public --provenance
