@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { resolveComponent } from 'vue'
 
 const { t } = useI18n()
 const appConfig = useAppConfig()
@@ -103,15 +103,13 @@ interface ResearchAreaConfig {
   descKey: string
 }
 
-// Research areas — driven by app.config, resolved to icon components
+// Research areas — driven by app.config, icons resolved by consuming project
 const researchAreas = computed(() => {
   const areas = (appConfig.markuxt as Record<string, any>)?.researchAreas as ResearchAreaConfig[] || []
   return areas.map((area) => ({
     title: t(area.titleKey),
     description: t(area.descKey),
-    component: defineAsyncComponent(() =>
-      import(`@icon-park/vue-next/es/icons/${area.icon}`).then(m => m.default)
-    ),
+    component: resolveComponent(area.icon),
   }))
 })
 
