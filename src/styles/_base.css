@@ -1,0 +1,31 @@
+/* ============================================
+   Base Styles
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(rgba(10, 37, 64, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 37, 64, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}

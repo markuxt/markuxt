@@ -1,0 +1,109 @@
+/* ============================================
+   Markdown Code Blocks (ProsePre override)
+   Light theme: very light grey surface, subtle border
+   ============================================ */
+
+/* Wrapper around a highlighted code block */
+.code-block {
+  margin: var(--spacing-lg) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #f6f8fa;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Header strip: language label + copy button */
+.code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: #eaeef2;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.code-block__lang {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.code-block__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.code-block__copy:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-text);
+}
+
+.code-block__copy.is-copied {
+  color: #1a7f37;
+}
+
+/* The <pre> emitted inside our wrapper: reset chrome, keep scrolling */
+.code-block pre {
+  margin: 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  overflow-x: auto;
+  background: transparent;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-block pre code {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace;
+  font-size: inherit;
+  color: var(--color-text);
+  background: none;
+  padding: 0;
+  display: block;
+  counter-reset: line;
+}
+
+.code-block pre code .line {
+  display: block;
+}
+
+/* Line-number gutter: rendered from a CSS counter so the digits are never
+   part of the copied text (manual selection skips ::before; the copy button
+   copies the raw source). Sticky so numbers stay pinned while a long line
+   scrolls horizontally, GitHub-style. */
+.code-block pre code .line::before {
+  counter-increment: line;
+  content: counter(line);
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  width: 2.5ch;
+  margin-right: var(--spacing-md);
+  padding-right: var(--spacing-sm);
+  text-align: right;
+  color: var(--color-text-muted);
+  background: #f6f8fa;
+  border-right: 1px solid var(--color-border);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Shiki dual-theme: the parser writes both colors as CSS vars
+   (--shiki-default = github-light, --shiki-dusk = github-dark) rather than a
+   plain `color`. We render on a light surface, so use the light-theme var. */
+.code-block pre code span {
+  color: var(--shiki-default, inherit);
+}

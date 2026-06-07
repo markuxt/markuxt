@@ -1,0 +1,62 @@
+/* CSS Custom Properties - Design System */
+:root {
+  /* Colors */
+  --color-primary: #0a2540;
+  --color-primary-light: #1a3a5c;
+  --color-accent: #00d9ff;
+  --color-accent-hover: #00b8d9;
+  --color-secondary: #009bc1;
+  --color-secondary-light: #4db8d1;
+  --color-bg: #f8fafc;
+  --color-bg-alt: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+
+  /* Typography */
+  --font-display: 'Fraunces', serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem; /* added: used by multiple pages (positions, projects, news) */
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ============================================
+   Responsive Breakpoints
+   ============================================ */
+  --breakpoint-sm: 480px;   /* Small mobile */
+  --breakpoint-md: 768px;   /* Tablet */
+  --breakpoint-lg: 1024px;  /* Desktop */
+
+  /* ============================================
+   Layout Variables
+   ============================================ */
+  --header-height: 80px;
+  --card-min-width: 280px;
+  --touch-target-size: 44px;
+}

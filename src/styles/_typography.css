@@ -1,0 +1,144 @@
+/* ============================================
+   Typography
+   ============================================ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+  scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Lists */
+ul {
+  margin-bottom: var(--spacing-md);
+  padding-left: 0;
+  list-style: none !important;
+}
+
+ol {
+  margin-bottom: var(--spacing-md);
+  padding-left: 0;
+  list-style: none !important;
+  counter-reset: item;
+}
+
+li {
+  margin-bottom: var(--spacing-xs);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+ul > li::before {
+  content: '•' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--color-secondary) !important;
+}
+
+ol > li::before {
+  content: counter(item) '.' !important;
+  counter-increment: item !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--color-secondary) !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure ol li doesn't get ul's bullet */
+ol li::before {
+  content: counter(item) '.' !important;
+}
+
+/* Task lists (GitHub-style checkboxes): the global `ul > li::before` bullet
+   and `li` indent don't apply here — the checkbox is the marker. Suppress the
+   blue dot and vertically center the box with its label line via flex. */
+.task-list-item {
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+  list-style: none;
+}
+
+.task-list-item::before {
+  content: none !important;
+}
+
+/* Custom checkbox: replace the native control (which is disabled/read-only for
+   markdown task lists) with a box that matches the design system. Flex-center
+   so the checkmark sits in the middle of the box on both axes. */
+.task-list-item input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0 var(--spacing-sm) 0 0;
+  background: var(--color-bg-alt);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: default;
+  transition: all var(--transition-fast);
+}
+
+/* Checked: accent fill + a CSS-drawn checkmark */
+.task-list-item input[type='checkbox']:checked {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.task-list-item input[type='checkbox']:checked::after {
+  content: '';
+  width: 0.3em;
+  height: 0.55em;
+  margin-top: -0.1em;
+  border: solid #fff;
+  border-width: 0 0.16em 0.16em 0;
+  transform: rotate(45deg);
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent);
+}

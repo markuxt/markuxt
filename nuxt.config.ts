@@ -120,7 +120,7 @@ export default defineNuxtConfig({
   },
 
   // CSS — resolve relative to layer root, not the consuming site
-  css: [resolve(__dirname, 'src/assets/main.css')],
+  css: [resolve(__dirname, 'src/styles/main.css')],
 
   // Content module configuration
   content: {

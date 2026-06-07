@@ -1,10 +1,16 @@
 /* KaTeX math rendering styles */
 @import 'katex/dist/katex.min.css';
 
-/* ============================================
-   Markuxt - Global Styles
-   Design: Modern Lab (Bold, Contemporary, Dynamic)
-   ============================================ */
+@import './_tokens.css';
+@import './_base.css';
+@import './_typography.css';
+@import './_layout.css';
+@import './_components.css';
+@import './_animations.css';
+@import './_utilities.css';
+@import './_code.css';
+@import './_markdown.css';
+
 
 /* CSS Custom Properties - Design System */
 :root {
