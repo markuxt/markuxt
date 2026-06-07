@@ -1,5 +1,5 @@
 {
-  "name": "@hnrobert/markuxt",
+  "name": "@markuxt/markuxt",
   "version": "0.1.4",
   "description": "A Markdown-first academic portal framework for laboratories, research groups, and knowledge communities, powered by Nuxt.",
   "author": "hnrobert",
@@ -8,7 +8,7 @@
   "main": "./nuxt.config.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hnrobert/markuxt.git"
+    "url": "git+https://github.com/markuxt/markuxt.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
