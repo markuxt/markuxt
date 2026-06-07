@@ -108,9 +108,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Authenticate to npm
-        run: npm whoami
-
       - name: npmrc
         run: cat ~/.npmrc
 
