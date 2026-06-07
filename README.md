@@ -1,7 +1,7 @@
 # Markuxt
 
 <div align="center">
-  <img src="src/public/images/logo.png" alt="Markuxt" width="360" />
+  <img src="https://raw.githubusercontent.com/markuxt/markuxt/main/src/public/images/logo.png" alt="Markuxt" width="360" />
   <!-- <h1>Markuxt</h1> -->
 </div>
 
