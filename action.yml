@@ -1,6 +1,10 @@
 name: 'Sync Publications from OpenAlex'
 description: 'Fetches publications from OpenAlex based on member ORCIDs and syncs to content directory'
 
+branding:
+  icon: "activity"
+  color: "green"
+
 inputs:
   ror_id:
     description: 'ROR ID of the institution (e.g., https://ror.org/03y4dt428)'
