@@ -70,6 +70,34 @@
             <ContentRenderer :value="member" />
           </div>
         </div>
+
+        <!-- Publications -->
+        <div v-if="memberPublications.length > 0" class="profile-section animate-fade-in-up delay-400">
+          <div class="profile-section__header">
+            <FileText class="icon-inline" theme="outline" :size="22" fill="white" :stroke-width="2.8" />
+            <h3>{{ t('members.publications') }}</h3>
+          </div>
+          <div class="profile-section__body">
+            <div class="publications-grid">
+              <NuxtLink
+                v-for="pub in memberPublications"
+                :key="pub._id"
+                :to="pub._path"
+                class="publication-card"
+              >
+                <div class="publication-card__content">
+                  <h4 class="publication-card__title">{{ pub.title }}</h4>
+                  <p class="publication-card__authors">{{ formatAuthors(pub.authors) }}</p>
+                  <div class="publication-card__meta">
+                    <span class="publication-card__venue">{{ pub.venue }}</span>
+                    <span class="publication-card__year">{{ pub.year }}</span>
+                  </div>
+                </div>
+                <ArrowRight class="publication-card__arrow" theme="outline" :size="16" fill="currentColor" :stroke-width="2" />
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -93,6 +121,8 @@ import Mail from '@icon-park/vue-next/es/icons/Mail'
 import Google from '@icon-park/vue-next/es/icons/Google'
 import Search from '@icon-park/vue-next/es/icons/Search'
 import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
+import FileText from '@icon-park/vue-next/es/icons/FileText'
+import ArrowRight from '@icon-park/vue-next/es/icons/ArrowRight'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
@@ -119,6 +149,40 @@ const { data: memberData } = await useAsyncData(`member-${slug.value}`, async ()
 })
 
 const member = computed(() => memberData.value)
+
+// Fetch all publications for filtering by member ORCID
+const { data: allPublications } = await useAsyncData('publications', async () => {
+  try {
+    return await queryContent('/publications')
+      .where({ _hidden: { $ne: true } })
+      .find()
+  } catch (e) {
+    console.error('Error fetching publications:', e)
+    return []
+  }
+})
+
+// Filter publications by member's ORCID
+const memberPublications = computed(() => {
+  if (!member.value?.orcid || !allPublications.value) return []
+
+  const memberOrcid = member.value.orcid.trim()
+
+  return (allPublications.value || [])
+    .filter(pub => {
+      const authorsOrcid = pub.authors_orcid
+      if (!Array.isArray(authorsOrcid)) return false
+      return authorsOrcid.some(orcid => orcid === memberOrcid)
+    })
+    .sort((a, b) => (b.year || 0) - (a.year || 0)) // Sort by year descending
+})
+
+// Format authors list for display
+const formatAuthors = (authors: string[] | undefined) => {
+  if (!Array.isArray(authors) || authors.length === 0) return ''
+  if (authors.length <= 2) return authors.join(' & ')
+  return `${authors[0]} et al.`
+}
 
 // Provide content ID for ProseImg/ProseVideo to resolve relative asset paths
 provide('contentId', computed(() => member.value?._id || ''))
@@ -414,6 +478,92 @@ useHead({
   color: white;
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
+}
+
+/* Publications Grid */
+.publications-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.publication-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.publication-card:hover {
+  background: var(--color-bg-alt);
+  border-color: var(--color-secondary);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.publication-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.publication-card__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.publication-card__authors {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.4;
+}
+
+.publication-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.publication-card__venue {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+}
+
+.publication-card__year {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: rgba(0, 217, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.publication-card__arrow {
+  flex-shrink: 0;
+  color: var(--color-secondary);
+  transition: transform var(--transition-fast);
+}
+
+.publication-card:hover .publication-card__arrow {
+  transform: translateX(4px);
+  color: var(--color-accent);
 }
 
 /* ContentRenderer Markdown Styling */

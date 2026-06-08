@@ -29,6 +29,17 @@
         >
           <Google class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.5" />
         </a>
+        <a
+          v-if="member.orcid"
+          :href="`https://orcid.org/${member.orcid}`"
+          target="_blank"
+          rel="noopener"
+          class="member-card__action"
+          :aria-label="t('members.orcid')"
+          @click.stop
+        >
+          <Orcid class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.5" />
+        </a>
       </div>
     </div>
     <div class="member-card__content">
@@ -45,6 +56,7 @@
 import { computed } from 'vue'
 import Mail from '@icon-park/vue-next/es/icons/Mail'
 import Google from '@icon-park/vue-next/es/icons/Google'
+import Orcid from '@icon-park/vue-next/es/icons/IdCardH'
 
 interface Member {
   name: string
@@ -52,6 +64,7 @@ interface Member {
   title?: string
   email?: string
   scholar?: string
+  orcid?: string
   image?: string
   interests?: string[]
   category?: string
