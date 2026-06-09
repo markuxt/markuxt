@@ -209,12 +209,12 @@ useHead({
 }
 
 .status-filter__btn:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--surface-soft);
   color: var(--color-text);
 }
 
 .status-filter__btn--active {
-  background: white;
+  background: var(--surface-raised);
   color: var(--color-primary);
   box-shadow: var(--shadow-sm);
 }

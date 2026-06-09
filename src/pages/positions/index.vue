@@ -246,16 +246,16 @@ useHead({
 }
 
 .positions-contact .btn {
-  background: white;
+  background: var(--surface-raised);
   color: var(--color-primary);
   border-radius: var(--radius-full); /* pill */
   padding: 0.75rem 1.25rem;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+  box-shadow: var(--control-shadow);
 }
 
 .positions-contact .btn:hover {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-on-accent);
 }
 
 @media (max-width: 768px) {

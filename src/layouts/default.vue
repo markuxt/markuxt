@@ -9,10 +9,24 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig()
 const { t, locale } = useI18n()
 
-useHead({
-  htmlAttrs: { lang: locale },
+const themePreset = computed(() => {
+  const preset = appConfig.markuxt?.theme?.preset
+
+  if (preset === 'forest' || preset === 'sunset' || preset === 'slate') {
+    return preset
+  }
+
+  return 'ocean'
+})
+
+useHead(() => ({
+  htmlAttrs: {
+    lang: locale.value,
+    'data-theme': themePreset.value,
+  },
   title: t('site.title'),
   meta: [
     { name: 'description', content: t('site.description') },
@@ -21,7 +35,7 @@ useHead({
     { property: 'og:description', content: t('site.ogDescription') },
     { property: 'og:type', content: 'website' },
   ],
-})
+}))
 </script>
 
 <style scoped>

@@ -138,9 +138,7 @@ useHead({
 .project__pattern {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(10, 37, 64, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 37, 64, 0.03) 1px, transparent 1px);
+  background-image: var(--page-grid-pattern-strong);
   background-size: 40px 40px;
 }
 
@@ -191,7 +189,7 @@ useHead({
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-frosted);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   color: var(--color-text);
@@ -205,7 +203,7 @@ useHead({
 .project__back:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
+  color: var(--color-on-primary);
   transform: translateX(-3px);
 }
 
@@ -331,7 +329,7 @@ useHead({
 
 .project-section__body--content {
   padding: var(--spacing-xl);
-  background: white;
+  background: var(--surface-raised);
 }
 
 /* ContentRenderer Markdown Styling */

@@ -114,15 +114,15 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--header-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid transparent;
   transition: all 0.3s ease;
 }
 
 .header--scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  background: var(--header-bg-strong);
+  box-shadow: var(--header-shadow);
   border-bottom-color: var(--color-border);
 }
 
@@ -198,7 +198,7 @@ onUnmounted(() => {
 
 .header__link:hover {
   color: var(--color-secondary);
-  background: rgba(0, 155, 193, 0.08);
+  background: var(--nav-hover-bg);
 }
 
 .header__link--active {
@@ -265,9 +265,9 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   padding: var(--spacing-lg);
-  background: white;
+  background: var(--surface-raised);
   border-top: 1px solid var(--color-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--header-shadow);
 }
 
 .header__mobile-nav .lang-switcher {

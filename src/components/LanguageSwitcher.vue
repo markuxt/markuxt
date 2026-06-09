@@ -36,10 +36,11 @@ function getLocaleLabel(code: string): string {
   display: flex;
   align-items: center;
   gap: 2px;
-  background: var(--color-bg);
+  background: var(--surface-frosted);
   border-radius: var(--radius-full);
   padding: 2px 3px;
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .lang-switcher__btn {
@@ -61,11 +62,11 @@ function getLocaleLabel(code: string): string {
 
 .lang-switcher__btn--active {
   background: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
 }
 
 .lang-switcher__btn--active:hover {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-on-primary);
 }
 </style>

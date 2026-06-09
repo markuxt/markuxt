@@ -54,6 +54,11 @@ Consuming sites configure Markuxt through `appConfig.markuxt` in their `nuxt.con
 export default defineNuxtConfig({
   appConfig: {
     markuxt: {
+      // Theme preset - change this value in repo config to switch the site theme
+      theme: {
+        preset: 'ocean', // 'ocean' | 'forest' | 'sunset' | 'slate'
+      },
+
       // Logo image path
       logo: {
         src: '/images/logo.png',

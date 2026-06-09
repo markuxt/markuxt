@@ -171,7 +171,7 @@ const memberLink = computed(() => {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: white;
+  background: var(--surface-raised);
   border-radius: var(--radius-full);
   color: var(--color-primary);
   transition: all var(--transition-fast);
@@ -179,7 +179,7 @@ const memberLink = computed(() => {
 
 .member-card__action:hover {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-on-accent);
   transform: scale(1.1);
 }
 

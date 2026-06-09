@@ -152,9 +152,7 @@ useHead({
   content: '';
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(10, 37, 64, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 37, 64, 0.03) 1px, transparent 1px);
+  background-image: var(--page-grid-pattern-strong);
   background-size: 20px 20px;
   opacity: 0.5;
   pointer-events: none;

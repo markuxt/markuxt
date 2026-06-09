@@ -62,109 +62,112 @@ function syncContentAssets(rootDir: string) {
 }
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
+    compatibilityDate: '2024-11-01',
+    devtools: { enabled: true },
 
-  // Source directory
-  srcDir: 'src/',
+    // Source directory
+    srcDir: 'src/',
 
-  // Nuxt Content module + i18n
-  modules: ['@nuxt/content', '@nuxtjs/i18n'],
+    // Nuxt Content module + i18n
+    modules: ['@nuxt/content', '@nuxtjs/i18n'],
 
-  // i18n defaults — consuming site overrides locales and langDir
-  i18n: {
-    defaultLocale: 'en',
-    strategy: 'no_prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_locale',
-      redirectOn: 'root'
-    }
-  },
-
-  // Build-time hooks
-  hooks: {
-    // Register a custom transformer for binary assets (images, videos, etc.)
-    // so @nuxt/content does not warn about unsupported file extensions.
-    'content:context': (ctx: { transformers: string[] }) => {
-      ctx.transformers.push(
-        resolve(__dirname, 'src/content-transformers/binary-assets.ts')
-      )
+    // i18n defaults — consuming site overrides locales and langDir
+    i18n: {
+        defaultLocale: 'en',
+        strategy: 'no_prefix',
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'i18n_locale',
+            redirectOn: 'root',
+        },
     },
-    'build:before': () => {
-      const cwd = process.cwd()
-      const rootDir = join(cwd, ROOT_DIR)
 
-      // Sync assets to public/_markuxt/
-      syncContentAssets(rootDir)
-    }
-  },
+    // Build-time hooks
+    hooks: {
+        // Register a custom transformer for binary assets (images, videos, etc.)
+        // so @nuxt/content does not warn about unsupported file extensions.
+        'content:context': (ctx: { transformers: string[] }) => {
+            ctx.transformers.push(resolve(__dirname, 'src/content-transformers/binary-assets.ts'));
+        },
+        'build:before': () => {
+            const cwd = process.cwd();
+            const rootDir = join(cwd, ROOT_DIR);
 
-  // App configuration
-  app: {
-    head: {
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-      ],
-      link: [
-        { rel: 'icon', type: 'image/png', href: '/images/logo.png' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,100;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800;1,9..144,900&display=swap' }
-      ],
-      script: []
+            // Sync assets to public/_markuxt/
+            syncContentAssets(rootDir);
+        },
     },
-    pageTransition: { name: 'page', mode: 'out-in' },
-    baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/'
-  },
 
-  // CSS — resolve relative to layer root, not the consuming site
-  css: [resolve(__dirname, 'src/styles/main.css')],
-
-  // Content module configuration
-  content: {
-    highlight: {
-      theme: {
-        default: 'github-light',
-        dusk: 'github-dark'
-      }
+    // App configuration
+    appConfig: {
+        markuxt: {
+            theme: {
+                preset: 'forest',
+            },
+        },
     },
-    navigation: {
-      fields: ['icon', 'title', 'description']
+
+    app: {
+        head: {
+            meta: [{ charset: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+            link: [
+                { rel: 'icon', type: 'image/png', href: '/images/logo.png' },
+                { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+                { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+                { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,100;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800;1,9..144,900&display=swap' },
+            ],
+            script: [],
+        },
+        pageTransition: { name: 'page', mode: 'out-in' },
+        baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
     },
-    markdown: {
-      tags: {
-        img: 'ProseImg',
-        video: 'ProseVideo'
-      },
-      remarkPlugins: {
-        'remark-math': {}
-      },
-      rehypePlugins: {
-        'rehype-katex': {
-          output: 'htmlAndMathml',
-          strict: false
-        }
-      }
-    }
-  },
 
-  // Nitro configuration
-  nitro: {
-    baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/'
-  },
+    // CSS — resolve relative to layer root, not the consuming site
+    css: [resolve(__dirname, 'src/styles/main.css'), resolve(__dirname, 'src/styles/theme.css')],
 
-  // TypeScript
-  typescript: {
-    strict: true,
-    typeCheck: false
-  },
+    // Content module configuration
+    content: {
+        highlight: {
+            theme: {
+                default: 'github-light',
+                dusk: 'github-dark',
+            },
+        },
+        navigation: {
+            fields: ['icon', 'title', 'description'],
+        },
+        markdown: {
+            tags: {
+                img: 'ProseImg',
+                video: 'ProseVideo',
+            },
+            remarkPlugins: {
+                'remark-math': {},
+            },
+            rehypePlugins: {
+                'rehype-katex': {
+                    output: 'htmlAndMathml',
+                    strict: false,
+                },
+            },
+        },
+    },
 
-  // Vite
-  vite: {
-    optimizeDeps: {
-      include: ['@nuxt/content', 'mermaid']
-    }
-  }
-})
+    // Nitro configuration
+    nitro: {
+        baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
+    },
+
+    // TypeScript
+    typescript: {
+        strict: true,
+        typeCheck: false,
+    },
+
+    // Vite
+    vite: {
+        optimizeDeps: {
+            include: ['@nuxt/content', 'mermaid'],
+        },
+    },
+});

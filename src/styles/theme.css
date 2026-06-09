@@ -1,0 +1,126 @@
+:root {
+  --color-on-primary: #ffffff;
+  --color-on-secondary: #ffffff;
+  --color-on-accent: #ffffff;
+
+  --surface-raised: #ffffff;
+  --surface-soft: rgb(255 255 255 / 0.6);
+  --surface-soft-strong: rgb(255 255 255 / 0.8);
+  --surface-frosted: rgb(255 255 255 / 0.9);
+  --surface-frosted-strong: rgb(255 255 255 / 0.96);
+
+  --page-grid-color: rgb(10 37 64 / 0.02);
+  --page-grid-color-strong: rgb(10 37 64 / 0.03);
+  --page-grid-pattern:
+    linear-gradient(var(--page-grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--page-grid-color) 1px, transparent 1px);
+  --page-grid-pattern-strong:
+    linear-gradient(var(--page-grid-color-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--page-grid-color-strong) 1px, transparent 1px);
+
+  --header-bg: rgb(255 255 255 / 0.86);
+  --header-bg-strong: rgb(255 255 255 / 0.95);
+  --header-shadow: 0 2px 20px rgb(15 23 42 / 0.08);
+  --nav-hover-bg: rgb(0 155 193 / 0.08);
+
+  --accent-soft: rgb(0 217 255 / 0.1);
+  --accent-shadow: 0 10px 20px -5px rgb(0 217 255 / 0.4);
+  --accent-shadow-soft: 0 4px 12px rgb(0 217 255 / 0.3);
+  --control-shadow: 0 6px 18px rgb(2 6 23 / 0.08);
+
+  --carousel-dot: rgb(255 255 255 / 0.5);
+  --carousel-dot-hover: rgb(255 255 255 / 0.8);
+  --carousel-progress-track: rgb(255 255 255 / 0.2);
+}
+
+html[data-theme='forest'] {
+  --color-primary: #14372c;
+  --color-primary-light: #1d5240;
+  --color-accent: #39c08f;
+  --color-accent-hover: #2fa276;
+  --color-secondary: #2f8f73;
+  --color-secondary-light: #66b89e;
+  --color-bg: #f4faf7;
+  --color-bg-alt: #ffffff;
+  --color-text: #10261d;
+  --color-text-muted: #5f766b;
+  --color-border: #d7e7df;
+
+  --page-grid-color: rgb(20 55 44 / 0.022);
+  --page-grid-color-strong: rgb(20 55 44 / 0.036);
+  --header-bg: rgb(244 250 247 / 0.88);
+  --header-bg-strong: rgb(255 255 255 / 0.95);
+  --header-shadow: 0 2px 20px rgb(20 55 44 / 0.1);
+  --nav-hover-bg: rgb(57 192 143 / 0.1);
+  --accent-soft: rgb(57 192 143 / 0.12);
+  --accent-shadow: 0 10px 20px -5px rgb(57 192 143 / 0.35);
+  --accent-shadow-soft: 0 4px 12px rgb(57 192 143 / 0.26);
+}
+
+html[data-theme='sunset'] {
+  --color-primary: #5b2d1f;
+  --color-primary-light: #8a4b33;
+  --color-accent: #f59e0b;
+  --color-accent-hover: #d97706;
+  --color-secondary: #d96c3d;
+  --color-secondary-light: #ef9a72;
+  --color-bg: #fff7f0;
+  --color-bg-alt: #ffffff;
+  --color-text: #3c2419;
+  --color-text-muted: #87624f;
+  --color-border: #f0dccf;
+
+  --page-grid-color: rgb(91 45 31 / 0.022);
+  --page-grid-color-strong: rgb(91 45 31 / 0.036);
+  --header-bg: rgb(255 247 240 / 0.9);
+  --header-bg-strong: rgb(255 252 248 / 0.96);
+  --header-shadow: 0 2px 20px rgb(91 45 31 / 0.1);
+  --nav-hover-bg: rgb(217 108 61 / 0.1);
+  --accent-soft: rgb(245 158 11 / 0.14);
+  --accent-shadow: 0 10px 20px -5px rgb(245 158 11 / 0.34);
+  --accent-shadow-soft: 0 4px 12px rgb(245 158 11 / 0.24);
+}
+
+html[data-theme='slate'] {
+  --color-primary: #202939;
+  --color-primary-light: #384658;
+  --color-accent: #c46a2d;
+  --color-accent-hover: #a55420;
+  --color-secondary: #31748f;
+  --color-secondary-light: #67a9c2;
+  --color-bg: #f6f4ef;
+  --color-bg-alt: #fffdf9;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-border: #e4dfd4;
+
+  --page-grid-color: rgb(32 41 57 / 0.022);
+  --page-grid-color-strong: rgb(32 41 57 / 0.036);
+  --header-bg: rgb(246 244 239 / 0.9);
+  --header-bg-strong: rgb(255 253 249 / 0.96);
+  --header-shadow: 0 2px 20px rgb(32 41 57 / 0.1);
+  --nav-hover-bg: rgb(196 106 45 / 0.1);
+  --accent-soft: rgb(196 106 45 / 0.13);
+  --accent-shadow: 0 10px 20px -5px rgb(196 106 45 / 0.34);
+  --accent-shadow-soft: 0 4px 12px rgb(196 106 45 / 0.24);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-bg);
+  background-image: var(--page-grid-pattern);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--accent-shadow);
+}

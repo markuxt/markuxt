@@ -1,6 +1,9 @@
 declare module 'nuxt/schema' {
   interface AppConfig {
     markuxt?: {
+      theme?: {
+        preset?: 'ocean' | 'forest' | 'sunset' | 'slate'
+      }
       logo?: {
         src?: string
       }

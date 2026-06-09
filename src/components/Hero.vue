@@ -309,7 +309,7 @@ onUnmounted(() => {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--carousel-dot);
   border: none;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -317,11 +317,11 @@ onUnmounted(() => {
 }
 
 .carousel__dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--carousel-dot-hover);
 }
 
 .carousel__dot--active {
-  background: white;
+  background: var(--surface-raised);
   width: 24px;
   border-radius: var(--radius-full);
 }
@@ -334,7 +334,7 @@ onUnmounted(() => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-frosted);
   border: none;
   cursor: pointer;
   display: flex;
@@ -347,7 +347,7 @@ onUnmounted(() => {
 
 .carousel__arrow:hover,
 .carousel__arrow:focus {
-  background: white;
+  background: var(--surface-raised);
   box-shadow: var(--shadow-md);
   transform: translateY(-50%) scale(1.1);
 }
@@ -366,7 +366,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 3px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--carousel-progress-track);
 }
 
 .carousel__progress-bar {
