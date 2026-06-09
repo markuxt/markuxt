@@ -78,8 +78,8 @@ const quickLinks = computed(() =>
 
 <style scoped>
 .footer {
-  background: var(--color-primary);
-  color: white;
+  background: var(--surface-brand);
+  color: var(--color-on-brand);
   padding-top: var(--spacing-3xl);
   padding-bottom: var(--spacing-lg);
 }
@@ -142,7 +142,7 @@ const quickLinks = computed(() =>
 
 .footer__link {
   font-size: 0.9375rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--footer-link);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -176,7 +176,7 @@ const quickLinks = computed(() =>
 .footer__bottom {
   margin-top: var(--spacing-2xl);
   padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--footer-border);
 }
 
 .footer__bottom-inner {
@@ -196,7 +196,7 @@ const quickLinks = computed(() =>
   align-items: center;
   gap: var(--spacing-xs);
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--footer-link-muted);
   text-decoration: none;
   transition: color 0.2s ease;
 }

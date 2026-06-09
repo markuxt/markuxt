@@ -227,10 +227,10 @@ useHead({
 }
 
 .status-dot--all { background: var(--color-text-muted); }
-.status-dot--open { background: #f59e0b; }
-.status-dot--ongoing { background: var(--color-accent); }
-.status-dot--completed { background: var(--color-secondary); }
-.status-dot--maintained { background: #8b5cf6; }
+.status-dot--open { background: var(--status-open-solid); }
+.status-dot--ongoing { background: var(--status-ongoing-solid); }
+.status-dot--completed { background: var(--status-completed-solid); }
+.status-dot--maintained { background: var(--status-maintained-solid); }
 
 /* Projects Grid */
 .projects-grid {
@@ -261,7 +261,7 @@ useHead({
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
 }
 
 .project-card__image {
@@ -281,8 +281,8 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-  color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
+  color: var(--color-on-brand-soft);
 }
 
 .project-card__content {
@@ -367,40 +367,40 @@ useHead({
 
 /* Open - recruiting, no funding */
 .status-badge--open {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--status-open-bg);
+  color: var(--status-open-text);
 }
 .status-badge--open .status-badge__dot {
-  background: #f59e0b;
+  background: var(--status-open-solid);
 }
 
 /* Ongoing - recruiting with funding */
 .status-badge--ongoing {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--status-ongoing-bg);
+  color: var(--status-ongoing-text);
 }
 .status-badge--ongoing .status-badge__dot {
-  background: var(--color-accent);
+  background: var(--status-ongoing-solid);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 /* Completed - not recruiting */
 .status-badge--completed {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--status-completed-bg);
+  color: var(--status-completed-text);
 }
 .status-badge--completed .status-badge__dot {
-  background: var(--color-secondary);
+  background: var(--status-completed-solid);
   animation: none;
 }
 
 /* Maintained - still maintained */
 .status-badge--maintained {
-  background: #ede9fe;
-  color: #5b21b6;
+  background: var(--status-maintained-bg);
+  color: var(--status-maintained-text);
 }
 .status-badge--maintained .status-badge__dot {
-  background: #8b5cf6;
+  background: var(--status-maintained-solid);
   animation: none;
 }
 
@@ -461,8 +461,8 @@ useHead({
   left: 50%;
   transform: translateX(-50%);
   padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--color-primary);
-  color: white;
+  background: var(--surface-brand);
+  color: var(--color-on-brand);
   font-size: 0.75rem;
   font-weight: 500;
   white-space: nowrap;
@@ -482,7 +482,7 @@ useHead({
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: var(--color-primary);
+  border-top-color: var(--surface-brand);
 }
 
 .status-filter__btn:hover .tooltip,

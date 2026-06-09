@@ -48,7 +48,7 @@
         <!-- Research Interests -->
         <div v-if="member.interests && member.interests.length" class="profile-section animate-fade-in-up delay-200">
           <div class="profile-section__header">
-            <Search class="icon-inline" theme="outline" :size="22" fill="white" :stroke-width="2.8" />
+            <Search class="icon-inline" theme="outline" :size="22" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('members.researchFocus') }}</h3>
           </div>
           <div class="profile-section__body">
@@ -63,7 +63,7 @@
         <!-- About/Bio with Markdown Content -->
         <div v-if="member.body || (member.content && member.content.length > 0)" class="profile-section animate-fade-in-up delay-300">
           <div class="profile-section__header">
-            <FileStaff class="icon-inline" theme="outline" :size="22" fill="white" :stroke-width="2.8" />
+            <FileStaff class="icon-inline" theme="outline" :size="22" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('members.about') }}</h3>
           </div>
           <div class="profile-section__body profile-section__body--content">
@@ -74,7 +74,7 @@
         <!-- Publications -->
         <div v-if="memberPublications.length > 0" class="profile-section animate-fade-in-up delay-400">
           <div class="profile-section__header">
-            <FileText class="icon-inline" theme="outline" :size="22" fill="white" :stroke-width="2.8" />
+            <FileText class="icon-inline" theme="outline" :size="22" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('members.publications') }}</h3>
           </div>
           <div class="profile-section__body">
@@ -264,7 +264,7 @@ useHead({
   height: 120px;
   bottom: 20%;
   left: 5%;
-  background: var(--color-primary);
+  background: var(--surface-brand);
   opacity: 0.08;
   animation-delay: 2.5s;
 }
@@ -296,9 +296,9 @@ useHead({
 }
 
 .member-profile__back:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--surface-brand);
+  border-color: var(--surface-brand);
+  color: var(--color-on-brand);
   transform: translateX(-3px);
 }
 
@@ -423,8 +423,9 @@ useHead({
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-lg) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-on-brand);
 }
 
 .profile-section__icon {
@@ -437,7 +438,7 @@ useHead({
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
-  color: white;
+  color: inherit;
   margin: 0;
 }
 
@@ -447,7 +448,7 @@ useHead({
 
 .profile-section__body--content {
   padding: var(--spacing-xl);
-  background: white;
+  background: var(--surface-raised);
 }
 
 /* Interest Tags */
@@ -473,7 +474,7 @@ useHead({
 .interest-tag:hover {
   background: var(--color-secondary);
   border-color: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -548,7 +549,7 @@ useHead({
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-accent);
-  background: rgba(0, 217, 255, 0.1);
+  background: var(--accent-soft);
   padding: 2px 8px;
   border-radius: var(--radius-sm);
 }

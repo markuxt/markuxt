@@ -128,7 +128,7 @@ ol li::before {
   width: 0.3em;
   height: 0.55em;
   margin-top: -0.1em;
-  border: solid #fff;
+  border: solid var(--color-on-secondary);
   border-width: 0 0.16em 0.16em 0;
   transform: rotate(45deg);
 }

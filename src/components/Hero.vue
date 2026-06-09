@@ -179,7 +179,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
   opacity: 0.03;
   z-index: -1;
 }
@@ -208,7 +208,7 @@ onUnmounted(() => {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-accent);
-  background: rgba(0,217,255,0.1);
+  background: var(--accent-soft);
   border-radius: var(--radius-full);
   margin-bottom: var(--spacing-lg);
 }
@@ -258,7 +258,7 @@ onUnmounted(() => {
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-xl);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
 }
 
 .carousel__track {
@@ -285,8 +285,8 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   padding: var(--spacing-lg);
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  color: white;
+  background: linear-gradient(transparent, var(--surface-overlay));
+  color: var(--color-on-brand);
 }
 
 .carousel__caption span {

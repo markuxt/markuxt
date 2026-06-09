@@ -3,6 +3,7 @@ declare module 'nuxt/schema' {
     markuxt?: {
       theme?: {
         preset?: 'ocean' | 'forest' | 'sunset' | 'slate'
+        mode?: 'light' | 'dark' | 'auto'
       }
       logo?: {
         src?: string

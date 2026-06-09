@@ -29,7 +29,7 @@ table:has(thead) thead th {
 }
 
 table:has(thead) tbody tr:nth-child(even) {
-  background: #f8fafc;
+  background: var(--surface-table-row-alt);
 }
 
 /* ============================================

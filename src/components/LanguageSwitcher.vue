@@ -66,7 +66,7 @@ function getLocaleLabel(code: string): string {
 }
 
 .lang-switcher__btn--active:hover {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--surface-brand);
+  color: var(--color-on-brand);
 }
 </style>

@@ -31,7 +31,7 @@
         <!-- Description -->
         <div v-if="position.body || position.description" class="position-section animate-fade-in-up delay-200">
           <div class="position-section__header">
-            <FileStaff class="icon-inline" theme="outline" :size="20" fill="white" :stroke-width="2.8" />
+            <FileStaff class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('positions.aboutPosition') }}</h3>
           </div>
           <div class="position-section__body position-section__body--content">
@@ -42,7 +42,7 @@
         <!-- Requirements -->
         <div v-if="position.requirements" class="position-section animate-fade-in-up delay-300">
           <div class="position-section__header">
-            <CheckCorrect class="icon-inline" theme="outline" :size="20" fill="white" :stroke-width="2.8" />
+            <CheckCorrect class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('positions.requirements') }}</h3>
           </div>
           <div class="position-section__body">
@@ -182,7 +182,7 @@ useHead({
   height: 120px;
   bottom: 20%;
   left: 5%;
-  background: var(--color-primary);
+  background: var(--surface-brand);
   opacity: 0.08;
   animation-delay: 2.5s;
 }
@@ -214,9 +214,9 @@ useHead({
 }
 
 .position__back:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--surface-brand);
+  border-color: var(--surface-brand);
+  color: var(--color-on-brand);
   transform: translateX(-3px);
 }
 
@@ -282,15 +282,16 @@ useHead({
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-lg) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-on-brand);
 }
 
 .position-section__header h3 {
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
-  color: white;
+  color: inherit;
   margin: 0;
 }
 
@@ -332,7 +333,7 @@ useHead({
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-xl);
   background: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
   text-decoration: none;
   border-radius: var(--radius-lg);
   font-weight: 600;

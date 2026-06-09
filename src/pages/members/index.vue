@@ -129,13 +129,13 @@ useHead({
 .filter-btn--active {
   background: var(--color-secondary);
   border-color: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
 }
 
 .filter-btn--active:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
+  background: var(--surface-brand);
+  border-color: var(--surface-brand);
+  color: var(--color-on-brand);
 }
 
 .no-results {

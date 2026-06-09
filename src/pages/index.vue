@@ -53,7 +53,7 @@
         />
         <div class="research-areas">
           <div class="research-card" v-for="(area, index) in researchAreas" :key="index">
-            <span class="research-card__icon"><component class="icon-inline" :is="area.component" theme="outline" :size="28" fill="white" :stroke-width="3"/></span>
+            <span class="research-card__icon"><component class="icon-inline" :is="area.component" theme="outline" :size="28" fill="currentColor" :stroke-width="3"/></span>
             <h3 class="research-card__title">{{ area.title }}</h3>
             <p class="research-card__description">{{ area.description }}</p>
           </div>
@@ -188,6 +188,7 @@ useHead({
   justify-content: center;
   margin: 0 auto var(--spacing-xl);
   background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+  color: var(--color-on-accent);
   border-radius: var(--radius-full);
   position: relative;
   z-index: 1;

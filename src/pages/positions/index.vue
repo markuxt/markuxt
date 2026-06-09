@@ -164,7 +164,7 @@ useHead({
 
 .badge-accent {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-on-accent);
 }
 
 .position-card__description {
@@ -224,8 +224,8 @@ useHead({
 /* Contact Section */
 .positions-contact {
   text-align: center;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
+  color: var(--color-on-brand);
   border-radius: var(--radius-2xl);
   padding: var(--spacing-3xl) var(--spacing-xl);
 }
@@ -234,7 +234,7 @@ useHead({
   font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 700;
-  color: white;
+  color: inherit;
   margin-bottom: var(--spacing-md);
 }
 

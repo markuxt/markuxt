@@ -103,6 +103,7 @@ export default defineNuxtConfig({
         markuxt: {
             theme: {
                 preset: 'forest',
+                mode: 'auto',
             },
         },
     },

@@ -22,10 +22,21 @@ const themePreset = computed(() => {
   return 'ocean'
 })
 
+const themeMode = computed(() => {
+  const mode = appConfig.markuxt?.theme?.mode
+
+  if (mode === 'dark' || mode === 'auto') {
+    return mode
+  }
+
+  return 'light'
+})
+
 useHead(() => ({
   htmlAttrs: {
     lang: locale.value,
     'data-theme': themePreset.value,
+    'data-color-mode': themeMode.value,
   },
   title: t('site.title'),
   meta: [

@@ -23,9 +23,7 @@ body {
   line-height: 1.6;
   color: var(--color-text);
   background-color: var(--color-bg);
-  background-image:
-    linear-gradient(rgba(10, 37, 64, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 37, 64, 0.02) 1px, transparent 1px);
+  background-image: var(--page-grid-pattern);
   background-size: 40px 40px;
   min-height: 100vh;
 }

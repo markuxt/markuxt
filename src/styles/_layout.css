@@ -23,9 +23,7 @@ body {
   line-height: 1.6;
   color: var(--color-text);
   background-color: var(--color-bg);
-  background-image:
-    linear-gradient(rgba(10, 37, 64, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 37, 64, 0.02) 1px, transparent 1px);
+  background-image: var(--page-grid-pattern);
   background-size: 40px 40px;
   min-height: 100vh;
 }
@@ -160,7 +158,7 @@ ol li::before {
   width: 0.3em;
   height: 0.55em;
   margin-top: -0.1em;
-  border: solid #fff;
+  border: solid var(--color-on-secondary);
   border-width: 0 0.16em 0.16em 0;
   transform: rotate(45deg);
 }

@@ -135,7 +135,7 @@ const moreKeywords = computed(() => {
 
 .badge-accent {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-on-accent);
 }
 
 .publication-card__title {
@@ -204,7 +204,7 @@ const moreKeywords = computed(() => {
 
 .publication-card__keyword:hover {
   background: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
 }
 
 .publication-card__keyword-more {
@@ -222,7 +222,7 @@ const moreKeywords = computed(() => {
 
 .publication-card__keyword-more:hover {
   background: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
 }
 
 .publication-card__link {
@@ -239,7 +239,7 @@ const moreKeywords = computed(() => {
 
 .publication-card__link:hover {
   background: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
   transform: scale(1.1);
 }
 </style>

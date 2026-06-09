@@ -131,7 +131,7 @@ const memberLink = computed(() => {
   width: 100%;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
 }
 
 .member-card__image {
@@ -152,7 +152,7 @@ const memberLink = computed(() => {
   left: 0;
   right: 0;
   padding: var(--spacing-md);
-  background: linear-gradient(transparent, rgba(10, 37, 64, 0.9));
+  background: linear-gradient(transparent, var(--surface-media-overlay));
   display: flex;
   gap: var(--spacing-sm);
   opacity: 0;

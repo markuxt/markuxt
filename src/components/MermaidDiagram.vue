@@ -11,6 +11,8 @@
 const props = defineProps<{ code: string }>()
 
 const svg = ref('')
+let observer: MutationObserver | null = null
+let media: MediaQueryList | null = null
 
 // A unique id per diagram avoids mermaid's internal id collisions when
 // multiple diagrams render on the same page.
@@ -21,6 +23,8 @@ async function renderDiagram() {
   try {
     // Wait for fonts so mermaid measures text correctly
     await document.fonts.ready
+    const styles = getComputedStyle(document.documentElement)
+    const readVar = (name: string) => styles.getPropertyValue(name).trim()
 
     const mermaid = (await import('mermaid')).default
     mermaid.initialize({
@@ -30,10 +34,10 @@ async function renderDiagram() {
       fontFamily: 'var(--font-body), sans-serif',
       htmlLabels: true,
       themeVariables: {
-        primaryColor: '#e6f7fb',
-        primaryBorderColor: '#009bc1',
-        primaryTextColor: '#0a2540',
-        lineColor: '#64748b',
+        primaryColor: readVar('--mermaid-node-bg'),
+        primaryBorderColor: readVar('--mermaid-node-border'),
+        primaryTextColor: readVar('--mermaid-node-text'),
+        lineColor: readVar('--mermaid-line'),
         fontSize: '15px',
       },
       flowchart: {
@@ -50,8 +54,31 @@ async function renderDiagram() {
 }
 
 // Mermaid touches the DOM, so only run in the browser after mount.
-onMounted(renderDiagram)
+onMounted(() => {
+  renderDiagram()
+
+  const root = document.documentElement
+  observer = new MutationObserver(() => {
+    renderDiagram()
+  })
+
+  observer.observe(root, {
+    attributes: true,
+    attributeFilter: ['data-theme', 'data-color-mode'],
+  })
+
+  media = window.matchMedia('(prefers-color-scheme: dark)')
+  media.addEventListener('change', handleSchemeChange)
+})
+
 watch(() => props.code, renderDiagram)
+
+const handleSchemeChange = () => renderDiagram()
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  media?.removeEventListener('change', handleSchemeChange)
+})
 </script>
 
 <style scoped>

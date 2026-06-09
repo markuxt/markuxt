@@ -38,12 +38,12 @@
     var(--color-accent) 0%,
     var(--color-secondary) 100%
   );
-  color: white;
+  color: var(--color-on-accent);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -5px rgba(0, 217, 255, 0.4);
+  box-shadow: var(--accent-shadow);
 }
 
 .btn-secondary {
@@ -53,8 +53,8 @@
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--surface-brand);
+  color: var(--color-on-brand);
 }
 
 /* Cards */
@@ -83,11 +83,12 @@
   line-height: 1;
   border-radius: var(--radius-full);
   background-color: var(--color-secondary);
-  color: white;
+  color: var(--color-on-secondary);
 }
 
 .badge-accent {
   background-color: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .badge-muted {

@@ -35,7 +35,7 @@
         <!-- Description -->
         <div v-if="project.body || project.description" class="project-section animate-fade-in-up delay-200">
           <div class="project-section__header">
-            <FileStaff class="icon-inline" theme="outline" :size="20" fill="white" :stroke-width="2.8" />
+            <FileStaff class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('projects.aboutProject') }}</h3>
           </div>
           <div class="project-section__body project-section__body--content">
@@ -169,7 +169,7 @@ useHead({
   height: 120px;
   bottom: 20%;
   left: 5%;
-  background: var(--color-primary);
+  background: var(--surface-brand);
   opacity: 0.08;
   animation-delay: 2.5s;
 }
@@ -201,9 +201,9 @@ useHead({
 }
 
 .project__back:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--surface-brand);
+  border-color: var(--surface-brand);
+  color: var(--color-on-brand);
   transform: translateX(-3px);
 }
 
@@ -249,23 +249,23 @@ useHead({
 }
 
 .badge-ongoing {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--status-ongoing-bg);
+  color: var(--status-ongoing-text);
 }
 
 .badge-completed {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--status-completed-bg);
+  color: var(--status-completed-text);
 }
 
 .badge-open {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--status-open-bg);
+  color: var(--status-open-text);
 }
 
 .badge-maintained {
-  background: #ede9fe;
-  color: #5b21b6;
+  background: var(--status-maintained-bg);
+  color: var(--status-maintained-text);
 }
 
 .project-header__name {
@@ -311,15 +311,16 @@ useHead({
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-lg) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-on-brand);
 }
 
 .project-section__header h3 {
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
-  color: white;
+  color: inherit;
   margin: 0;
 }
 
