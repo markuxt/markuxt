@@ -80,6 +80,13 @@ export default defineNuxtConfig({
             cookieKey: 'i18n_locale',
             redirectOn: 'root',
         },
+        // Preserve SSR-detected locale through hydration.
+        // Without this, `resolvedLocale` is empty for no_prefix strategy,
+        // causing a flash: SSR renders the detected locale (e.g. zh-CN),
+        // then the client resets to defaultLocale (en).
+        experimental: {
+            nitroContextDetection: true,
+        },
     },
 
     // Build-time hooks
