@@ -85,8 +85,10 @@ const hasMoreNews = computed(() => latestNews.value.length >= 3)
 const { data: allMembers } = await useAsyncData('home-members', () =>
   queryContent('/members')
     .where({ category: 'staff', _hidden: { $ne: true } })
+    .sort({ order: 1 })
     .limit(4)
-    .where({ _extension: 'md' }).find()
+    .where({ _extension: 'md' })
+    .find()
 )
 
 const featuredMembers = computed(() => {
