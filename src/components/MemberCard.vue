@@ -88,7 +88,10 @@ const imageUrl = computed(() => {
 
   const basePath = config.app.baseURL || ''
   if (!basePath || basePath === '/') return resolved
-  return basePath + resolved
+  // Pass absolute URLs through; otherwise strip the base's trailing slash so
+  // base + '/_markuxt/...' doesn't produce '//_markuxt/...'.
+  if (/^(https?:)?\/\//.test(resolved) || resolved.startsWith('data:')) return resolved
+  return basePath.replace(/\/+$/, '') + resolved
 })
 
 const formattedInterests = computed(() => {

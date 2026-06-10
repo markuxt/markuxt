@@ -242,7 +242,7 @@ html[data-color-mode='dark'] {
   }
 }
 
-html[data-theme='ocean'][data-color-mode='dark'] {
+html[data-theme='seaside'][data-color-mode='dark'] {
   --color-primary: #e8f4ff;
   --color-primary-light: #b7d0e6;
   --color-accent: #67e8f9;
@@ -359,7 +359,7 @@ html[data-theme='slate'][data-color-mode='dark'] {
 }
 
 @media (prefers-color-scheme: dark) {
-  html[data-theme='ocean'][data-color-mode='auto'] {
+  html[data-theme='seaside'][data-color-mode='auto'] {
     --color-primary: #e8f4ff;
     --color-primary-light: #b7d0e6;
     --color-accent: #67e8f9;

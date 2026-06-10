@@ -56,7 +56,7 @@ export default defineNuxtConfig({
     markuxt: {
       // Theme preset - change this value in repo config to switch the site theme
       theme: {
-        preset: 'ocean', // 'ocean' | 'forest' | 'sunset' | 'slate'
+        preset: 'seaside', // 'seaside' | 'forest' | 'sunset' | 'slate'
         mode: 'auto', // 'light' | 'dark' | 'auto'
       },
 

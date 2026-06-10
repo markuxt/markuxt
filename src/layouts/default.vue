@@ -19,7 +19,7 @@ const themePreset = computed(() => {
     return preset
   }
 
-  return 'ocean'
+  return 'seaside'
 })
 
 const themeMode = computed(() => {

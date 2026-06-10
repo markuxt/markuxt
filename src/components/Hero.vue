@@ -100,12 +100,16 @@ const appConfig = useAppConfig()
 const carouselImages = computed((): CarouselImage[] => {
   const images = (appConfig.markuxt as Record<string, any>)?.carousel?.images as CarouselImage[] | undefined
   const basePath = config.app.baseURL || '/'
-  const base = basePath === '/' ? '' : basePath
+  // Strip trailing slash so base + '/images/...' doesn't produce '//images/...'.
+  const base = basePath === '/' ? '' : basePath.replace(/\/+$/, '')
+  // Prefix site-relative paths with the base; pass absolute URLs through unchanged.
+  const withBase = (s: string) =>
+    /^(https?:)?\/\//.test(s) || s.startsWith('data:') ? s : `${base}${s}`
 
   if (!images || images.length === 0) {
     const fallback = (appConfig.markuxt as Record<string, any>)?.carousel?.fallbackImage || '/images/logo.png'
     return [{
-      src: `${base}${fallback}`,
+      src: withBase(fallback),
       alt: t('hero.placeholderAlt'),
       caption: t('hero.placeholderCaption')
     }]
@@ -113,7 +117,7 @@ const carouselImages = computed((): CarouselImage[] => {
 
   return images.map(img => ({
     ...img,
-    src: `${base}${img.src}`
+    src: withBase(img.src)
   }))
 })
 
