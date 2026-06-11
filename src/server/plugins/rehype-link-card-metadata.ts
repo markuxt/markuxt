@@ -9,9 +9,23 @@
 
 // Use ::link{url="https://example.com"} to add a link card in markdown.
 
-const USER_AGENT = 'Mozilla/5.0 (compatible; NuxtLinkCard/1.0; +https://calc1te.github.io/)'
 const FETCH_TIMEOUT_MS = 10_000
 const metadataCache = new Map<string, Promise<LinkCardMetadata>>()
+
+/** Build a polite User-Agent from the site's own contact info (appConfig.markuxt.contact). */
+function buildUserAgent(): string {
+  try {
+    const config = useAppConfig() as { markuxt?: { contact?: { email?: string; externalUrl?: string } } }
+    const contact = config?.markuxt?.contact
+    const site = contact?.externalUrl
+      ? new URL(contact.externalUrl).hostname
+      : 'markuxt-site'
+    const email = contact?.email ?? 'unknown'
+    return `Mozilla/5.0 (compatible; LinkCardBot/1.0; +mailto:${email}; +https://${site})`
+  } catch {
+    return 'Mozilla/5.0 (compatible; LinkCardBot/1.0)'
+  }
+}
 
 interface LinkCardMetadata {
   title: string
@@ -95,7 +109,7 @@ async function fetchMetadata(url: string): Promise<LinkCardMetadata> {
   const task = (async () => {
     const response = await fetch(url, {
       headers: {
-        'user-agent': USER_AGENT,
+        'user-agent': buildUserAgent(),
         accept: 'text/html,application/xhtml+xml',
       },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
