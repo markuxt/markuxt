@@ -1,11 +1,9 @@
 /**
- * Smart locale detection — when the i18n cookie is the default locale,
- * check Accept-Language for a non-default match and update the cookie.
+ * Smart locale detection — only when the i18n cookie is NOT set,
+ * check Accept-Language for a matching locale and set the cookie.
  *
- * This handles the bilingual scenario: OS language is English,
- * but the browser's Accept-Language prefers another locale (e.g. zh-CN).
- * Without this, the i18n module uses the cookie (en) and ignores
- * the user's actual browser preference.
+ * Priority: cookie > Accept-Language > defaultLocale
+ * Once the user has a cookie (even if it's the default), it is never overridden.
  *
  * Runs as Nitro middleware BEFORE @nuxtjs/i18n reads the cookie.
  * Supported locales and default locale are read from the i18n runtime config
@@ -73,8 +71,9 @@ export default defineEventHandler((event) => {
 
   const cookie = getCookie(event, 'i18n_locale')
 
-  // Only intervene when cookie is missing or is the default locale
-  if (cookie && cookie !== defaultLocale) return
+  // Cookie takes priority — if a locale cookie exists, never override it.
+  // Only fall back to Accept-Language when no cookie has been set yet.
+  if (cookie) return
 
   const acceptHeader = getRequestHeader(event, 'accept-language')
   if (!acceptHeader) return
