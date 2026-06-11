@@ -21,8 +21,10 @@
         >
           {{ item.label }}
         </NuxtLink>
-        <LanguageSwitcher />
-        <ColorModeToggle />
+        <div class="header__controls">
+          <LanguageSwitcher />
+          <ColorModeToggle />
+        </div>
       </nav>
 
       <!-- Mobile Menu Button -->
@@ -52,8 +54,10 @@
         >
           {{ item.label }}
         </NuxtLink>
-        <LanguageSwitcher />
-        <ColorModeToggle />
+        <div class="header__mobile-controls">
+          <LanguageSwitcher />
+          <ColorModeToggle />
+        </div>
       </nav>
     </Transition>
   </header>
@@ -63,13 +67,11 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 
 const route = useRoute()
-const config = useRuntimeConfig()
-
-const { t } = useI18n()
 const appConfig = useAppConfig()
+const { t } = useI18n()
 
 const logoSrc = computed(() => {
-  const basePath = config.app.baseURL || '/'
+  const basePath = (useRuntimeConfig().app as { baseURL?: string }).baseURL || '/'
   const base = basePath.endsWith('/') ? basePath : basePath + '/'
   const src = appConfig.markuxt?.logo?.src || '/images/logo.png'
   return base + src.replace(/^\//, '')
@@ -220,6 +222,14 @@ onUnmounted(() => {
   border-radius: 1px;
 }
 
+/* Desktop Controls (Language + Color Mode) */
+.header__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: var(--spacing-sm);
+}
+
 /* Mobile Toggle */
 .header__toggle {
   display: none;
@@ -272,12 +282,21 @@ onUnmounted(() => {
   box-shadow: var(--header-shadow);
 }
 
-.header__mobile-nav .lang-switcher {
+/* .header__mobile-nav .lang-switcher {
+  margin-top: var(--spacing-md);
+} */
+
+.header__mobile-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   margin-top: var(--spacing-md);
 }
 
 .header__mobile-link {
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
+  padding-inline: var(--spacing-md);
+  margin-top: var(--spacing-sm);
   font-size: 1rem;
   font-weight: 500;
   color: var(--color-text);
