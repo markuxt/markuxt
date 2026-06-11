@@ -3,8 +3,6 @@ import { readdirSync, mkdirSync, existsSync, copyFileSync, rmSync } from 'fs'
 import { join, parse, extname, relative, resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
-import { rehypeLinkCardMetadata } from './src/markdown/rehype-link-card-metadata'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -154,16 +152,12 @@ export default defineNuxtConfig({
             remarkPlugins: {
                 'remark-math': {},
             },
-            rehypePlugins: [
-                [
-                    'rehype-katex',
-                    {
-                        output: 'htmlAndMathml',
-                        strict: false,
-                    },
-                ],
-                [rehypeLinkCardMetadata, {}],
-            ],
+            rehypePlugins: {
+                'rehype-katex': {
+                    output: 'htmlAndMathml',
+                    strict: false,
+                },
+            },
         },
     },
 
