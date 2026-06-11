@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const { t } = useI18n()
 
@@ -38,31 +38,32 @@ function toggle() {
   mode.value = mode.value === 'light' ? 'dark' : 'light'
   hasManualPreference.value = true
   localStorage.setItem(STORAGE_KEY, mode.value)
+  document.documentElement.setAttribute('data-color-mode', mode.value)
 }
 
 onMounted(() => {
-  prefersDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
+  // The inline script in nuxt.config.ts already set data-color-mode before
+  // first paint, so read the current value from <html> to stay in sync.
+  const current = document.documentElement.getAttribute('data-color-mode')
+  if (current === 'light' || current === 'dark') {
+    mode.value = current
+  }
 
+  // Track whether the user has an explicit preference in localStorage.
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved === 'light' || saved === 'dark') {
-    mode.value = saved
     hasManualPreference.value = true
-  } else {
-    mode.value = prefersDark.value ? 'dark' : 'light'
   }
+
+  prefersDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     prefersDark.value = e.matches
     if (!hasManualPreference.value) {
       mode.value = e.matches ? 'dark' : 'light'
+      document.documentElement.setAttribute('data-color-mode', mode.value)
     }
   })
-})
-
-watchEffect(() => {
-  if (import.meta.client) {
-    document.documentElement.setAttribute('data-color-mode', mode.value)
-  }
 })
 </script>
 

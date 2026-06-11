@@ -114,7 +114,15 @@ export default defineNuxtConfig({
                 { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
                 { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,100;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800;1,9..144,900&display=swap' },
             ],
-            script: [],
+            script: [
+                // Inline script to set data-color-mode before first paint.
+                // Reads localStorage ('markuxt-color-mode'), falls back to OS preference.
+                // This prevents the FOUC (flash of wrong color mode) that would occur
+                // if we waited for Vue hydration in the ColorModeToggle component.
+                {
+                    innerHTML: '!function(){var e=localStorage.getItem("markuxt-color-mode");document.documentElement.setAttribute("data-color-mode",e==="light"||e==="dark"?e:matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}()',
+                },
+            ],
         },
         pageTransition: { name: 'page', mode: 'out-in' },
         baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
