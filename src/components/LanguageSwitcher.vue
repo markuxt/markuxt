@@ -47,6 +47,8 @@ function getLocaleLabel(code: string): string {
   padding: 4px 10px;
   font-size: 0.75rem;
   font-weight: 600;
+  text-align: center;
+  height: 24px;
   color: var(--color-text-muted);
   background: transparent;
   border: none;

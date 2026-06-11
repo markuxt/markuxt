@@ -71,8 +71,8 @@ watchEffect(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   background: var(--surface-frosted);
   border: 1px solid var(--color-border);
