@@ -9,34 +9,11 @@
 </template>
 
 <script setup lang="ts">
-const appConfig = useAppConfig()
 const { t, locale } = useI18n()
-
-const themePreset = computed(() => {
-  const preset = appConfig.markuxt?.theme?.preset
-
-  if (preset === 'forest' || preset === 'sunset' || preset === 'slate') {
-    return preset
-  }
-
-  return 'seaside'
-})
-
-const themeMode = computed(() => {
-  const mode = appConfig.markuxt?.theme?.mode
-
-  if (mode === 'dark' || mode === 'auto') {
-    return mode
-  }
-
-  return 'light'
-})
 
 useHead(() => ({
   htmlAttrs: {
     lang: locale.value,
-    'data-theme': themePreset.value,
-    'data-color-mode': themeMode.value,
   },
   title: t('site.title'),
   meta: [

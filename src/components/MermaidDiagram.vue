@@ -64,7 +64,7 @@ onMounted(() => {
 
   observer.observe(root, {
     attributes: true,
-    attributeFilter: ['data-theme', 'data-color-mode'],
+    attributeFilter: ['data-color-mode'],
   })
 
   media = window.matchMedia('(prefers-color-scheme: dark)')

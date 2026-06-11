@@ -22,6 +22,7 @@
           {{ item.label }}
         </NuxtLink>
         <LanguageSwitcher />
+        <ColorModeToggle />
       </nav>
 
       <!-- Mobile Menu Button -->
@@ -52,6 +53,7 @@
           {{ item.label }}
         </NuxtLink>
         <LanguageSwitcher />
+        <ColorModeToggle />
       </nav>
     </Transition>
   </header>

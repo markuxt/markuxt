@@ -19,6 +19,20 @@ Markuxt provides a complete theme layer — layouts, pages, components, content 
 - **Mermaid diagrams** — First-class support with proper font loading and overflow handling.
 - **LaTeX / KaTeX** — Math rendering via `remark-math` + `rehype-katex`.
 - **404 page** — Custom error page with header and footer preserved.
+- **Dark / Light mode** — Built-in toggle button in the header. Defaults to the OS preference; the user's choice is persisted to `localStorage`.
+
+## Theme Templates
+
+Markuxt defaults to the **Seaside** theme (ocean blue/teal palette). Three additional themes are available as separate template repositories — each extends markuxt and applies its own CSS color overrides:
+
+| Theme | Palette | Demo |
+|-------|---------|------|
+| **Seaside** | Ocean blue / teal | [markuxt.github.io/markuxt-template-seaside](https://markuxt.github.io/markuxt-template-seaside) |
+| **Forest** | Nature green | [markuxt.github.io/markuxt-template-forest](https://markuxt.github.io/markuxt-template-forest) |
+| **Sunset** | Warm amber / terracotta | [markuxt.github.io/markuxt-template-sunset](https://markuxt.github.io/markuxt-template-sunset) |
+| **Slate** | Cool gray / steel blue | [markuxt.github.io/markuxt-template-slate](https://markuxt.github.io/markuxt-template-slate) |
+
+To start a new site with a specific theme, clone the corresponding template repo and follow its README. The theme is applied entirely through CSS custom properties in `styles/_theme.css` — no build-time configuration needed.
 
 ## Architecture
 
@@ -54,12 +68,6 @@ Consuming sites configure Markuxt through `appConfig.markuxt` in their `nuxt.con
 export default defineNuxtConfig({
   appConfig: {
     markuxt: {
-      // Theme preset - change this value in repo config to switch the site theme
-      theme: {
-        preset: 'seaside', // 'seaside' | 'forest' | 'sunset' | 'slate'
-        mode: 'auto', // 'light' | 'dark' | 'auto'
-      },
-
       // Logo image path
       logo: {
         src: '/images/logo.png',
