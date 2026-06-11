@@ -29,7 +29,7 @@
       <!-- Publication Content -->
       <div class="publication-content">
         <!-- Abstract -->
-        <div v-if="publication.abstract || publication.body" class="publication-section animate-fade-in-up delay-200">
+        <div v-if="hasAbstract" class="publication-section animate-fade-in-up delay-200">
           <div class="publication-section__header">
             <FileStaff class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('publications.abstract') }}</h3>
@@ -116,6 +116,12 @@ const publication = computed(() => publicationData.value)
 
 // Provide content ID for ProseImg/ProseVideo to resolve relative asset paths
 provide('contentId', computed(() => publication.value?._id || ''))
+
+const hasAbstract = computed(() => {
+  if (publication.value?.abstract) return true
+  if (publication.value?.body?.children?.length > 0) return true
+  return false
+})
 
 const formattedAuthors = computed(() => {
   if (!publication.value?.authors) return ''
