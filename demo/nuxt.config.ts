@@ -25,7 +25,7 @@ export default defineNuxtConfig({
         langDir: '../src/i18n',
     },
 
-    // Site-specific head — TODO: replace /images/favicon.png with your own
+    // Site-specific head
     app: {
         head: {
             link: [{ rel: 'icon', type: 'image/png', href: '/images/favicon.png' }],
@@ -52,51 +52,54 @@ export default defineNuxtConfig({
         },
     },
 
-    // Runtime app config (markuxt theme options) — customize everything below for your site.
+    // Register src/public/ as a static asset directory so that synced content
+    // assets (/_markuxt/*) are served correctly even though srcDir is '.'.
+    nitro: {
+        publicAssets: [{ dir: resolve(process.cwd(), 'src', 'public') }],
+    },
+
+    // Runtime app config (markuxt theme options)
     // Field contract: see node_modules/@markuxt/markuxt/app.config.d.ts
     appConfig: {
         markuxt: {
-            // TODO: replace with your institution/lab logo (place under src/public/images/)
             logo: {
                 src: '/images/logo.png',
             },
             navigation: [
                 { to: '/', labelKey: 'nav.home' },
+                { to: '/projects', labelKey: 'nav.projects' },
                 { to: '/members', labelKey: 'nav.members' },
                 { to: '/publications', labelKey: 'nav.publications' },
-                { to: '/projects', labelKey: 'nav.projects' },
                 { to: '/positions', labelKey: 'nav.positions' },
                 { to: '/news', labelKey: 'nav.news' },
             ],
-            // TODO: replace with your lab's contact email and institution URL
             contact: {
-                email: 'contact@your-lab.edu',
-                externalUrl: 'https://your-university.edu',
-                externalLabelKey: 'footer.universityLink',
+                email: '',
+                externalUrl: 'https://github.com/markuxt/markuxt',
+                externalLabelKey: 'footer.githubLink',
             },
-            // TODO: replace carousel images with your own (place under src/public/images/)
             carousel: {
                 fallbackImage: '/images/logo.png',
                 images: [
                     {
                         src: '/images/logo.png',
-                        alt: 'Lab logo',
-                        caption: 'Your Lab at Your University',
+                        alt: 'Markuxt Logo',
+                        caption: 'Markdown-first Academic Portal Framework',
                     },
                     {
                         src: '/images/logo.png',
-                        alt: 'Team photo',
-                        caption: 'Meet our team!',
+                        alt: 'Markuxt Themes',
+                        caption: 'Built-in Themes: Seaside, Forest, Sunset, Slate',
                     },
                 ],
             },
-            // Homepage research-area cards.
+            // Homepage feature-highlight cards.
             // Icons are registered in ./plugins/icons.ts; labels live in src/i18n/*.json.
             researchAreas: [
-                { icon: 'IconSearch', titleKey: 'research.area1', descKey: 'research.area1Desc' },
-                { icon: 'IconRobot', titleKey: 'research.area2', descKey: 'research.area2Desc' },
-                { icon: 'IconNeural', titleKey: 'research.area3', descKey: 'research.area3Desc' },
-                { icon: 'IconAssemblyLine', titleKey: 'research.area4', descKey: 'research.area4Desc' },
+                { icon: 'IconCode', titleKey: 'research.area1', descKey: 'research.area1Desc' },
+                { icon: 'IconFileCode', titleKey: 'research.area2', descKey: 'research.area2Desc' },
+                { icon: 'IconTranslate', titleKey: 'research.area3', descKey: 'research.area3Desc' },
+                { icon: 'IconTheme', titleKey: 'research.area4', descKey: 'research.area4Desc' },
             ],
         },
     },

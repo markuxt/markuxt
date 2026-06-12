@@ -1,8 +1,8 @@
 {
-  "name": "control-system-lab-homepage",
-  "version": "3.0.0",
-  "private": true,
+  "name": "markuxt-portal",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Markuxt project portal — a live demo of the Markdown-first academic portal framework",
   "scripts": {
     "dev": "TMPDIR=/tmp nuxt dev # Set TMPDIR to avoid potential issues with vite build socket https://github.com/nuxt/nuxt/issues/35253",
     "build": "nuxt build",

@@ -1,23 +1,31 @@
 ---
-# Demo news — a VISIBLE example so the News page renders out of the box.
-# Replace or delete this file once you add real news.
-
-title: Welcome to Your Lab Website
-date: 2024-01-01
+title: Introducing Markuxt
+date: 2026-06-12
 tags:
   - announcement
-  - website
-description: Welcome to our new website, built with the markuxt template.
+  - release
+description: Meet Markuxt, a Markdown-first academic portal framework powered by Nuxt 3.
+image: /images/logo.png
 ---
 
-## Welcome to ***Your Lab Name***
+## Welcome to Markuxt
 
-This is a demo news post so the **News** page renders out of the box. Replace it with your real announcements, events, and research updates.
+We are excited to introduce **Markuxt** — a Markdown-first academic portal framework designed for laboratories, research groups, and knowledge communities.
+
+Markuxt provides a complete theme layer — layouts, pages, components, content transformers, and i18n — so that your site only needs to provide **content** and **configuration**.
+
+### Key Features
+
+- **Markdown-driven content** — Members, publications, projects, positions, and news are all authored in Markdown with YAML frontmatter
+- **Built-in i18n** — First-class internationalization support. Ships with English and Chinese; add any language
+- **Dark/Light mode** — Built-in toggle with OS preference detection
+- **LaTeX & Mermaid** — Math rendering via KaTeX and first-class diagram support
+- **Theme presets** — Seaside, Forest, Sunset, and Slate palettes with CSS custom properties
+- **Responsive design** — Looks great on every device
+- **Nuxt 3 powered** — Deploys anywhere: Vercel, Netlify, Cloudflare Pages, or your own server
+
+### Get Started
+
+Clone the repository and start building your academic portal today:
 
 ::github{repo="markuxt/markuxt"}
-
-To customize your site:
-
-- Edit UI strings in `src/i18n/en.json` and `src/i18n/zh-CN.json`
-- Edit site config (logo, contact, carousel, research areas) in `nuxt.config.ts`
-- Add your content under `src/members/`, `src/news/`, `src/publications/`, `src/projects/`, `src/positions/`

@@ -1,11 +1,11 @@
-import Search from '@icon-park/vue-next/es/icons/Search'
-import Robot from '@icon-park/vue-next/es/icons/Robot'
-import Neural from '@icon-park/vue-next/es/icons/Neural'
-import AssemblyLine from '@icon-park/vue-next/es/icons/AssemblyLine'
+import Code from '@icon-park/vue-next/es/icons/Code'
+import FileCode from '@icon-park/vue-next/es/icons/FileCode'
+import Translate from '@icon-park/vue-next/es/icons/Translate'
+import Theme from '@icon-park/vue-next/es/icons/Theme'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('IconSearch', Search)
-  nuxtApp.vueApp.component('IconRobot', Robot)
-  nuxtApp.vueApp.component('IconNeural', Neural)
-  nuxtApp.vueApp.component('IconAssemblyLine', AssemblyLine)
+  nuxtApp.vueApp.component('IconCode', Code)
+  nuxtApp.vueApp.component('IconFileCode', FileCode)
+  nuxtApp.vueApp.component('IconTranslate', Translate)
+  nuxtApp.vueApp.component('IconTheme', Theme)
 })
