@@ -20,7 +20,8 @@
     "src/"
   ],
   "scripts": {
-    "dev": "nuxt dev",
+    "dev": "pnpm --filter ./demo dev",
+    "dev:self": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "pack:local": "pnpm pack --pack-destination /tmp/markuxt-dist",
