@@ -4,12 +4,13 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**'              # Source files
-      - 'nuxt.config.ts'     # Nuxt configuration
-      - 'package.json'        # Package configuration
-      - 'pnpm-lock.yaml'      # Lock file
-      - 'tsconfig.json'      # TypeScript configuration
-      - '.github/workflows/deploy.yml' # Workflow file itself
+      - 'src/**'
+      - 'demo/**'
+      - 'nuxt.config.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig.json'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 # Sets permissions of GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -39,7 +40,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
 
       - name: Install dependencies
@@ -55,15 +56,15 @@ jobs:
             echo "url=/${REPO}/" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Generate static site
-        run: pnpm run generate
+      - name: Generate demo site
+        run: pnpm --filter ./demo generate
         env:
           NUXT_PUBLIC_BASE_URL: ${{ steps.base_url.outputs.url }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: .output/public
+          path: demo/.output/public
 
   deploy:
     runs-on: ubuntu-latest
