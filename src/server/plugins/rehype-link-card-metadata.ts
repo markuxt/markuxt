@@ -79,13 +79,39 @@ function toAbsoluteUrl(value: string, pageUrl: string): string {
   }
 }
 
+const HTML_NAMED_ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  copy: '©',
+  reg: '®',
+  trade: '™',
+  mdash: '—',
+  ndash: '–',
+  hellip: '…',
+  lsquo: '‘',
+  rsquo: '’',
+  ldquo: '“',
+  rdquo: '”',
+}
+
+function decodeCodePoint(code: number): string {
+  if (!Number.isFinite(code) || code < 0 || code > 0x10ffff) return ''
+  try {
+    return String.fromCodePoint(code)
+  } catch {
+    return ''
+  }
+}
+
 function decodeHtml(value: string): string {
   return value
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => decodeCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => decodeCodePoint(Number.parseInt(dec, 10)))
+    .replace(/&([a-zA-Z][a-zA-Z0-9]*);/g, (_, name) => HTML_NAMED_ENTITIES[name] ?? `&${name};`)
     .trim()
 }
 
