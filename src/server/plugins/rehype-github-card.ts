@@ -202,19 +202,42 @@ export default defineNitroPlugin((nitroApp) => {
     collectGithubCards(file.body, githubCards)
     if (!githubCards.length) return
 
-    const tasks = githubCards.map(async ({ node, index, parent }) => {
-      const repo = node.props!.repo as string
-      let metadata = createFallbackMetadata(repo)
+    // Fetch metadata for every card in parallel.
+    const results = await Promise.allSettled(
+      githubCards.map(async ({ node }) => {
+        const repo = node.props!.repo as string
+        try {
+          return await fetchGithubMetadata(repo)
+        } catch (error) {
+          console.warn(`[GITHUB-CARD] Failed to fetch metadata for ${repo}:`, error)
+          return createFallbackMetadata(repo)
+        }
+      }),
+    )
 
-      try {
-        metadata = await fetchGithubMetadata(repo)
-      } catch (error) {
-        console.warn(`[GITHUB-CARD] Failed to fetch metadata for ${repo}:`, error)
-      }
-
-      parent.children![index] = createGithubCardNode(metadata)
+    // Apply replacements grouped by parent. Within each parent we splice in
+    // descending index order so earlier indices stay valid.
+    //
+    // MDC parses `::github{repo="..."}` as a *container* block component, so
+    // any markdown written after it (until the component's closing fence)
+    // becomes children of the github node. We must re-insert those absorbed
+    // children as siblings after the card, otherwise the trailing content
+    // would vanish when the node is replaced.
+    const groups = new Map<ContentNode, { index: number; card: ContentNode; absorbed: ContentNode[] }[]>()
+    results.forEach((res, i) => {
+      if (res.status !== 'fulfilled') return
+      const { node, index, parent } = githubCards[i]
+      const absorbed = node.children && node.children.length > 0 ? node.children : []
+      const arr = groups.get(parent) ?? []
+      arr.push({ index, card: createGithubCardNode(res.value), absorbed })
+      groups.set(parent, arr)
     })
 
-    await Promise.allSettled(tasks)
+    for (const [parent, arr] of groups) {
+      arr.sort((a, b) => b.index - a.index)
+      for (const { index, card, absorbed } of arr) {
+        parent.children!.splice(index, 1, card, ...absorbed)
+      }
+    }
   })
 })

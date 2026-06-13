@@ -13,6 +13,8 @@ keywords:
   - framework
 ---
 
+::github{repo="markuxt/markuxt"}
+
 ## Abstract
 
 Markuxt is an open-source framework that enables academic teams to build complete web portals using Markdown as the primary content format. Built on Nuxt 3, it provides a full theme layer including layouts, components, content transformers, and internationalization support.
