@@ -201,19 +201,37 @@ export default defineNitroPlugin((nitroApp) => {
     collectLinks(file.body, links)
     if (!links.length) return
 
-    const tasks = links.map(async ({ node, index, parent }) => {
-      const url = node.props!.url as string
-      let metadata = createFallbackMetadata(url)
+    // Fetch metadata for every link in parallel.
+    const results = await Promise.allSettled(
+      links.map(async ({ node }) => {
+        const url = node.props!.url as string
+        try {
+          return { url, metadata: await fetchMetadata(url) }
+        } catch (error) {
+          console.warn(`[LINK-CARD] Failed to fetch metadata for ${url}:`, error)
+          return { url, metadata: createFallbackMetadata(url) }
+        }
+      }),
+    )
 
-      try {
-        metadata = await fetchMetadata(url)
-      } catch (error) {
-        console.warn(`[LINK-CARD] Failed to fetch metadata for ${url}:`, error)
-      }
-
-      parent.children![index] = createCardNode(url, metadata)
+    // Apply replacements grouped by parent, splicing in descending index order
+    // so earlier indices stay valid. Re-insert any children MDC absorbed into
+    // the block component as siblings after the card (same fix as github-card).
+    const groups = new Map<ContentNode, { index: number; card: ContentNode; absorbed: ContentNode[] }[]>()
+    results.forEach((res, i) => {
+      if (res.status !== 'fulfilled') return
+      const { node, index, parent } = links[i]
+      const absorbed = node.children && node.children.length > 0 ? node.children : []
+      const arr = groups.get(parent) ?? []
+      arr.push({ index, card: createCardNode(res.value.url, res.value.metadata), absorbed })
+      groups.set(parent, arr)
     })
 
-    await Promise.allSettled(tasks)
+    for (const [parent, arr] of groups) {
+      arr.sort((a, b) => b.index - a.index)
+      for (const { index, card, absorbed } of arr) {
+        parent.children!.splice(index, 1, card, ...absorbed)
+      }
+    }
   })
 })
