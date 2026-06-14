@@ -1,7 +1,7 @@
 <template>
   <div class="error-page">
     <div class="error-page__content">
-      <h1 class="error-page__code">404</h1>
+      <h1 class="error-page__code">{{ statusCode }}</h1>
       <h2 class="error-page__title">{{ t('error.notFound') }}</h2>
       <p class="error-page__description">{{ t('error.notFoundDesc') }}</p>
       <NuxtLink to="/" class="btn btn-primary">{{ t('error.backHome') }}</NuxtLink>
@@ -10,10 +10,36 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+import type { NuxtError } from '#app'
+
+const props = defineProps<{
+  error: NuxtError
+}>()
+
+const statusCode = computed(() => props.error?.statusCode || 404)
+
+// The error page can render before vue-i18n is installed — e.g. an error during
+// app initialization, when Nuxt recovers into the error boundary. `useI18n()`
+// throws NOT_INSTALLED in that case and would blank the entire site, so access
+// the instance defensively via the Nuxt app and fall back to plain English.
+const nuxtApp = useNuxtApp()
+const FALLBACK: Record<string, string> = {
+  'error.notFound': 'Page Not Found',
+  'error.notFoundDesc': 'The page you are looking for could not be found.',
+  'error.backHome': 'Back to Home',
+}
+const t = (key: string): string => {
+  try {
+    const i18n = nuxtApp.$i18n as { t?: (key: string) => string } | undefined
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key)
+  } catch {
+    // ignore — fall through to English fallback
+  }
+  return FALLBACK[key] ?? key
+}
 
 useHead({
-  title: '404 - Page Not Found'
+  title: () => `${statusCode.value} - Page Not Found`,
 })
 </script>
 

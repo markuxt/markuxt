@@ -122,6 +122,16 @@ export default defineNuxtConfig({
                 {
                     innerHTML: '!function(){var e=localStorage.getItem("markuxt-color-mode");document.documentElement.setAttribute("data-color-mode",e==="light"||e==="dark"?e:matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}()',
                 },
+                // Inline script to prevent a flash of the default language on static
+                // hosting. Static HTML is prerendered in the default locale (en), but
+                // i18n switches to the user's saved locale (i18n_locale cookie) during
+                // client hydration. If the saved locale differs from the prerendered
+                // <html lang>, hide the page until i18n applies the correct locale —
+                // avoiding both the language flash and the layout reflow that shifts
+                // the language switcher. Revealed by plugins/i18n-fouc.client.ts.
+                {
+                    innerHTML: '!function(){try{var d=document.documentElement,p=d.lang||"en",c=document.cookie.match(/(?:^|; )i18n_locale=([^;]+)/),s=c?decodeURIComponent(c[1]):"";if(s&&s!==p){d.style.visibility="hidden";setTimeout(function(){d.style.visibility=""},2e3)}}catch(e){}}()',
+                },
             ],
         },
         pageTransition: { name: 'page', mode: 'out-in' },

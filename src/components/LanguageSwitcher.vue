@@ -4,8 +4,8 @@
       v-for="loc in availableLocales"
       :key="loc.code"
       class="lang-switcher__btn"
-      :class="{ 'lang-switcher__btn--active': loc.code === locale }"
-      @click="setLocale(loc.code as 'en' | 'zh-CN')"
+      :class="{ 'lang-switcher__btn--active': loc.code === currentLocale }"
+      @click="switchLocale(loc.code)"
     >
       {{ getLocaleLabel(loc.code) }}
     </button>
@@ -13,11 +13,24 @@
 </template>
 
 <script setup lang="ts">
-const { locale, locales, setLocale } = useI18n()
+// Read the locale from the GLOBAL i18n instance rather than `useI18n()`.
+// On static hosting with `no_prefix`, the local composer that `useI18n()`
+// returns doesn't inherit the client-applied locale reliably — its `locale`
+// ref stays at the prerendered default while the global (which `t()` falls
+// back to) has switched. `nuxtApp.$i18n` is the global instance, so the
+// switcher's active state matches the locale actually being rendered.
+const i18n = useNuxtApp().$i18n as {
+  locale: { value: string }
+  locales: { value: Array<{ code: string; name: string }> }
+  setLocale: (code: string) => void
+}
 
-const availableLocales = computed(() =>
-  (locales.value as Array<{ code: string; name: string }>)
-)
+const availableLocales = computed(() => i18n.locales.value ?? [])
+const currentLocale = computed(() => i18n.locale.value)
+
+function switchLocale(code: string) {
+  i18n.setLocale(code)
+}
 
 const LABELS: Record<string, string> = {
   'en': 'EN',
