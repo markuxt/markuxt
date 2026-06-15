@@ -48,9 +48,14 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-3xl) var(--spacing-lg);
+  padding: var(--spacing-3xl, 4rem) var(--spacing-lg, 1.5rem);
   text-align: center;
-  min-height: 50vh;
+  /* Fill the whole viewport so the content is vertically centered in the
+     *entire* window, not just the top half. (Falls back gracefully if the
+     theme tokens ever fail to load.) */
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
 }
 
 .error-page__content {

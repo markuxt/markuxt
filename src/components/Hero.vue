@@ -99,7 +99,7 @@ const appConfig = useAppConfig()
 // Carousel images from app.config — synchronous, SSR-safe
 const carouselImages = computed((): CarouselImage[] => {
   const images = (appConfig.markuxt as Record<string, any>)?.carousel?.images as CarouselImage[] | undefined
-  const basePath = config.app.baseURL || '/'
+  const basePath = (config.app as { baseURL?: string }).baseURL || '/'
   // Strip trailing slash so base + '/images/...' doesn't produce '//images/...'.
   const base = basePath === '/' ? '' : basePath.replace(/\/+$/, '')
   // Prefix site-relative paths with the base; pass absolute URLs through unchanged.

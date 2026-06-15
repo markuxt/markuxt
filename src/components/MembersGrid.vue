@@ -40,25 +40,21 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useI18n()
+// Categories + ordering come from appConfig (nuxt.config.ts), with a fallback.
+const { categoryKeys, categoryName } = useMemberCategories()
 
-// Category display names
-const categoryNames = computed(() => ({
-  staff: t('members.staff'),
-  'research-students': t('members.researchStudents'),
-  'research-assistants': t('members.researchAssistants'),
-  alumni: t('members.alumni')
-}))
-
-// Category sort order
-const categoryOrder = ['staff', 'research-students', 'research-assistants', 'alumni']
-
-// Sort members by category order, then by order field
+// Sort members by category order (unknown categories last), then by order field
 const sortedMembers = computed(() => {
+  const order = categoryKeys.value
+  const rank = (cat: string | undefined) => {
+    const i = order.indexOf(cat || '')
+    return i === -1 ? order.length : i
+  }
   return [...props.members].sort((a, b) => {
-    const catOrderA = categoryOrder.indexOf(a.category || '')
-    const catOrderB = categoryOrder.indexOf(b.category || '')
-    if (catOrderA !== catOrderB) {
-      return catOrderA - catOrderB
+    const catRankA = rank(a.category)
+    const catRankB = rank(b.category)
+    if (catRankA !== catRankB) {
+      return catRankA - catRankB
     }
     return (a.order || 999) - (b.order || 999)
   })
@@ -72,22 +68,27 @@ const categorizedMembers = computed(() => {
     }]
   }
 
-  const categories: Record<string, Member[]> = {}
+  const groups: Record<string, Member[]> = {}
+  const fallbackCat = categoryKeys.value[0] || ''
 
   for (const member of sortedMembers.value) {
-    const cat = member.category || 'staff'
-    if (!categories[cat]) {
-      categories[cat] = []
+    // Known categories group under themselves; anything else falls back to the
+    // first category so no member is silently dropped from a grouped view.
+    const cat = member.category && categoryKeys.value.includes(member.category)
+      ? member.category
+      : fallbackCat
+    if (!groups[cat]) {
+      groups[cat] = []
     }
-    categories[cat].push(member)
+    groups[cat].push(member)
   }
 
-  // Return categories in predefined order
-  return categoryOrder
-    .filter(key => categories[key] && categories[key].length > 0)
+  // Return groups in configured order, skipping empty ones.
+  return categoryKeys.value
+    .filter(key => groups[key] && groups[key].length > 0)
     .map(key => ({
-      name: categoryNames.value[key] || key,
-      members: categories[key]
+      name: categoryName(key),
+      members: groups[key]
     }))
 })
 </script>

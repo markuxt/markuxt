@@ -5,7 +5,7 @@ title: Software Engineer
 # email: ''
 # scholar: https://github.com/hnrobert
 image: assets/hnrobert.jpg
-category: staff
+category: core-team
 order: 1
 interests:
   - Robert He

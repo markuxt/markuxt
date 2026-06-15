@@ -81,10 +81,11 @@ const { data: allNews } = await useAsyncData('home-news', () =>
 const latestNews = computed(() => allNews.value || [])
 const hasMoreNews = computed(() => latestNews.value.length >= 3)
 
-// Fetch featured members
+// Fetch featured members — category-agnostic (categories are configurable via
+// appConfig.markuxt.members.categories), so rank purely by the `order` field.
 const { data: allMembers } = await useAsyncData('home-members', () =>
   queryContent('/members')
-    .where({ category: 'staff', _hidden: { $ne: true } })
+    .where({ _hidden: { $ne: true } })
     .sort({ order: 1 })
     .limit(4)
     .where({ _extension: 'md' })

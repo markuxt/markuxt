@@ -83,6 +83,7 @@
         "titlebar",
         "Umea",
         "unmodeled",
+        "unref",
         "vars",
         "wanghao",
         "Wanli",
@@ -98,6 +99,6 @@
         "no-inline-html": false
     },
     "i18n-ally.localesPaths": [
-        "src/content/i18n"
+        "demo/src/i18n"
     ]
 }

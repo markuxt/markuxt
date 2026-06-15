@@ -161,9 +161,10 @@ const filteredProjects = computed(() => {
 const getProjectImage = (imagePath?: string, contentId?: string) => {
   const resolved = resolveContentImage(imagePath, contentId)
   if (!resolved) return ''
-  const basePath = config.app.baseURL || ''
+  const basePath = (config.app as { baseURL?: string }).baseURL || ''
   if (!basePath || basePath === '/') return resolved
-  return basePath + resolved
+  if (/^(https?:)?\/\//.test(resolved) || resolved.startsWith('data:')) return resolved
+  return basePath.replace(/\/+$/, '') + resolved
 }
 
 useHead({

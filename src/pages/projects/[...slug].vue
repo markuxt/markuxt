@@ -95,9 +95,10 @@ provide('contentId', computed(() => project.value?._id || ''))
 const projectImage = computed(() => {
   const resolved = resolveContentImage(project.value?.image, project.value?._id)
   if (!resolved) return ''
-  const basePath = config.app.baseURL || ''
+  const basePath = (config.app as { baseURL?: string }).baseURL || ''
   if (!basePath || basePath === '/') return resolved
-  return basePath + resolved
+  if (/^(https?:)?\/\//.test(resolved) || resolved.startsWith('data:')) return resolved
+  return basePath.replace(/\/+$/, '') + resolved
 })
 
 useHead({

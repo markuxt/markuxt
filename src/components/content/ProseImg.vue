@@ -18,7 +18,7 @@ const refinedSrc = computed(() => {
   try {
     const resolved = resolveContentImage(props.src, unref(contentId))
     if (!resolved) return ''
-    const basePath = config.app.baseURL || ''
+    const basePath = (config.app as { baseURL?: string }).baseURL || ''
     if (!basePath || basePath === '/') return resolved
     return basePath.replace(/\/$/, '') + resolved
   } catch {

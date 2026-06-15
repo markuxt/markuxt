@@ -37,7 +37,7 @@
         </div>
 
         <div class="profile-header__info">
-          <span class="profile-header__badge">{{ member.category || t('members.teamMember') }}</span>
+          <span class="profile-header__badge">{{ categoryName(member.category) }}</span>
           <h1 class="profile-header__name">{{ member.name }}</h1>
           <p class="profile-header__title">{{ member.title || member.role }}</p>
         </div>
@@ -126,6 +126,7 @@ import ArrowRight from '@icon-park/vue-next/es/icons/ArrowRight'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
+const { categoryName } = useMemberCategories()
 const route = useRoute()
 const config = useRuntimeConfig()
 
@@ -190,9 +191,12 @@ provide('contentId', computed(() => member.value?._id || ''))
 const memberImage = computed(() => {
   const resolved = resolveContentImage(member.value?.image, member.value?._id)
   if (!resolved) return ''
-  const basePath = config.app.baseURL || ''
+  const basePath = (config.app as { baseURL?: string }).baseURL || ''
   if (!basePath || basePath === '/') return resolved
-  return basePath + resolved
+  // Pass absolute/data URLs through; otherwise strip the base's trailing slash
+  // so base + '/_markuxt/...' doesn't produce '//_markuxt/...'.
+  if (/^(https?:)?\/\//.test(resolved) || resolved.startsWith('data:')) return resolved
+  return basePath.replace(/\/+$/, '') + resolved
 })
 
 useHead({
