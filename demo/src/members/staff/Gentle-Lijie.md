@@ -5,7 +5,7 @@ title: Software Engineer
 # email: ''
 # scholar: ''
 image: assets/Gentle-Lijie.png
-category: staff
+category: core-team
 order: 3
 interests:
   - Lijie Zhou

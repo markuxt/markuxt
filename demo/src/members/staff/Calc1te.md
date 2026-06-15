@@ -5,7 +5,7 @@ title: Software Engineer
 # email: ''
 # scholar: ''
 image: assets/Calc1te.jpg
-category: staff
+category: core-team
 order: 2
 interests:
   - 風吹けばカルシ

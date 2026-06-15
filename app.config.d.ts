@@ -26,6 +26,16 @@ declare module 'nuxt/schema' {
         titleKey: string
         descKey: string
       }>
+      members?: {
+        // Member categories. `key` matches the `category:` field in member
+        // markdown frontmatter; `labelKey` is the i18n key for the display
+        // name. Array order = display / filter / sort order. There are no
+        // built-in defaults — declare your categories here.
+        categories?: Array<{
+          key: string
+          labelKey: string
+        }>
+      }
     }
   }
 }

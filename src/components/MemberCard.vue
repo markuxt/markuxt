@@ -86,7 +86,7 @@ const imageUrl = computed(() => {
   const resolved = resolveContentImage(props.member.image, props.member._id)
   if (!resolved) return ''
 
-  const basePath = config.app.baseURL || ''
+  const basePath = (config.app as { baseURL?: string }).baseURL || ''
   if (!basePath || basePath === '/') return resolved
   // Pass absolute URLs through; otherwise strip the base's trailing slash so
   // base + '/_markuxt/...' doesn't produce '//_markuxt/...'.

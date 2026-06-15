@@ -9,9 +9,9 @@
         />
 
         <!-- Category Filter -->
-        <div class="members-filter" v-if="categories.length > 1">
+        <div class="members-filter" v-if="memberCategories.length > 1">
           <button
-            v-for="category in categories"
+            v-for="category in filterCategories"
             :key="category.key"
             class="filter-btn"
             :class="{ 'filter-btn--active': activeCategory === category.key }"
@@ -70,16 +70,17 @@ const processedMembers = computed(() => {
   return members
 })
 
-// Category definitions - Staff first, All Members last
-const categories = computed(() => [
-  { key: 'staff', name: t('members.staff') },
-  { key: 'research-students', name: t('members.researchStudents') },
-  { key: 'research-assistants', name: t('members.researchAssistants') },
-  { key: 'alumni', name: t('members.alumni') },
+// Categories come from `appConfig.markuxt.members.categories` (nuxt.config.ts),
+// with a built-in fallback. The "all" pseudo-category is appended for the
+// filter only.
+const { categories: memberCategories } = useMemberCategories()
+
+const filterCategories = computed(() => [
+  ...memberCategories.value,
   { key: 'all', name: t('members.allMembers') }
 ])
 
-const activeCategory = ref('staff')
+const activeCategory = ref(memberCategories.value[0]?.key ?? 'all')
 
 const filteredMembers = computed(() => {
   if (activeCategory.value === 'all') {

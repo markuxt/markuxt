@@ -43,6 +43,8 @@
   "hero.placeholderCaption": "添加轮播图片",
 
   "members.staff": "维护者",
+  "members.coreTeam": "核心团队",
+  "members.contributors": "贡献者",
   "members.researchStudents": "贡献者",
   "members.researchAssistants": "主题作者",
   "members.alumni": "校友",
@@ -63,7 +65,7 @@
   "members.pageTitle": "贡献者 - Markuxt",
   "members.pageDescription": "认识 Markuxt 项目的贡献者和维护者。",
   "members.orcid": "ORCID 主页",
-  "members.publications": "论文",
+  "members.publications": "学术成果",
 
   "publications.authorSep": " 和 ",
   "publications.truncation": "...",

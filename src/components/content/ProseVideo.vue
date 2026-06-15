@@ -35,7 +35,7 @@ const config = useRuntimeConfig()
 function resolve(src?: string): string | undefined {
   if (!src) return src
   const resolved = resolveContentImage(src, contentId.value)
-  const basePath = config.app.baseURL || '/'
+  const basePath = (config.app as { baseURL?: string }).baseURL || '/'
   if (!basePath || basePath === '/' || resolved.startsWith(basePath)) return resolved
   return basePath.replace(/\/$/, '') + resolved
 }

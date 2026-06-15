@@ -101,6 +101,15 @@ export default defineNuxtConfig({
                 { icon: 'IconTranslate', titleKey: 'research.area3', descKey: 'research.area3Desc' },
                 { icon: 'IconTheme', titleKey: 'research.area4', descKey: 'research.area4Desc' },
             ],
+            // Member categories on the Contributors page. `key` matches the
+            // `category:` field in each member's markdown frontmatter; `labelKey`
+            // is the i18n key (src/i18n/*.json). Array order = display order.
+            members: {
+                categories: [
+                    { key: 'core-team', labelKey: 'members.coreTeam' },
+                    { key: 'contributors', labelKey: 'members.contributors' },
+                ],
+            },
         },
     },
 });

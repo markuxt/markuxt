@@ -13,6 +13,7 @@ Markuxt provides a complete theme layer — layouts, pages, components, content 
 
 - **Markdown-driven content** — Pages, members, publications, projects, positions, and news are all authored in Markdown with YAML frontmatter.
 - **Configurable navigation** — Define which pages appear in the header, footer, and route guard via a single `navigation` array in `appConfig`.
+- **Configurable member categories** — Define the member groups (e.g. Faculty / Students / Alumni) in `appConfig`; authors reference them from each member's `category:` frontmatter.
 - **Internationalization** — Built-in i18n support via `@nuxtjs/i18n`. Consuming sites provide their own locale files.
 - **Design system** — CSS custom properties for colors, spacing, typography, and more. Easy to override.
 - **Content transformers** — Binary assets (images, videos) placed next to Markdown files are automatically synced to `public/` for static serving.
@@ -25,12 +26,12 @@ Markuxt provides a complete theme layer — layouts, pages, components, content 
 
 Markuxt defaults to the **Seaside** theme (ocean blue/teal palette). Three additional themes are available as separate template repositories — each extends markuxt and applies its own CSS color overrides:
 
-| Theme | Palette | Demo |
-|-------|---------|------|
-| **Seaside** | Ocean blue / teal | [markuxt.github.io/markuxt-template-seaside](https://markuxt.github.io/markuxt-template-seaside) |
-| **Forest** | Nature green | [markuxt.github.io/markuxt-template-forest](https://markuxt.github.io/markuxt-template-forest) |
-| **Sunset** | Warm amber / terracotta | [markuxt.github.io/markuxt-template-sunset](https://markuxt.github.io/markuxt-template-sunset) |
-| **Slate** | Cool gray / steel blue | [markuxt.github.io/markuxt-template-slate](https://markuxt.github.io/markuxt-template-slate) |
+| Theme       | Palette                 | Demo                                                                                             |
+|-------------|-------------------------|--------------------------------------------------------------------------------------------------|
+| **Seaside** | Ocean blue / teal       | [markuxt.github.io/markuxt-template-seaside](https://markuxt.github.io/markuxt-template-seaside) |
+| **Forest**  | Nature green            | [markuxt.github.io/markuxt-template-forest](https://markuxt.github.io/markuxt-template-forest)   |
+| **Sunset**  | Warm amber / terracotta | [markuxt.github.io/markuxt-template-sunset](https://markuxt.github.io/markuxt-template-sunset)   |
+| **Slate**   | Cool gray / steel blue  | [markuxt.github.io/markuxt-template-slate](https://markuxt.github.io/markuxt-template-slate)     |
 
 To start a new site with a specific theme, clone the corresponding template repo and follow its README. The theme is applied entirely through CSS custom properties in `styles/_theme.css` — no build-time configuration needed.
 
@@ -104,6 +105,16 @@ export default defineNuxtConfig({
       researchAreas: [
         { icon: 'IconSearch', titleKey: 'research.aerospace', descKey: 'research.aerospaceDesc' },
       ],
+
+      // Member categories — `key` is referenced from each member's
+      // `category:` frontmatter; `labelKey` is an i18n key. Array order is
+      // the display / filter / sort order. No built-in defaults — declare
+      // your own.
+      members: {
+        categories: [
+          { key: 'staff', labelKey: 'members.staff' },
+        ],
+      },
     },
   },
 })
@@ -112,6 +123,10 @@ export default defineNuxtConfig({
 ### Navigation Guard
 
 Pages defined in `navigation` are accessible. Any markuxt section page (`/members`, `/publications`, `/projects`, `/positions`, `/news`) that is **not** listed will return a 404. The home page (`/`) is always accessible.
+
+### Member Categories
+
+The groups on the Members page are configurable via `members.categories`. Each entry's `key` matches the `category:` field in a member's Markdown frontmatter, and `labelKey` is resolved against the consuming site's i18n files. The array order is the display, filter, and sort order; a filter bar appears automatically when there are 2+ categories, plus an **All** option. There are **no built-in defaults** — every consuming site declares its own categories. With none configured, the Members page simply lists everyone (no filter bar).
 
 ## Icons
 
