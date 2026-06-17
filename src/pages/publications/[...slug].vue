@@ -110,7 +110,11 @@ const slug = computed(() => {
 const { data: publicationData } = await useAsyncData(`publication-${slug.value}`, async () => {
   try {
     const fullPath = `/publications/${slug.value}`
-    return await queryContent(fullPath).findOne()
+    // Filter to markdown so a binary asset that shares the same _path as the
+    // .md (e.g. an `abstract_screenshot` image sitting next to the article)
+    // can't shadow the article — `findOne()` would otherwise return whichever
+    // of the two sorts first by _id (.jpg < .md).
+    return await queryContent(fullPath).where({ _extension: 'md' }).findOne()
   } catch (e) {
     console.error('Error fetching publication:', e)
     return null

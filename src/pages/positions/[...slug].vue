@@ -99,7 +99,7 @@ const slug = computed(() => {
 const { data: positionData } = await useAsyncData(`position-${slug.value}`, async () => {
   try {
     const fullPath = `/positions/${slug.value}`
-    return await queryContent(fullPath).findOne()
+    return await queryContent(fullPath).where({ _extension: 'md' }).findOne()
   } catch (e) {
     console.error('Error fetching position:', e)
     return null

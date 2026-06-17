@@ -4,7 +4,7 @@
       <h3 class="members-category__title" v-if="groupBy">{{ category.name }}</h3>
       <div
         class="members-grid"
-        :class="{ 'members-grid--cols-2': category.members.length === 4 }"
+        :class="{ 'members-grid--count-4': category.members.length === 4 }"
       >
         <MemberCard
           v-for="member in category.members"
@@ -107,6 +107,9 @@ const categorizedMembers = computed(() => {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
+  /* Query container so the grid's column count can track its real width,
+     not the viewport. */
+  container-type: inline-size;
 }
 
 .members-category__title {
@@ -124,24 +127,35 @@ const categorizedMembers = computed(() => {
   gap: var(--spacing-xl);
 }
 
-/* Exactly 4 members: force a 2×2 layout instead of letting auto-fill collapse
-   to an awkward 3+1 at medium widths. Declared after .members-grid so it wins
-   the grid-template-columns cascade at equal specificity. */
-.members-grid--cols-2 {
+/* Exactly 4 members: 4×1 when there's room for four ~260px cards, otherwise
+   2×2 (never the 3+1 auto-fill collapses to at medium widths), stacking to a
+   single column when narrow. Breakpoints are container-based (4×260 + 3×gap
+   ≈ 1136px is where four columns fit at the card min). */
+.members-grid--count-4 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   max-width: 880px;
   margin-inline: auto;
+}
+
+@container (min-width: 1136px) {
+  .members-grid--count-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+@container (max-width: 600px) {
+  .members-grid--count-4 {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
 }
 
 @media (max-width: 640px) {
   .members-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--spacing-lg);
-  }
-
-  .members-grid--cols-2 {
-    grid-template-columns: 1fr;
-    max-width: 420px;
   }
 }
 </style>
