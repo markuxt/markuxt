@@ -2,7 +2,10 @@
   <section class="members-section" v-if="members.length > 0">
     <div v-for="(category, index) in categorizedMembers" :key="category.name" class="members-category">
       <h3 class="members-category__title" v-if="groupBy">{{ category.name }}</h3>
-      <div class="members-grid">
+      <div
+        class="members-grid"
+        :class="{ 'members-grid--cols-2': category.members.length === 4 }"
+      >
         <MemberCard
           v-for="member in category.members"
           :key="member.slug"
@@ -121,10 +124,24 @@ const categorizedMembers = computed(() => {
   gap: var(--spacing-xl);
 }
 
+/* Exactly 4 members: force a 2×2 layout instead of letting auto-fill collapse
+   to an awkward 3+1 at medium widths. Declared after .members-grid so it wins
+   the grid-template-columns cascade at equal specificity. */
+.members-grid--cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 880px;
+  margin-inline: auto;
+}
+
 @media (max-width: 640px) {
   .members-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--spacing-lg);
+  }
+
+  .members-grid--cols-2 {
+    grid-template-columns: 1fr;
+    max-width: 420px;
   }
 }
 </style>

@@ -29,12 +29,19 @@
       <!-- Publication Content -->
       <div class="publication-content">
         <!-- Abstract -->
-        <div v-if="hasAbstract" class="publication-section animate-fade-in-up delay-200">
+        <div v-if="hasAbstract || screenshotUrl" class="publication-section animate-fade-in-up delay-200">
           <div class="publication-section__header">
             <FileStaff class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('publications.abstract') }}</h3>
           </div>
           <div class="publication-section__body publication-section__body--content">
+            <img
+              v-if="screenshotUrl"
+              :src="screenshotUrl"
+              :alt="publication.title"
+              class="publication-screenshot"
+              @error="($event.target as HTMLImageElement).style.display = 'none'"
+            />
             <ContentRenderer :value="publication" />
           </div>
         </div>
@@ -117,9 +124,22 @@ const publication = computed(() => publicationData.value)
 // Provide content ID for ProseImg/ProseVideo to resolve relative asset paths
 provide('contentId', computed(() => publication.value?._id || ''))
 
+const config = useRuntimeConfig()
+
+// Resolve the abstract screenshot (a relative image filename in frontmatter,
+// alongside the .md) to a /_markuxt/ URL. Empty when none is configured.
+const screenshotUrl = computed(() => {
+  const resolved = resolveContentImage(publication.value?.abstract_screenshot, publication.value?._id)
+  if (!resolved) return ''
+  const basePath = (config.app as { baseURL?: string }).baseURL || ''
+  if (!basePath || basePath === '/') return resolved
+  if (/^(https?:)?\/\//.test(resolved) || resolved.startsWith('data:')) return resolved
+  return basePath.replace(/\/+$/, '') + resolved
+})
+
 const hasAbstract = computed(() => {
   if (publication.value?.abstract) return true
-  if (publication.value?.body?.children?.length > 0) return true
+  if ((publication.value?.body?.children?.length ?? 0) > 0) return true
   return false
 })
 
@@ -336,6 +356,17 @@ useHead({
 .publication-section__body--content {
   padding: var(--spacing-xl);
   background: var(--surface-raised);
+}
+
+.publication-screenshot {
+  display: block;
+  width: 100%;
+  max-height: 720px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  margin-bottom: var(--spacing-lg);
 }
 
 /* Keywords */

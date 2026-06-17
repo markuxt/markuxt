@@ -1,5 +1,13 @@
 <template>
   <article class="publication-card">
+    <img
+      v-if="screenshotUrl"
+      :src="screenshotUrl"
+      :alt="publication.title"
+      class="publication-card__screenshot"
+      loading="lazy"
+      @error="($event.target as HTMLImageElement).style.display = 'none'"
+    />
     <div class="publication-card__meta">
       <span class="publication-card__year">{{ publication.year }}</span>
       <span v-if="publication.venue" class="badge badge-accent">{{ publication.venue }}</span>
@@ -54,7 +62,9 @@ interface Publication {
   venue?: string
   keywords?: string[]
   abstract?: string
+  abstract_screenshot?: string
   _path?: string
+  _id?: string
 }
 
 interface Props {
@@ -64,6 +74,19 @@ interface Props {
 const props = defineProps<Props>()
 
 const { t } = useI18n()
+const config = useRuntimeConfig()
+
+// Resolve the abstract screenshot (a relative image filename in frontmatter,
+// sitting next to the .md like member photos) to a /_markuxt/ URL. Empty when
+// no screenshot is configured.
+const screenshotUrl = computed(() => {
+  const resolved = resolveContentImage(props.publication.abstract_screenshot, props.publication._id)
+  if (!resolved) return ''
+  const basePath = (config.app as { baseURL?: string }).baseURL || ''
+  if (!basePath || basePath === '/') return resolved
+  if (/^(https?:)?\/\//.test(resolved) || resolved.startsWith('data:')) return resolved
+  return basePath.replace(/\/+$/, '') + resolved
+})
 
 const formattedAuthors = computed(() => {
   const authors = props.publication.authors
@@ -105,6 +128,17 @@ const moreKeywords = computed(() => {
   box-shadow: var(--shadow-lg);
   border-color: var(--color-secondary);
   transform: translateY(-4px);
+}
+
+.publication-card__screenshot {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  margin-bottom: var(--spacing-md);
 }
 
 .publication-card__meta {
