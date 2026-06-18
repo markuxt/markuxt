@@ -83,14 +83,19 @@ const hasMoreNews = computed(() => latestNews.value.length >= 3)
 
 // Fetch featured members — category-agnostic (categories are configurable via
 // appConfig.markuxt.members.categories), so rank purely by the `order` field.
-const { data: allMembers } = await useAsyncData('home-members', () =>
-  queryContent('/members')
+const { data: allMembers } = await useAsyncData('home-members', async () => {
+  const members = await queryContent('/members')
     .where({ _hidden: { $ne: true } })
-    .sort({ order: 1 })
-    .limit(4)
     .where({ _extension: 'md' })
     .find()
-)
+  // Sort NUMERICALLY by `order`. The content DB's .sort() is lexicographic,
+  // which mis-ranks multi-digit values (10 sorts before 2); sorting in JS with
+  // Number() coercion makes plain numbers work. Number() also accepts
+  // zero-padded strings ("03"), so both forms sort correctly.
+  return members
+    .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999))
+    .slice(0, 4)
+})
 
 const featuredMembers = computed(() => {
   return (allMembers.value || []).map(member => ({
