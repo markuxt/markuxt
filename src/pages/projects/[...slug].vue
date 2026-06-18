@@ -78,7 +78,7 @@ const slug = computed(() => {
 const { data: projectData } = await useAsyncData(`project-${slug.value}`, async () => {
   try {
     const fullPath = `/projects/${slug.value}`
-    return await queryContent(fullPath).findOne()
+    return await queryContent(fullPath).where({ _extension: 'md' }).findOne()
   } catch (e) {
     console.error('Error fetching project:', e)
     return null

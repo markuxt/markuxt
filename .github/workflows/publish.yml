@@ -72,6 +72,39 @@ jobs:
           path: .
           retention-days: 1
 
+  sync-develop:
+    # Pushes made with GITHUB_TOKEN don't trigger the sync-develop workflow,
+    # so fast-forward develop to main here once the release commit lands.
+    name: Sync develop with main
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync develop with main
+        run: |
+          git fetch origin develop || true
+          if git show-ref --verify --quiet refs/remotes/origin/develop; then
+            git checkout develop
+            if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+              git merge --ff-only origin/main && git push origin develop
+            fi
+          else
+            git checkout -b develop
+            git push origin develop
+          fi
+
   publish-gpr:
     needs: prepare
     runs-on: ubuntu-latest
