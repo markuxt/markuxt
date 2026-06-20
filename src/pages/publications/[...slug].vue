@@ -61,19 +61,6 @@
           </div>
         </div>
 
-        <!-- DOI Link -->
-        <div v-if="publication.doi" class="animate-fade-in-up delay-400">
-          <a
-            :href="publication.doi"
-            target="_blank"
-            rel="noopener"
-            class="doi-link"
-          >
-            <LinkOut class="icon-inline" theme="outline" :size="18" fill="currentColor" :stroke-width="2.8" />
-            {{ t('publications.viewOnPublisherSite') }}
-          </a>
-        </div>
-
         <!-- Authors who are members of this site (matched by ORCID) -->
         <div v-if="authorMembers.length > 0" class="publication-section animate-fade-in-up delay-400">
           <div class="publication-section__header">
@@ -89,6 +76,19 @@
               />
             </div>
           </div>
+        </div>
+
+        <!-- DOI Link -->
+        <div v-if="publication.doi" class="animate-fade-in-up delay-400">
+          <a
+            :href="publication.doi"
+            target="_blank"
+            rel="noopener"
+            class="doi-link"
+          >
+            <LinkOut class="icon-inline" theme="outline" :size="18" fill="currentColor" :stroke-width="2.8" />
+            {{ t('publications.viewOnPublisherSite') }}
+          </a>
         </div>
       </div>
     </div>
