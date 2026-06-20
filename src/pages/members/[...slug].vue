@@ -163,17 +163,19 @@ const { data: allPublications } = await useAsyncData('publications', async () =>
   }
 })
 
-// Filter publications by member's ORCID
+// Filter publications by member's ORCID.
+// `normalizeOrcid` accepts both bare IDs and full https://orcid.org/ URLs on
+// either side, so a member file storing a URL still matches publications that
+// store a bare ID (and vice-versa).
 const memberPublications = computed(() => {
-  if (!member.value?.orcid || !allPublications.value) return []
-
-  const memberOrcid = member.value.orcid.trim()
+  const memberOrcid = normalizeOrcid(member.value?.orcid)
+  if (!memberOrcid || !allPublications.value) return []
 
   return (allPublications.value || [])
     .filter(pub => {
       const authorsOrcid = pub.authors_orcid
       if (!Array.isArray(authorsOrcid)) return false
-      return authorsOrcid.some(orcid => orcid === memberOrcid)
+      return authorsOrcid.some(orcid => normalizeOrcid(orcid) === memberOrcid)
     })
     .sort((a, b) => (b.year || 0) - (a.year || 0)) // Sort by year descending
 })

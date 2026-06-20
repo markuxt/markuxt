@@ -2,6 +2,12 @@
 title: "Markuxt Publication Demo: A Markdown-First Framework for Academic Portals"
 authors:
   - hnrobert
+  - Calc1te
+  - Gentle-Lijie
+authors_orcid:
+  - 0009-0000-1778-7485
+  - 0009-0005-8541-2729
+  - 0009-0009-3964-7198
 year: 2025
 doi: ''
 venue: Open Source Project

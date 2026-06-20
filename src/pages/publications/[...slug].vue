@@ -73,6 +73,23 @@
             {{ t('publications.viewOnPublisherSite') }}
           </a>
         </div>
+
+        <!-- Authors who are members of this site (matched by ORCID) -->
+        <div v-if="authorMembers.length > 0" class="publication-section animate-fade-in-up delay-400">
+          <div class="publication-section__header">
+            <Peoples class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
+            <h3>{{ t('publications.memberAuthors') }}</h3>
+          </div>
+          <div class="publication-section__body">
+            <div class="publication-members-grid">
+              <MemberCard
+                v-for="member in authorMembers"
+                :key="member._id || member.name"
+                :member="member"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -95,6 +112,7 @@ import ArrowLeft from '@icon-park/vue-next/es/icons/ArrowLeft'
 import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
 import Key from '@icon-park/vue-next/es/icons/Key'
 import LinkOut from '@icon-park/vue-next/es/icons/LinkOut'
+import Peoples from '@icon-park/vue-next/es/icons/Peoples'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
@@ -152,6 +170,66 @@ const formattedAuthors = computed(() => {
   const authors = publication.value.authors
   if (authors.length <= 2) return authors.join(t('publications.authorSep'))
   return authors.slice(0, authors.length - 1).join(', ') + ', ' + t('publications.authorSep') + authors[authors.length - 1]
+})
+
+// A publication's `authors_orcid` is a parallel array to `authors` (one ORCID
+// per author, `null` where an author has none). Fetch every site member and
+// surface those whose ORCID appears here — i.e. this paper's authors who are
+// also members of this site — linking back to their member pages. Matched via
+// `normalizeOrcid` so a URL-form ORCID on either side still matches.
+interface MemberLike {
+  name: string
+  _id?: string
+  _path?: string
+  [key: string]: any
+}
+
+const { data: allMembers } = await useAsyncData('publication-members', async () => {
+  try {
+    return await queryContent('/members')
+      .where({ _hidden: { $ne: true } })
+      .where({ _extension: 'md' })
+      // Project to only the fields MemberCard + the ORCID match need, so a
+      // large member base doesn't bloat every publication route's payload.
+      .only(['name', 'role', 'title', 'email', 'scholar', 'orcid', 'image', 'interests', 'category', 'order', '_path', '_id'])
+      .find()
+  } catch (e) {
+    console.error('Error fetching members:', e)
+    return []
+  }
+})
+
+// Members of this site who authored this publication, kept in authorship
+// order (the order ORCIDs appear in `authors_orcid`) and de-duplicated so a
+// repeated ORCID never renders the same member twice.
+const authorMembers = computed<MemberLike[]>(() => {
+  const ids = publication.value?.authors_orcid
+  if (!Array.isArray(ids) || ids.length === 0) return []
+
+  const byOrcid = new Map<string, MemberLike>()
+  for (const m of (allMembers.value as MemberLike[] | null) || []) {
+    const oid = normalizeOrcid(m.orcid)
+    if (!oid) continue
+    // Two members should never share an ORCID; if they do (data error), warn
+    // in dev so it's noticed rather than silently last-wins.
+    if (import.meta.dev && byOrcid.has(oid)) {
+      console.warn('[markuxt] Duplicate ORCID across members — only one will be linked:', oid)
+    }
+    byOrcid.set(oid, m)
+  }
+
+  const seen = new Set<string>()
+  const matched: MemberLike[] = []
+  for (const id of ids) {
+    const oid = normalizeOrcid(id)
+    if (!oid || seen.has(oid)) continue
+    const m = byOrcid.get(oid)
+    if (m) {
+      seen.add(oid)
+      matched.push(m)
+    }
+  }
+  return matched
 })
 
 useHead({
@@ -419,6 +497,22 @@ useHead({
   background: var(--color-accent);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+/* Authors-from-this-site grid (reuses MemberCard). Mirrors MembersGrid's
+   responsive auto-fill, but without the category grouping/sorting so the
+   matched authors keep their authorship order. */
+.publication-members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 640px) {
+  .publication-members-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-md);
+  }
 }
 
 /* ContentRenderer Markdown Styling */

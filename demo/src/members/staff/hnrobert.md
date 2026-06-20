@@ -2,6 +2,7 @@
 name: hnrobert
 role: Creator / Developer / Maintainer
 title: Software Engineer
+orcid: 0009-0000-1778-7485
 # email: ''
 # scholar: https://github.com/hnrobert
 image: assets/hnrobert.jpg

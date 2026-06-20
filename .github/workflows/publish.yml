@@ -75,13 +75,12 @@ jobs:
   sync-develop:
     # Pushes made with GITHUB_TOKEN don't trigger the sync-develop workflow,
     # so fast-forward develop to main here once the release commit lands.
-    name: Sync develop with main
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -89,20 +88,62 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all branches
+        run: |
+          git fetch origin main
+          git fetch origin develop
+
+      - name: Check if develop branch exists
+        id: check-develop
+        run: |
+          if git show-ref --verify --quiet refs/remotes/origin/develop; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ develop branch exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "❌ develop branch does not exist"
+          fi
+
+      - name: Create develop branch if it doesn't exist
+        if: steps.check-develop.outputs.exists == 'false'
+        run: |
+          echo "🔧 Creating develop branch from main..."
+          git checkout -b develop
+          git push origin develop
+          echo "✅ develop branch created and pushed"
 
       - name: Sync develop with main
+        if: steps.check-develop.outputs.exists == 'true'
         run: |
-          git fetch origin develop || true
-          if git show-ref --verify --quiet refs/remotes/origin/develop; then
-            git checkout develop
-            if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-              git merge --ff-only origin/main && git push origin develop
-            fi
-          else
-            git checkout -b develop
+          echo "🔄 Syncing develop branch with main..."
+          git checkout develop
+
+          DEVELOP_BEFORE=$(git rev-parse HEAD)
+          MAIN_COMMIT=$(git rev-parse origin/main)
+          echo "📋 develop branch before sync: $DEVELOP_BEFORE"
+          echo "📋 main branch commit: $MAIN_COMMIT"
+
+          if [ "$DEVELOP_BEFORE" = "$MAIN_COMMIT" ]; then
+            echo "✅ develop branch is already up to date with main"
+            exit 0
+          fi
+
+          echo "🚀 Attempting fast-forward merge..."
+          if git merge --ff-only origin/main; then
+            echo "✅ Fast-forward merge successful"
             git push origin develop
+            echo "🎉 develop branch successfully synced with main"
+          else
+            echo "⚠️ Fast-forward merge failed — develop has commits that are not in main"
+            DIVERGED_COMMITS=$(git rev-list --count origin/main..develop)
+            echo "📊 Number of commits in develop not in main: $DIVERGED_COMMITS"
+            echo "📋 Diverged commits:"
+            git log --oneline origin/main..develop
+            echo "💡 Consider creating a pull request to merge develop into main first"
+            exit 1
           fi
 
   publish-gpr:
