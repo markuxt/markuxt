@@ -28,8 +28,10 @@
 
       <!-- Position Content -->
       <div class="position-content">
-        <!-- Description -->
-        <div v-if="position.body || position.description" class="position-section animate-fade-in-up delay-200">
+        <!-- Description — only render when the body has renderable content;
+             an empty .md parses to a { children: [] } AST that would otherwise
+             make <ContentRenderer> dump its props as JSON. -->
+        <div v-if="position.body?.children?.length" class="position-section animate-fade-in-up delay-200">
           <div class="position-section__header">
             <FileStaff class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('positions.aboutPosition') }}</h3>

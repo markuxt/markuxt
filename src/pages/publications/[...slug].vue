@@ -42,7 +42,7 @@
               class="publication-screenshot"
               @error="($event.target as HTMLImageElement).style.display = 'none'"
             />
-            <ContentRenderer :value="publication" />
+            <ContentRenderer v-if="publication.body?.children?.length" :value="publication" />
           </div>
         </div>
 

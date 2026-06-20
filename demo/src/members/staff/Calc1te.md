@@ -12,5 +12,3 @@ interests:
   - 風吹けばカルシ
   - Sometimes I pretend I know how to code
 ---
-
-##
