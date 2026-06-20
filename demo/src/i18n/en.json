@@ -78,6 +78,7 @@
   "publications.abstract": "Summary",
   "publications.keywords": "Tags",
   "publications.viewOnPublisherSite": "View Source",
+  "publications.memberAuthors": "Authors from this organization",
   "publications.noResults": "No articles found. Check back soon for the latest updates.",
   "publications.description": "Articles and release notes about Markuxt.",
   "publications.untitled": "Untitled",
