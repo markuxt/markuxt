@@ -60,8 +60,10 @@
           </div>
         </div>
 
-        <!-- About/Bio with Markdown Content -->
-        <div v-if="member.body || (member.content && member.content.length > 0)" class="profile-section animate-fade-in-up delay-300">
+        <!-- About/Bio with Markdown Content — only render when the body actually
+             has content; an empty .md still parses to a { children: [] } AST, which
+             would otherwise make <ContentRenderer> dump its props as JSON. -->
+        <div v-if="member.body?.children?.length" class="profile-section animate-fade-in-up delay-300">
           <div class="profile-section__header">
             <FileStaff class="icon-inline" theme="outline" :size="22" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('members.about') }}</h3>

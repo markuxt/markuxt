@@ -24,7 +24,7 @@
 
       <div class="news-post__content">
         <div class="container">
-          <ContentRenderer :value="news" />
+          <ContentRenderer v-if="news.body?.children?.length" :value="news" />
         </div>
       </div>
     </article>

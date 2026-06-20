@@ -32,8 +32,10 @@
 
       <!-- Project Content -->
       <div class="project-content">
-        <!-- Description -->
-        <div v-if="project.body || project.description" class="project-section animate-fade-in-up delay-200">
+        <!-- Description — only render when the body has renderable content;
+             an empty .md parses to a { children: [] } AST that would otherwise
+             make <ContentRenderer> dump its props as JSON. -->
+        <div v-if="project.body?.children?.length" class="project-section animate-fade-in-up delay-200">
           <div class="project-section__header">
             <FileStaff class="icon-inline" theme="outline" :size="20" fill="currentColor" :stroke-width="2.8" />
             <h3>{{ t('projects.aboutProject') }}</h3>

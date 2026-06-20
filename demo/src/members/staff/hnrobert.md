@@ -13,5 +13,3 @@ interests:
   - Full Stack Developer @ UNNC CS Y2024 
   - Creating what I like & what you need
 ---
-
-##
