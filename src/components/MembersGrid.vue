@@ -1,6 +1,6 @@
 <template>
   <section class="members-section" v-if="members.length > 0">
-    <div v-for="(category, index) in categorizedMembers" :key="category.name" class="members-category">
+    <div v-for="category in categorizedMembers" :key="category.name" class="members-category">
       <h3 class="members-category__title" v-if="groupBy">{{ category.name }}</h3>
       <div
         class="members-grid"
@@ -8,7 +8,7 @@
       >
         <MemberCard
           v-for="member in category.members"
-          :key="member.slug"
+          :key="member._id"
           :member="member"
         />
       </div>

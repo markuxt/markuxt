@@ -153,41 +153,41 @@ const { data: memberData } = await useAsyncData(`member-${slug.value}`, async ()
 
 const member = computed(() => memberData.value)
 
-// Fetch publications for filtering by member ORCID.
-// Project to only the fields the list + the ORCID filter need (NOT the body).
-// Without `.only`, every member page payload would embed ALL publications'
-// full bodies — on a large site (hundreds of papers) that balloons each
-// member payload to tens of MB, blows the GitHub Pages size limit, and OOMs
-// the generate build (leaving some pages' payloads missing → 404 on refresh).
-const { data: allPublications } = await useAsyncData('publications', async () => {
-  try {
-    return await queryContent('/publications')
-      .where({ _hidden: { $ne: true } })
-      .where({ _extension: 'md' })
-      .only(['title', 'authors', 'authors_orcid', 'venue', 'year', 'doi', '_path', '_id'])
-      .find()
-  } catch (e) {
-    console.error('Error fetching publications:', e)
-    return []
-  }
-})
+// This member's ORCID, normalized to a bare ID (empty when they have none).
+const memberOrcid = computed(() => normalizeOrcid(member.value?.orcid))
 
-// Filter publications by member's ORCID.
-// `normalizeOrcid` accepts both bare IDs and full https://orcid.org/ URLs on
-// either side, so a member file storing a URL still matches publications that
-// store a bare ID (and vice-versa).
-const memberPublications = computed(() => {
-  const memberOrcid = normalizeOrcid(member.value?.orcid)
-  if (!memberOrcid || !allPublications.value) return []
+// Fetch ONLY this member's publications — those whose `authors_orcid` array
+// contains their ORCID — instead of the whole catalog. Filtering at query
+// time (via `$contains`) keeps the member page payload tiny (their handful of
+// papers, not every paper on the site), so navigating to a member page never
+// pulls a large payload at runtime: the list is prerendered into the static
+// HTML and only this already-filtered set ships in the payload.
+const { data: memberPubs } = await useAsyncData(
+  `member-publications-${slug.value}`,
+  async () => {
+    const orcid = memberOrcid.value
+    if (!orcid) return []
+    try {
+      return await queryContent('/publications')
+        .where({ _hidden: { $ne: true } })
+        .where({ _extension: 'md' })
+        .where({ authors_orcid: { $contains: orcid } })
+        .only(['title', 'authors', 'venue', 'year', 'doi', '_path', '_id'])
+        .find()
+    } catch (e) {
+      console.error('Error fetching member publications:', e)
+      return []
+    }
+  },
+  { watch: [memberOrcid] },
+)
 
-  return (allPublications.value || [])
-    .filter(pub => {
-      const authorsOrcid = pub.authors_orcid
-      if (!Array.isArray(authorsOrcid)) return false
-      return authorsOrcid.some(orcid => normalizeOrcid(orcid) === memberOrcid)
-    })
-    .sort((a, b) => (b.year || 0) - (a.year || 0)) // Sort by year descending
-})
+// Sort by year descending (numeric — the content-DB sort is lexicographic).
+const memberPublications = computed(() =>
+  [...(memberPubs.value || [])].sort(
+    (a, b) => (Number(b.year) || 0) - (Number(a.year) || 0),
+  ),
+)
 
 // Format authors list for display
 const formatAuthors = (authors: string[] | undefined) => {
