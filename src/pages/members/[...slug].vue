@@ -153,11 +153,18 @@ const { data: memberData } = await useAsyncData(`member-${slug.value}`, async ()
 
 const member = computed(() => memberData.value)
 
-// Fetch all publications for filtering by member ORCID
+// Fetch publications for filtering by member ORCID.
+// Project to only the fields the list + the ORCID filter need (NOT the body).
+// Without `.only`, every member page payload would embed ALL publications'
+// full bodies — on a large site (hundreds of papers) that balloons each
+// member payload to tens of MB, blows the GitHub Pages size limit, and OOMs
+// the generate build (leaving some pages' payloads missing → 404 on refresh).
 const { data: allPublications } = await useAsyncData('publications', async () => {
   try {
     return await queryContent('/publications')
       .where({ _hidden: { $ne: true } })
+      .where({ _extension: 'md' })
+      .only(['title', 'authors', 'authors_orcid', 'venue', 'year', 'doi', '_path', '_id'])
       .find()
   } catch (e) {
     console.error('Error fetching publications:', e)
