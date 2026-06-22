@@ -73,8 +73,11 @@ jobs:
           retention-days: 1
 
   sync-develop:
-    # Pushes made with GITHUB_TOKEN don't trigger the sync-develop workflow,
-    # so fast-forward develop to main here once the release commit lands.
+    # Fast-forward develop to main once the release commit lands. Only runs
+    # when Publish is dispatched from main — workflow_dispatch can fire from
+    # any branch, but main→develop sync is only correct when the release
+    # landed on main.
+    if: github.ref == 'refs/heads/main'
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
