@@ -1,5 +1,11 @@
 <template>
-  <NuxtLink :to="memberLink" class="member-card">
+  <article class="member-card">
+    <!-- Stretched link: makes the whole card clickable WITHOUT nesting <a>
+         inside <a> (the email/scholar/orcid actions below are also <a>).
+         Nested <a> is invalid HTML — the browser parser closes the outer <a>
+         early, restructures the DOM, and breaks Vue hydration (duplicate
+         member cards / mismatched photo-vs-name on refresh). -->
+    <NuxtLink :to="memberLink" class="member-card__link" :aria-label="member.name" />
     <div class="member-card__image-wrapper">
       <img
         v-if="imageUrl"
@@ -49,7 +55,7 @@
         {{ formattedInterests }}
       </p>
     </div>
-  </NuxtLink>
+  </article>
 </template>
 
 <script setup lang="ts">
@@ -113,6 +119,7 @@ const memberLink = computed(() => {
 
 <style scoped>
 .member-card {
+  position: relative;
   background: var(--color-bg-alt);
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -121,6 +128,14 @@ const memberLink = computed(() => {
   transition: all var(--transition-base);
   text-decoration: none;
   display: block;
+}
+
+/* Stretched link: an invisible <a> covering the whole card so the entire
+   card is clickable, while the action links stay as siblings (not nested). */
+.member-card__link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .member-card:hover {
@@ -154,6 +169,7 @@ const memberLink = computed(() => {
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 2; /* above the stretched link so the action buttons are clickable */
   padding: var(--spacing-md);
   background: linear-gradient(transparent, var(--surface-media-overlay));
   display: flex;

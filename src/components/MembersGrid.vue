@@ -1,6 +1,6 @@
 <template>
   <section class="members-section" v-if="members.length > 0">
-    <div v-for="category in categorizedMembers" :key="category.name" class="members-category">
+    <div v-for="category in categorizedMembers" :key="category.key" class="members-category">
       <h3 class="members-category__title" v-if="groupBy">{{ category.name }}</h3>
       <div
         class="members-grid"
@@ -59,13 +59,24 @@ const sortedMembers = computed(() => {
     if (catRankA !== catRankB) {
       return catRankA - catRankB
     }
-    return (a.order || 999) - (b.order || 999)
+    const byOrder = (a.order || 999) - (b.order || 999)
+    if (byOrder !== 0) return byOrder
+    // Deterministic tiebreaker (same category + same order) so the grid's
+    // order is byte-identical SSR ↔ client — any difference forces a
+    // hydration re-render that can shuffle cards.
+    return String(a._path || a._id || '').localeCompare(String(b._path || b._id || ''))
   })
 })
 
 const categorizedMembers = computed(() => {
   if (!props.groupBy) {
     return [{
+      // `key` is a STABLE identifier — NOT the translated `name`. Using the
+      // translated name as the v-for key made it change between SSR (default
+      // locale) and client (saved locale), so Vue treated the category as a
+      // brand-new node on hydration and re-rendered the whole grid alongside
+      // the SSR one → duplicate member cards. See MembersGrid template.
+      key: '__all',
       name: t('members.section'),
       members: sortedMembers.value
     }]
@@ -90,6 +101,7 @@ const categorizedMembers = computed(() => {
   return categoryKeys.value
     .filter(key => groups[key] && groups[key].length > 0)
     .map(key => ({
+      key,
       name: categoryName(key),
       members: groups[key]
     }))
