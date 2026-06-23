@@ -67,6 +67,8 @@ import FileStaff from '@icon-park/vue-next/es/icons/FileStaff'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
+const { $i18n } = useNuxtApp()
+const locale = computed(() => ($i18n as any)?.locale?.value || 'en')
 const route = useRoute()
 const config = useRuntimeConfig()
 
@@ -80,13 +82,13 @@ const slug = computed(() => {
 const { data: projectData } = await useAsyncData(`project-${slug.value}`, async () => {
   try {
     const fullPath = `/projects/${slug.value}`
-    return await findOneContentDoc(fullPath)
+    return await findOneContentDoc(fullPath, locale.value)
   } catch (e) {
     console.error('Error fetching project:', e)
     return null
   }
 }, {
-  watch: [slug]
+  watch: [slug, locale]
 })
 
 const project = computed(() => projectData.value)

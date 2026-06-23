@@ -11,6 +11,34 @@ const __dirname = dirname(__filename)
 const ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
 
 /**
+ * Auto-detect locales from <rootDir>/i18n/*.json at build time.
+ * Each file (minus .json) is a locale code: en.json → 'en', zh-CN.json → 'zh-CN'.
+ * The display name is resolved via Intl.DisplayNames in the locale's own
+ * language (e.g. 'en' → 'English', 'zh-CN' → '中文 (简体)').
+ * Consuming sites can still override `i18n.locales` in their own config.
+ */
+function detectI18nLocales(rootDir: string) {
+    const dir = join(process.cwd(), rootDir, 'i18n')
+    let files: string[] = []
+    try {
+        files = readdirSync(dir).filter(f => f.endsWith('.json')).sort()
+    } catch {
+        // i18n dir not found — return empty; consumer must declare locales
+    }
+    return files.map(f => {
+        const code = f.replace(/\.json$/, '')
+        let name = code
+        try {
+            // @ts-ignore — Intl.DisplayNames is available in Node 14+
+            name = new Intl.DisplayNames([code], { type: 'language' }).of(code) || code
+        } catch {
+            name = code
+        }
+        return { code, name, file: f }
+    })
+}
+
+/**
  * Sync non-document files (images, videos, etc.) from rootDir to rootDir/public/_markuxt/.
  * This lets authors place assets next to their markdown files while still serving
  * them as static files at build time (Nuxt Content v2 ignores binary files).
@@ -71,19 +99,21 @@ export default defineNuxtConfig({
     // Nuxt Content module + i18n
     modules: ['@nuxt/content', '@nuxtjs/i18n'],
 
-    // i18n defaults — consuming site overrides locales and langDir
+    // i18n — locales are AUTO-DETECTED from <rootDir>/i18n/*.json at build
+    // time (filename minus .json = locale code). A consuming site can still
+    // override `locales` / `langDir` / `defaultLocale` in its own nuxt.config
+    // (Nuxt merges, the consumer wins).
     i18n: {
         defaultLocale: 'en',
         strategy: 'no_prefix',
+        locales: detectI18nLocales(ROOT_DIR),
+        langDir: resolve(process.cwd(), ROOT_DIR, 'i18n'),
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'i18n_locale',
             redirectOn: 'root',
         },
         // Preserve SSR-detected locale through hydration.
-        // Without this, `resolvedLocale` is empty for no_prefix strategy,
-        // causing a flash: SSR renders the detected locale (e.g. zh-CN),
-        // then the client resets to defaultLocale (en).
         experimental: {
             nitroContextDetection: true,
         },
@@ -172,6 +202,11 @@ export default defineNuxtConfig({
     // Nitro configuration
     nitro: {
         baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
+        prerender: {
+            // Don't fail the build on crawler 404s (locale-variant routes that
+            // aren't public — the listing dedupe filters them out).
+            failOnError: false,
+        },
     },
 
     // TypeScript

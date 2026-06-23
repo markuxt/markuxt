@@ -89,6 +89,8 @@ import Mail from '@icon-park/vue-next/es/icons/Mail'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
+const { $i18n } = useNuxtApp()
+const locale = computed(() => ($i18n as any)?.locale?.value || 'en')
 const route = useRoute()
 
 // Get position by file path
@@ -101,13 +103,13 @@ const slug = computed(() => {
 const { data: positionData } = await useAsyncData(`position-${slug.value}`, async () => {
   try {
     const fullPath = `/positions/${slug.value}`
-    return await findOneContentDoc(fullPath)
+    return await findOneContentDoc(fullPath, locale.value)
   } catch (e) {
     console.error('Error fetching position:', e)
     return null
   }
 }, {
-  watch: [slug]
+  watch: [slug, locale]
 })
 
 const position = computed(() => positionData.value)

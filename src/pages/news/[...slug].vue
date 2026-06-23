@@ -73,12 +73,12 @@ const slug = computed(() => {
 const { data: news } = await useAsyncData(() => `news-${slug.value}`, async () => {
   try {
     const fullPath = `/news/${slug.value}`
-    return await findOneContentDoc(fullPath)
+    return await findOneContentDoc(fullPath, locale.value)
   } catch (e) {
     console.error('Error fetching news:', e)
     return null
   }
-}, { watch: [slug] })
+}, { watch: [slug, locale] })
 
 // Provide content ID for ProseImg/ProseVideo to resolve relative asset paths
 provide('contentId', computed(() => news.value?._id || ''))

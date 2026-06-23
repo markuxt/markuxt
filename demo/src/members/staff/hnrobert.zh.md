@@ -16,8 +16,8 @@ interests:
 
 ## Morning
 
-Hello 😈
+你好😈
 
-See you on [GitHub](https://github.com/hnrobert)
+[GitHub](https://github.com/hnrobert) 见
 
-Or my personal site [hnrobert.space](https://hnrobert.space) (It's been a hundred years since I last updated it, seems)
+或者我的个人站点 [hnrobert.space](https://hnrobert.space) (一百年没更新版)

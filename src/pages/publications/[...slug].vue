@@ -116,6 +116,8 @@ import Peoples from '@icon-park/vue-next/es/icons/Peoples'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
+const { $i18n } = useNuxtApp()
+const locale = computed(() => ($i18n as any)?.locale?.value || 'en')
 const route = useRoute()
 
 // Get publication by file path
@@ -132,13 +134,13 @@ const { data: publicationData } = await useAsyncData(`publication-${slug.value}`
     // uses the prerendered payload on refresh (no 404). See the composable
     // for why a `.where()` filter is avoided and how co-located screenshot
     // binaries are handled.
-    return await findOneContentDoc(fullPath)
+    return await findOneContentDoc(fullPath, locale.value)
   } catch (e) {
     console.error('Error fetching publication:', e)
     return null
   }
 }, {
-  watch: [slug]
+  watch: [slug, locale]
 })
 
 const publication = computed(() => publicationData.value)
