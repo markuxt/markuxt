@@ -128,11 +128,11 @@ const slug = computed(() => {
 const { data: publicationData } = await useAsyncData(`publication-${slug.value}`, async () => {
   try {
     const fullPath = `/publications/${slug.value}`
-    // Filter to markdown so a binary asset that shares the same _path as the
-    // .md (e.g. an `abstract_screenshot` image sitting next to the article)
-    // can't shadow the article — `findOne()` would otherwise return whichever
-    // of the two sorts first by _id (.jpg < .md).
-    return await queryContent(fullPath).where({ _extension: 'md' }).findOne()
+    // Path-based findOne via findOneContentDoc — payload-cached so the client
+    // uses the prerendered payload on refresh (no 404). See the composable
+    // for why a `.where()` filter is avoided and how co-located screenshot
+    // binaries are handled.
+    return await findOneContentDoc(fullPath)
   } catch (e) {
     console.error('Error fetching publication:', e)
     return null

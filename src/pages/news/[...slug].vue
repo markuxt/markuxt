@@ -73,7 +73,7 @@ const slug = computed(() => {
 const { data: news } = await useAsyncData(() => `news-${slug.value}`, async () => {
   try {
     const fullPath = `/news/${slug.value}`
-    return await queryContent(fullPath).where({ _extension: 'md' }).findOne()
+    return await findOneContentDoc(fullPath)
   } catch (e) {
     console.error('Error fetching news:', e)
     return null
