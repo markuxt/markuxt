@@ -142,7 +142,7 @@ const slug = computed(() => {
 const { data: memberData } = await useAsyncData(`member-${slug.value}`, async () => {
   try {
     const fullPath = `/members/${slug.value}`
-    return await queryContent(fullPath).where({ _extension: 'md' }).findOne()
+    return await findOneContentDoc(fullPath)
   } catch (e) {
     console.error('Error fetching member:', e)
     return null
