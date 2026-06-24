@@ -51,11 +51,14 @@ interface Member {
 const { t } = useI18n()
 
 // Fetch all members
-const { data: allMembers } = await useAsyncData('members', () =>
-  queryContent('/members')
+const _locale = useActiveLocale()
+const _defaultLocale = useDefaultLocale()
+const { data: allMembers } = await useAsyncData(`members-${_locale}`, async () => {
+  const docs = await queryContent('/members')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-)
+  return dedupeByPath(docs, _locale, _defaultLocale)
+}, { watch: [() => useActiveLocale()] })
 
 const processedMembers = computed(() => {
   const members = (allMembers.value || []).map(member => {

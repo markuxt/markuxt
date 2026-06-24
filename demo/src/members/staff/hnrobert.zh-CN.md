@@ -11,7 +11,7 @@ order: 1
 interests:
   - Robert He
   - Full Stack Developer @ UNNC CS Y2024 
-  - Creating what I like & what you need
+  - 写点我喜欢的 & 你需要的
 ---
 
 ## Morning

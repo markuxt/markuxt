@@ -49,11 +49,14 @@ interface Publication {
 const { t } = useI18n()
 
 // Fetch all publications
-const { data: publications } = await useAsyncData('publications', () =>
-  queryContent('/publications')
+const _locale = useActiveLocale()
+const _defaultLocale = useDefaultLocale()
+const { data: publications } = await useAsyncData(`publications-${_locale}`, async () => {
+  const docs = await queryContent('/publications')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-)
+  return dedupeByPath(docs, _locale, _defaultLocale)
+}, { watch: [() => useActiveLocale()] })
 
 const processedPublications = computed(() => {
   return (publications.value || []).map(pub => ({

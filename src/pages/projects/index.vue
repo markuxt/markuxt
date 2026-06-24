@@ -142,11 +142,14 @@ const getStatusIcon = (status?: string) => {
 }
 
 // Fetch projects
-const { data: projects } = await useAsyncData('projects', () =>
-  queryContent('/projects')
+const _locale = useActiveLocale()
+const _defaultLocale = useDefaultLocale()
+const { data: projects } = await useAsyncData(`projects-${_locale}`, async () => {
+  const docs = await queryContent('/projects')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-)
+  return dedupeByPath(docs, _locale, _defaultLocale)
+}, { watch: [() => useActiveLocale()] })
 
 const projectList = computed(() => projects.value ?? [])
 

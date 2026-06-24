@@ -70,32 +70,31 @@ const { t } = useI18n()
 const appConfig = useAppConfig()
 
 // Fetch latest news
-const { data: allNews } = await useAsyncData('home-news', () =>
-  queryContent('/news')
+const _locale = useActiveLocale()
+const _defaultLocale = useDefaultLocale()
+const { data: allNews } = await useAsyncData(`home-news-${_locale}`, async () => {
+  const docs = await queryContent('/news')
     .where({ _hidden: { $ne: true } })
     .sort({ date: -1 })
-    .limit(3)
+    .limit(6)
     .where({ _extension: 'md' }).find()
-)
+  return dedupeByPath(docs, _locale, _defaultLocale).slice(0, 3)
+}, { watch: [() => useActiveLocale()] })
 
 const latestNews = computed(() => allNews.value || [])
 const hasMoreNews = computed(() => latestNews.value.length >= 3)
 
 // Fetch featured members — category-agnostic (categories are configurable via
 // appConfig.markuxt.members.categories), so rank purely by the `order` field.
-const { data: allMembers } = await useAsyncData('home-members', async () => {
+const { data: allMembers } = await useAsyncData(`home-members-${_locale}`, async () => {
   const members = await queryContent('/members')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' })
     .find()
-  // Sort NUMERICALLY by `order`. The content DB's .sort() is lexicographic,
-  // which mis-ranks multi-digit values (10 sorts before 2); sorting in JS with
-  // Number() coercion makes plain numbers work. Number() also accepts
-  // zero-padded strings ("03"), so both forms sort correctly.
-  return members
+  return dedupeByPath(members, _locale, _defaultLocale)
     .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999))
     .slice(0, 4)
-})
+}, { watch: [() => useActiveLocale()] })
 
 const featuredMembers = computed(() => {
   return (allMembers.value || []).map(member => ({
