@@ -53,12 +53,12 @@ const { t } = useI18n()
 // Fetch all members
 const _locale = useActiveLocale()
 const _defaultLocale = useDefaultLocale()
-const { data: allMembers } = await useAsyncData(`members-${_locale}`, async () => {
+const { data: allMembers } = await useAsyncData(`members-${_locale.value}`, async () => {
   const docs = await queryContent('/members')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-  return dedupeByPath(docs, _locale, _defaultLocale)
-}, { watch: [() => useActiveLocale()] })
+  return dedupeByPath(docs, _locale.value, _defaultLocale)
+}, { watch: [_locale] })
 
 const processedMembers = computed(() => {
   const members = (allMembers.value || []).map(member => {

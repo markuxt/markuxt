@@ -40,13 +40,13 @@ const { t } = useI18n()
 // Fetch all news
 const _locale = useActiveLocale()
 const _defaultLocale = useDefaultLocale()
-const { data: newsItems } = await useAsyncData(`news-${_locale}`, async () => {
+const { data: newsItems } = await useAsyncData(`news-${_locale.value}`, async () => {
   const docs = await queryContent('/news')
     .where({ _hidden: { $ne: true } })
     .sort({ date: -1 })
     .where({ _extension: 'md' }).find()
-  return dedupeByPath(docs, _locale, _defaultLocale)
-}, { watch: [() => useActiveLocale()] })
+  return dedupeByPath(docs, _locale.value, _defaultLocale)
+}, { watch: [_locale] })
 
 const safeNewsItems = computed(() =>
   (newsItems.value ?? []).filter((item: any) => typeof item.date === 'string') as unknown as NewsItem[]

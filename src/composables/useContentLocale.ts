@@ -13,13 +13,16 @@
  *   rank 0 = no affinity
  */
 
-/** Active locale from the GLOBAL i18n instance.
+import { computed } from 'vue'
+
+/** Active locale from the GLOBAL i18n instance, as a REACTIVE computed.
  *  Under `no_prefix` the local `useI18n()` composer lags client-side locale
  *  switches; the global `$i18n` (same source `LanguageSwitcher.vue` uses)
- *  tracks them reliably. */
-export function useActiveLocale(): string {
+ *  tracks them reliably. Returns a computed so listing pages can watch it
+ *  and re-dedupe when the locale changes. */
+export function useActiveLocale() {
   const i18n = useNuxtApp().$i18n as any
-  return i18n?.locale?.value || 'en'
+  return computed(() => i18n?.locale?.value || 'en')
 }
 
 /** Default locale from runtime config (set by the layer nuxt.config). */

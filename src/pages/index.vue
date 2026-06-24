@@ -72,29 +72,29 @@ const appConfig = useAppConfig()
 // Fetch latest news
 const _locale = useActiveLocale()
 const _defaultLocale = useDefaultLocale()
-const { data: allNews } = await useAsyncData(`home-news-${_locale}`, async () => {
+const { data: allNews } = await useAsyncData(`home-news-${_locale.value}`, async () => {
   const docs = await queryContent('/news')
     .where({ _hidden: { $ne: true } })
     .sort({ date: -1 })
     .limit(6)
     .where({ _extension: 'md' }).find()
-  return dedupeByPath(docs, _locale, _defaultLocale).slice(0, 3)
-}, { watch: [() => useActiveLocale()] })
+  return dedupeByPath(docs, _locale.value, _defaultLocale).slice(0, 3)
+}, { watch: [_locale] })
 
 const latestNews = computed(() => allNews.value || [])
 const hasMoreNews = computed(() => latestNews.value.length >= 3)
 
 // Fetch featured members — category-agnostic (categories are configurable via
 // appConfig.markuxt.members.categories), so rank purely by the `order` field.
-const { data: allMembers } = await useAsyncData(`home-members-${_locale}`, async () => {
+const { data: allMembers } = await useAsyncData(`home-members-${_locale.value}`, async () => {
   const members = await queryContent('/members')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' })
     .find()
-  return dedupeByPath(members, _locale, _defaultLocale)
+  return dedupeByPath(members, _locale.value, _defaultLocale)
     .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999))
     .slice(0, 4)
-}, { watch: [() => useActiveLocale()] })
+}, { watch: [_locale] })
 
 const featuredMembers = computed(() => {
   return (allMembers.value || []).map(member => ({
