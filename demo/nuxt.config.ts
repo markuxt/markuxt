@@ -16,9 +16,11 @@ export default defineNuxtConfig({
     // Register global icon components (outside src/ to avoid Content scanning)
     plugins: ['~~/plugins/icons.ts'],
 
-    // i18n — locales are AUTO-DETECTED by the layer from src/i18n/*.json.
-    // (Previously hardcoded here; now driven by detectI18nLocales in the layer
-    // nuxt.config. The consumer can still override if needed.)
+    // i18n — locales are auto-detected by the layer from src/i18n/*.json.
+    // Override defaultLocale here if the site's primary language isn't 'en':
+    i18n: {
+        defaultLocale: 'en',
+    },
 
     // Site-specific head
     app: {

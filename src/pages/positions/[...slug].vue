@@ -90,6 +90,7 @@ import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const { $i18n } = useNuxtApp()
+const defaultLocale = useDefaultLocale()
 const locale = computed(() => (route.query.lang as string) || ($i18n as any)?.locale?.value || 'en')
 const route = useRoute()
 
@@ -103,7 +104,7 @@ const slug = computed(() => {
 const { data: positionData } = await useAsyncData(`position-${slug.value}-${locale.value}`, async () => {
   try {
     const fullPath = `/positions/${slug.value}`
-    return await findOneContentDoc(fullPath, locale.value)
+    return await findOneContentDoc(fullPath, locale.value, defaultLocale)
   } catch (e) {
     console.error('Error fetching position:', e)
     return null

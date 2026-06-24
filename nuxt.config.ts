@@ -100,11 +100,13 @@ export default defineNuxtConfig({
     modules: ['@nuxt/content', '@nuxtjs/i18n'],
 
     // i18n — locales are AUTO-DETECTED from <rootDir>/i18n/*.json at build
-    // time (filename minus .json = locale code). A consuming site can still
-    // override `locales` / `langDir` / `defaultLocale` in its own nuxt.config
-    // (Nuxt merges, the consumer wins).
+    // time (filename minus .json = locale code). defaultLocale can be set:
+    //   1. In the consumer's nuxt.config:   i18n: { defaultLocale: 'zh' }
+    //   2. Via env var:                     MARKUXT_DEFAULT_LOCALE=zh
+    //   3. Falls back to 'en' if neither is set.
+    // The consumer's nuxt.config value wins (Nuxt config merge: scalar override).
     i18n: {
-        defaultLocale: 'en',
+        defaultLocale: process.env.MARKUXT_DEFAULT_LOCALE || 'en',
         strategy: 'no_prefix',
         locales: detectI18nLocales(ROOT_DIR),
         langDir: resolve(process.cwd(), ROOT_DIR, 'i18n'),

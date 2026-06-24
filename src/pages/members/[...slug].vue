@@ -129,6 +129,7 @@ import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const { $i18n } = useNuxtApp()
+const defaultLocale = useDefaultLocale()
 const locale = computed(() => (route.query.lang as string) || ($i18n as any)?.locale?.value || 'en')
 const { categoryName } = useMemberCategories()
 const route = useRoute()
@@ -144,7 +145,7 @@ const slug = computed(() => {
 const { data: memberData } = await useAsyncData(`member-${slug.value}-${locale.value}`, async () => {
   try {
     const fullPath = `/members/${slug.value}`
-    return await findOneContentDoc(fullPath, locale.value)
+    return await findOneContentDoc(fullPath, locale.value, defaultLocale)
   } catch (e) {
     console.error('Error fetching member:', e)
     return null

@@ -63,6 +63,7 @@ import Help from '@icon-park/vue-next/es/icons/Help'
 const { t } = useI18n()
 const { $i18n } = useNuxtApp()
 const route = useRoute()
+const defaultLocale = useDefaultLocale()
 const locale = computed(() => (route.query.lang as string) || ($i18n as any)?.locale?.value || 'en')
 
 // Compute slug to support catch-all route [...slug] (array or string)
@@ -75,7 +76,7 @@ const slug = computed(() => {
 const { data: news } = await useAsyncData(() => `news-${slug.value}-${locale.value}`, async () => {
   try {
     const fullPath = `/news/${slug.value}`
-    return await findOneContentDoc(fullPath, locale.value)
+    return await findOneContentDoc(fullPath, locale.value, defaultLocale)
   } catch (e) {
     console.error('Error fetching news:', e)
     return null
