@@ -90,7 +90,7 @@ import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
 const { $i18n } = useNuxtApp()
-const locale = computed(() => ($i18n as any)?.locale?.value || 'en')
+const locale = computed(() => (route.query.lang as string) || ($i18n as any)?.locale?.value || 'en')
 const route = useRoute()
 
 // Get position by file path
@@ -100,7 +100,7 @@ const slug = computed(() => {
   return Array.isArray(slugParam) ? slugParam.join('/') : slugParam
 })
 
-const { data: positionData } = await useAsyncData(`position-${slug.value}`, async () => {
+const { data: positionData } = await useAsyncData(`position-${slug.value}-${locale.value}`, async () => {
   try {
     const fullPath = `/positions/${slug.value}`
     return await findOneContentDoc(fullPath, locale.value)
