@@ -11,17 +11,33 @@ const __dirname = dirname(__filename)
 const ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
 
 /**
- * Sync non-document files (images, videos, etc.) from rootDir to rootDir/public/_markuxt/.
- * This lets authors place assets next to their markdown files while still serving
- * them as static files at build time (Nuxt Content v2 ignores binary files).
+ * Sync media/binary assets (images, video, audio, documents) from rootDir to
+ * rootDir/public/_markuxt/. This lets authors place assets next to their
+ * markdown files while still serving them as static files at build time
+ * (Nuxt Content v2 ignores binary files).
  *
  * Source:  src/members/staff/salman-ijaz.webp
  * Target:  src/public/_markuxt/members/staff/salman-ijaz.webp
  * URL:     /_markuxt/members/staff/salman-ijaz.webp
+ *
+ * Uses an ALLOWLIST of asset extensions (not a blocklist of doc extensions).
+ * A blocklist would also copy source code (.ts/.vue/.css/...) — when this runs
+ * on the layer's own src/ during `nuxt prepare`, that would leak the layer's
+ * app code into src/public/_markuxt/ (published via the `files` field and served
+ * as static assets to consumers). The allowlist ensures only real assets sync.
  */
 function syncContentAssets(rootDir: string) {
-  const docExtensions = new Set(['.md', '.mdx', '.yml', '.yaml', '.json', '.csv'])
-  // Directories to skip (output dir and non-content dirs)
+  const assetExtensions = new Set([
+    // images
+    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.bmp', '.ico', '.svg', '.tiff',
+    // video
+    '.mp4', '.webm', '.mov', '.avi', '.mkv', '.m4v', '.wmv',
+    // audio
+    '.mp3', '.ogg', '.wav', '.flac', '.m4a', '.aac',
+    // documents / archives
+    '.pdf', '.zip', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+  ])
+  // Directories to skip (output dir, non-content dirs)
   const skipDirs = new Set(['public', 'i18n'])
   const targetDir = join(rootDir, 'public', '_markuxt')
 
@@ -43,7 +59,7 @@ function syncContentAssets(rootDir: string) {
         }
       } else if (entry.isFile()) {
         const ext = extname(entry.name).toLowerCase()
-        if (!docExtensions.has(ext)) {
+        if (assetExtensions.has(ext)) {
           const rel = relative(rootDir, fullPath)
           const destPath = join(targetDir, rel)
           const destDir = parse(destPath).dir
