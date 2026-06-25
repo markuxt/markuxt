@@ -6,10 +6,6 @@
   "license": "Apache-2.0",
   "type": "module",
   "main": "./nuxt.config.ts",
-  "exports": {
-    ".": "./nuxt.config.ts",
-    "./i18n": "./src/config/detect-i18n-locales.ts"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markuxt/markuxt.git"
@@ -44,6 +40,7 @@
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
+    "@nuxt/kit": "^3.21.7",
     "@types/node": "^25.2.3",
     "typescript": "^5.7.3",
     "vue-tsc": "^3.2.4"

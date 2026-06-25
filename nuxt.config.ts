@@ -68,15 +68,28 @@ export default defineNuxtConfig({
     // Source directory
     srcDir: 'src/',
 
-    // Nuxt Content module + i18n
-    modules: ['@nuxt/content', '@nuxtjs/i18n'],
+    // Nuxt Content module + i18n.
+    // The local markuxt-i18n-locales module auto-detects locales from the
+    // consumer's src/i18n/*.json and registers them via i18n:registerModule, so
+    // consumers don't need to declare locales/langDir themselves.
+    //
+    // Nuxt does NOT auto-discover modules under src/modules/, so the module
+    // must be listed in `modules` with a resolvable reference. We alias the
+    // file to its bare name so the array reads cleanly; module resolution goes
+    // through nuxt.options.alias (kit's _resolvePathGranularly).
+    modules: ['@nuxt/content', 'markuxt-i18n-locales', '@nuxtjs/i18n'],
 
-    // i18n — the layer sets strategy + defaults ONLY. It does NOT declare
-    // `locales` or `langDir`: @nuxtjs/i18n v10 resolves each layer's locale
-    // files against THAT LAYER's own rootDir, and this layer ships no locale
-    // files (they live in each consumer's src/i18n/). Declaring locales here
-    // would ENOENT under markuxt/locales/. Consumers call detectI18nLocales()
-    // from '@markuxt/markuxt/i18n' and set langDir + restructureDir themselves.
+    alias: {
+        'markuxt-i18n-locales': resolve(__dirname, 'src/modules/markuxt-i18n-locales.ts'),
+    },
+
+    // i18n — the layer sets strategy + defaults ONLY. Locales are auto-detected
+    // and registered by the markuxt-i18n-locales module (from the consumer's
+    // src/i18n/*.json), so neither this layer nor consumers declare `locales` or
+    // `langDir`. (@nuxtjs/i18n v10 resolves each layer's locale files against
+    // that layer's own rootDir; this layer ships none, so declaring locales here
+    // would ENOENT under markuxt/locales/. The module sidesteps this by
+    // registering with an absolute langDir via i18n:registerModule.)
     // defaultLocale can be set:
     //   1. In the consumer's nuxt.config:   i18n: { defaultLocale: 'zh' }
     //   2. Via env var:                     MARKUXT_DEFAULT_LOCALE=zh
