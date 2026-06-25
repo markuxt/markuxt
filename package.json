@@ -6,6 +6,10 @@
   "license": "Apache-2.0",
   "type": "module",
   "main": "./nuxt.config.ts",
+  "exports": {
+    ".": "./nuxt.config.ts",
+    "./i18n": "./src/config/detect-i18n-locales.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markuxt/markuxt.git"

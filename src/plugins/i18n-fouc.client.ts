@@ -56,10 +56,15 @@ export default defineNuxtPlugin((nuxtApp) => {
     const isValid = (code: string) => supported.includes(code)
 
     // --- Determine effective target locale ---
-    // Priority: ?lang= (if valid) > cookie (if valid) > default
+    // Priority:
+    //   ?lang=<valid>      → that locale (even if it's the default)
+    //   ?lang=<invalid>    → default (NOT cookie — explicit param overrides)
+    //   ?lang= (empty)     → default
+    //   no ?lang=           → cookie (if valid) > default
     let target = def
-    if (langParam && isValid(langParam) && langParam !== def) {
-      target = langParam
+    if (langParam !== '') {
+      // ?lang= is present (even if empty string after ?lang=)
+      target = isValid(langParam) ? langParam : def
     } else if (cookieLocale && isValid(cookieLocale) && cookieLocale !== def) {
       target = cookieLocale
     }

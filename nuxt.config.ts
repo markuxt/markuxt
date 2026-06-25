@@ -11,34 +11,6 @@ const __dirname = dirname(__filename)
 const ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
 
 /**
- * Auto-detect locales from <rootDir>/i18n/*.json at build time.
- * Each file (minus .json) is a locale code: en.json → 'en', zh-CN.json → 'zh-CN'.
- * The display name is resolved via Intl.DisplayNames in the locale's own
- * language (e.g. 'en' → 'English', 'zh-CN' → '中文 (简体)').
- * Consuming sites can still override `i18n.locales` in their own config.
- */
-function detectI18nLocales(rootDir: string) {
-    const dir = join(process.cwd(), rootDir, 'i18n')
-    let files: string[] = []
-    try {
-        files = readdirSync(dir).filter(f => f.endsWith('.json')).sort()
-    } catch {
-        // i18n dir not found — return empty; consumer must declare locales
-    }
-    return files.map(f => {
-        const code = f.replace(/\.json$/, '')
-        let name = code
-        try {
-            // @ts-ignore — Intl.DisplayNames is available in Node 14+
-            name = new Intl.DisplayNames([code], { type: 'language' }).of(code) || code
-        } catch {
-            name = code
-        }
-        return { code, name, file: f }
-    })
-}
-
-/**
  * Sync non-document files (images, videos, etc.) from rootDir to rootDir/public/_markuxt/.
  * This lets authors place assets next to their markdown files while still serving
  * them as static files at build time (Nuxt Content v2 ignores binary files).
@@ -99,17 +71,19 @@ export default defineNuxtConfig({
     // Nuxt Content module + i18n
     modules: ['@nuxt/content', '@nuxtjs/i18n'],
 
-    // i18n — locales are AUTO-DETECTED from <rootDir>/i18n/*.json at build
-    // time (filename minus .json = locale code). defaultLocale can be set:
+    // i18n — the layer sets strategy + defaults ONLY. It does NOT declare
+    // `locales` or `langDir`: @nuxtjs/i18n v10 resolves each layer's locale
+    // files against THAT LAYER's own rootDir, and this layer ships no locale
+    // files (they live in each consumer's src/i18n/). Declaring locales here
+    // would ENOENT under markuxt/locales/. Consumers call detectI18nLocales()
+    // from '@markuxt/markuxt/i18n' and set langDir + restructureDir themselves.
+    // defaultLocale can be set:
     //   1. In the consumer's nuxt.config:   i18n: { defaultLocale: 'zh' }
     //   2. Via env var:                     MARKUXT_DEFAULT_LOCALE=zh
     //   3. Falls back to 'en' if neither is set.
-    // The consumer's nuxt.config value wins (Nuxt config merge: scalar override).
     i18n: {
         defaultLocale: process.env.MARKUXT_DEFAULT_LOCALE || 'en',
         strategy: 'no_prefix',
-        locales: detectI18nLocales(ROOT_DIR),
-        langDir: resolve(process.cwd(), ROOT_DIR, 'i18n'),
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'i18n_locale',

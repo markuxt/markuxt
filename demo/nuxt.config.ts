@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { resolve } from 'path'
+import { detectI18nLocales } from '@markuxt/markuxt/i18n'
 
 // Set before markuxt's nuxt.config is evaluated
 process.env.MARKUXT_ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
@@ -16,10 +17,16 @@ export default defineNuxtConfig({
     // Register global icon components (outside src/ to avoid Content scanning)
     plugins: ['~~/plugins/icons.ts'],
 
-    // i18n — locales are auto-detected by the layer from src/i18n/*.json.
-    // Override defaultLocale here if the site's primary language isn't 'en':
+    // i18n — locales are auto-detected from src/i18n/*.json.
+    // restructureDir: '.' + langDir: 'src/i18n' makes @nuxtjs/i18n v10 resolve
+    // the locale files directly under <project>/src/i18n (it otherwise prepends
+    // a default 'i18n/' restructure dir to langDir). Override defaultLocale here
+    // if the site's primary language isn't 'en':
     i18n: {
         defaultLocale: 'en',
+        restructureDir: '.',
+        langDir: 'src/i18n',
+        locales: detectI18nLocales(),
     },
 
     // Site-specific head
