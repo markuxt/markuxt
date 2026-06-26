@@ -1,16 +1,7 @@
 ---
-name: hnrobert
-role: Creator / Developer / Maintainer
-title: Software Engineer
-orcid: 0009-0000-1778-7485
-# email: ''
-# scholar: https://github.com/hnrobert
-image: assets/hnrobert.jpg
-category: core-team
-order: 1
 interests:
   - Robert He
-  - Full Stack Developer @ UNNC CS Y2024 
+  - 宁诺 24届 计算机系 全栈开发者
   - 写点我喜欢的 & 你需要的
 ---
 

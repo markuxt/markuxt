@@ -51,11 +51,12 @@ const { t } = useI18n()
 // Fetch all publications
 const _locale = useActiveLocale()
 const _defaultLocale = useDefaultLocale()
+const _localeOrder = useLocaleOrder()
 const { data: publications } = await useAsyncData(`publications-${_locale.value}`, async () => {
   const docs = await queryContent('/publications')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-  return dedupeByPath(docs, _locale.value, _defaultLocale)
+  return mergeByPath(docs, _locale.value, _defaultLocale, _localeOrder.value)
 }, { watch: [_locale] })
 
 const processedPublications = computed(() => {

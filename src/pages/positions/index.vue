@@ -75,11 +75,12 @@ interface Position {
 // Fetch positions
 const _locale = useActiveLocale()
 const _defaultLocale = useDefaultLocale()
+const _localeOrder = useLocaleOrder()
 const { data: positions } = await useAsyncData(`positions-${_locale.value}`, async () => {
   const docs = await queryContent('/positions')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-  return dedupeByPath(docs, _locale.value, _defaultLocale)
+  return mergeByPath(docs, _locale.value, _defaultLocale, _localeOrder.value)
 }, { watch: [_locale] })
 
 const positionsList = computed(() => positions.value || [])

@@ -29,6 +29,21 @@ export default defineNitroPlugin((nitroApp) => {
       if (file._path) {
         file._path = file._path.replace(new RegExp(`\\.${escapeRegex(code)}$`, 'i'), '')
       }
+      // Strip a filename-derived auto-title. Nuxt Content's path-meta transformer
+      // sets `title = content.title || generateTitle(basename)`, so a PARTIAL
+      // locale variant (which omits `title`) gets a meaningless title built from
+      // the filename (e.g. "HnrobertZh CN"). That would win the field-merge and
+      // override the default's real title. Detect it by comparing the normalised
+      // title to the normalised filename stem; a genuine frontmatter title won't
+      // match. Only applies to suffixed variants — default files keep their title.
+      if (typeof file.title === 'string') {
+        const idLast = file._id.split(':').pop() || ''           // "hnrobert.zh-CN.md"
+        const stem = idLast.replace(/\.md$/i, '')                 // "hnrobert.zh-CN"
+        const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+        if (norm(file.title) === norm(stem)) {
+          delete file.title
+        }
+      }
     } else {
       file.locale = defaultLocale
     }
