@@ -9,18 +9,21 @@
  * fields (and body) that change for that language, and inherits everything else.
  *
  * This module merges all variants of one document into a single doc, resolving
- * EVERY field (and the body) through a priority chain:
+ * EVERY field (and the body) PER FIELD through a priority chain:
  *
  *   tier 1 — current locale (exact match)   the active rendering language
- *   tier 2 — default locale                  the fully-defined base doc
- *   tier 3 — remaining variants              ONLY when no default-locale variant
- *            (i18n order, then alphabetical)  exists in the group
+ *   tier 2 — default locale                  the base doc
+ *   tier 3 — remaining variants              ALWAYS, as a per-field fallback
+ *            (i18n order, then alphabetical)
  *
- * "If a default exists, only the default is used as fallback" — when a
- * default-locale variant is present, tier 3 is skipped, so a missing field
- * falls back to the default rather than leaking from another language (e.g. a
- * Chinese body never appears on the English page). Tier 3 only engages when the
- * group has no default-locale variant at all.
+ * Per-field fallback: for each field (and the body), the FIRST variant in this
+ * order that DEFINES it wins. So if the current locale and the default both
+ * omit a field (e.g. `orcid`), it is taken from the alphabetically-first
+ * variant that has it — no data is lost just because the default file is
+ * incomplete. Note this means a field/body only present in another language
+ * CAN surface on the current page (e.g. a bio written only in zh-CN shows on
+ * the en page when en has none); surface every-language metadata (orcid, image,
+ * …) is the intent.
  *
  * The body and `_id` are taken from the highest-priority variant that HAS a
  * body (the "body provider"). Because locale variants are sibling files in the
@@ -67,14 +70,14 @@ export function useLocaleOrder() {
 }
 
 /** Build the priority-ordered variant list for the target locale (highest
- *  first). See module header for the tier rules. */
+ *  first). Tier 3 (remaining variants) is ALWAYS appended as a per-field
+ *  fallback — see module header. */
 function priorityOrder<T extends { locale?: string }>(
   variants: T[],
   target: string,
   defaultLocale: string,
   localeOrder: string[],
 ): T[] {
-  const hasDefault = variants.some(v => v.locale === defaultLocale)
   const ordered: T[] = []
 
   const exact = variants.find(v => v.locale === target)
@@ -85,20 +88,19 @@ function priorityOrder<T extends { locale?: string }>(
     if (def) ordered.push(def)
   }
 
-  // Tier 3 only when there is no default-locale variant in the group.
-  if (!hasDefault) {
-    const rest = variants
-      .filter(v => v.locale !== target)
-      .sort((a, b) => {
-        const ia = localeOrder.indexOf(a.locale || '')
-        const ib = localeOrder.indexOf(b.locale || '')
-        const ra = ia === -1 ? Number.MAX_SAFE_INTEGER : ia
-        const rb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib
-        if (ra !== rb) return ra - rb
-        return (a.locale || '').localeCompare(b.locale || '')
-      })
-    ordered.push(...rest)
-  }
+  // Tier 3: the rest, ordered by i18n definition order then alphabetically.
+  const used = new Set(ordered)
+  const rest = variants
+    .filter(v => !used.has(v))
+    .sort((a, b) => {
+      const ia = localeOrder.indexOf(a.locale || '')
+      const ib = localeOrder.indexOf(b.locale || '')
+      const ra = ia === -1 ? Number.MAX_SAFE_INTEGER : ia
+      const rb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib
+      if (ra !== rb) return ra - rb
+      return (a.locale || '').localeCompare(b.locale || '')
+    })
+  ordered.push(...rest)
 
   return ordered
 }
