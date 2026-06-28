@@ -38,12 +38,16 @@ interface NewsItem {
 const { t } = useI18n()
 
 // Fetch all news
-const { data: newsItems } = await useAsyncData('news', () =>
-  queryContent('/news')
+const _locale = useActiveLocale()
+const _defaultLocale = useDefaultLocale()
+const _localeOrder = useLocaleOrder()
+const { data: newsItems } = await useAsyncData(`news-${_locale.value}`, async () => {
+  const docs = await queryContent('/news')
     .where({ _hidden: { $ne: true } })
     .sort({ date: -1 })
     .where({ _extension: 'md' }).find()
-)
+  return mergeByPath(docs, _locale.value, _defaultLocale, _localeOrder.value)
+}, { watch: [_locale] })
 
 const safeNewsItems = computed(() =>
   (newsItems.value ?? []).filter((item: any) => typeof item.date === 'string') as unknown as NewsItem[]

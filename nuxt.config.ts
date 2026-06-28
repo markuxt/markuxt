@@ -11,17 +11,33 @@ const __dirname = dirname(__filename)
 const ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
 
 /**
- * Sync non-document files (images, videos, etc.) from rootDir to rootDir/public/_markuxt/.
- * This lets authors place assets next to their markdown files while still serving
- * them as static files at build time (Nuxt Content v2 ignores binary files).
+ * Sync media/binary assets (images, video, audio, documents) from rootDir to
+ * rootDir/public/_markuxt/. This lets authors place assets next to their
+ * markdown files while still serving them as static files at build time
+ * (Nuxt Content v2 ignores binary files).
  *
  * Source:  src/members/staff/salman-ijaz.webp
  * Target:  src/public/_markuxt/members/staff/salman-ijaz.webp
  * URL:     /_markuxt/members/staff/salman-ijaz.webp
+ *
+ * Uses an ALLOWLIST of asset extensions (not a blocklist of doc extensions).
+ * A blocklist would also copy source code (.ts/.vue/.css/...) — when this runs
+ * on the layer's own src/ during `nuxt prepare`, that would leak the layer's
+ * app code into src/public/_markuxt/ (published via the `files` field and served
+ * as static assets to consumers). The allowlist ensures only real assets sync.
  */
 function syncContentAssets(rootDir: string) {
-  const docExtensions = new Set(['.md', '.mdx', '.yml', '.yaml', '.json', '.csv'])
-  // Directories to skip (output dir and non-content dirs)
+  const assetExtensions = new Set([
+    // images
+    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.bmp', '.ico', '.svg', '.tiff',
+    // video
+    '.mp4', '.webm', '.mov', '.avi', '.mkv', '.m4v', '.wmv',
+    // audio
+    '.mp3', '.ogg', '.wav', '.flac', '.m4a', '.aac',
+    // documents / archives
+    '.pdf', '.zip', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+  ])
+  // Directories to skip (output dir, non-content dirs)
   const skipDirs = new Set(['public', 'i18n'])
   const targetDir = join(rootDir, 'public', '_markuxt')
 
@@ -43,7 +59,7 @@ function syncContentAssets(rootDir: string) {
         }
       } else if (entry.isFile()) {
         const ext = extname(entry.name).toLowerCase()
-        if (!docExtensions.has(ext)) {
+        if (assetExtensions.has(ext)) {
           const rel = relative(rootDir, fullPath)
           const destPath = join(targetDir, rel)
           const destDir = parse(destPath).dir
@@ -68,12 +84,34 @@ export default defineNuxtConfig({
     // Source directory
     srcDir: 'src/',
 
-    // Nuxt Content module + i18n
-    modules: ['@nuxt/content', '@nuxtjs/i18n'],
+    // Nuxt Content module + i18n.
+    // The local markuxt-i18n-locales module auto-detects locales from the
+    // consumer's src/i18n/*.json and registers them via i18n:registerModule, so
+    // consumers don't need to declare locales/langDir themselves.
+    //
+    // Nuxt does NOT auto-discover modules under src/modules/, so the module
+    // must be listed in `modules` with a resolvable reference. We alias the
+    // file to its bare name so the array reads cleanly; module resolution goes
+    // through nuxt.options.alias (kit's _resolvePathGranularly).
+    modules: ['@nuxt/content', 'markuxt-i18n-locales', '@nuxtjs/i18n'],
 
-    // i18n defaults — consuming site overrides locales and langDir
+    alias: {
+        'markuxt-i18n-locales': resolve(__dirname, 'src/modules/markuxt-i18n-locales.ts'),
+    },
+
+    // i18n — the layer sets strategy + defaults ONLY. Locales are auto-detected
+    // and registered by the markuxt-i18n-locales module (from the consumer's
+    // src/i18n/*.json), so neither this layer nor consumers declare `locales` or
+    // `langDir`. (@nuxtjs/i18n v10 resolves each layer's locale files against
+    // that layer's own rootDir; this layer ships none, so declaring locales here
+    // would ENOENT under markuxt/locales/. The module sidesteps this by
+    // registering with an absolute langDir via i18n:registerModule.)
+    // defaultLocale can be set:
+    //   1. In the consumer's nuxt.config:   i18n: { defaultLocale: 'zh' }
+    //   2. Via env var:                     MARKUXT_DEFAULT_LOCALE=zh
+    //   3. Falls back to 'en' if neither is set.
     i18n: {
-        defaultLocale: 'en',
+        defaultLocale: process.env.MARKUXT_DEFAULT_LOCALE || 'en',
         strategy: 'no_prefix',
         detectBrowserLanguage: {
             useCookie: true,
@@ -81,9 +119,6 @@ export default defineNuxtConfig({
             redirectOn: 'root',
         },
         // Preserve SSR-detected locale through hydration.
-        // Without this, `resolvedLocale` is empty for no_prefix strategy,
-        // causing a flash: SSR renders the detected locale (e.g. zh-CN),
-        // then the client resets to defaultLocale (en).
         experimental: {
             nitroContextDetection: true,
         },
@@ -172,6 +207,11 @@ export default defineNuxtConfig({
     // Nitro configuration
     nitro: {
         baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
+        prerender: {
+            // Don't fail the build on crawler 404s (locale-variant routes that
+            // aren't public — the listing dedupe filters them out).
+            failOnError: false,
+        },
     },
 
     // TypeScript

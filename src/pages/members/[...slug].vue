@@ -128,6 +128,9 @@ import ArrowRight from '@icon-park/vue-next/es/icons/ArrowRight'
 import Help from '@icon-park/vue-next/es/icons/Help'
 
 const { t } = useI18n()
+const { $i18n } = useNuxtApp()
+const defaultLocale = useDefaultLocale()
+const locale = computed(() => (route.query.lang as string) || ($i18n as any)?.locale?.value || 'en')
 const { categoryName } = useMemberCategories()
 const route = useRoute()
 const config = useRuntimeConfig()
@@ -139,16 +142,16 @@ const slug = computed(() => {
   return Array.isArray(slugParam) ? slugParam.join('/') : slugParam
 })
 
-const { data: memberData } = await useAsyncData(`member-${slug.value}`, async () => {
+const { data: memberData } = await useAsyncData(`member-${slug.value}-${locale.value}`, async () => {
   try {
     const fullPath = `/members/${slug.value}`
-    return await findOneContentDoc(fullPath)
+    return await findOneContentDoc(fullPath, locale.value, defaultLocale)
   } catch (e) {
     console.error('Error fetching member:', e)
     return null
   }
 }, {
-  watch: [slug]
+  watch: [slug, locale]
 })
 
 const member = computed(() => memberData.value)

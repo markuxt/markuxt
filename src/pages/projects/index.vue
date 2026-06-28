@@ -142,11 +142,15 @@ const getStatusIcon = (status?: string) => {
 }
 
 // Fetch projects
-const { data: projects } = await useAsyncData('projects', () =>
-  queryContent('/projects')
+const _locale = useActiveLocale()
+const _defaultLocale = useDefaultLocale()
+const _localeOrder = useLocaleOrder()
+const { data: projects } = await useAsyncData(`projects-${_locale.value}`, async () => {
+  const docs = await queryContent('/projects')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-)
+  return mergeByPath(docs, _locale.value, _defaultLocale, _localeOrder.value)
+}, { watch: [_locale] })
 
 const projectList = computed(() => projects.value ?? [])
 

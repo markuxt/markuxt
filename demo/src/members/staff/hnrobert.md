@@ -13,3 +13,11 @@ interests:
   - Full Stack Developer @ UNNC CS Y2024 
   - Creating what I like & what you need
 ---
+
+## Morning
+
+Hello 😈
+
+See you on [GitHub](https://github.com/hnrobert)
+
+Or my personal site [hnrobert.space](https://hnrobert.space) (It's been a hundred years since I last updated it, seems)

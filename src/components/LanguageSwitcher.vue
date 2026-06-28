@@ -7,7 +7,7 @@
       :class="{ 'lang-switcher__btn--active': loc.code === currentLocale }"
       @click="switchLocale(loc.code)"
     >
-      {{ getLocaleLabel(loc.code) }}
+      {{ loc.name }}
     </button>
   </div>
 </template>
@@ -31,17 +31,6 @@ const currentLocale = computed(() => i18n.locale.value)
 function switchLocale(code: string) {
   i18n.setLocale(code)
 }
-
-const LABELS: Record<string, string> = {
-  'en': 'EN',
-  'zh-CN': '中文',
-}
-
-function getLocaleLabel(code: string): string {
-  if (code in LABELS) return LABELS[code]
-  console.warn(`[LanguageSwitcher] unknown locale code: "${code}"`)
-  return code
-}
 </script>
 
 <style scoped>
@@ -57,7 +46,7 @@ function getLocaleLabel(code: string): string {
 }
 
 .lang-switcher__btn {
-  padding: 4px 10px;
+  padding: 4px 10px 6px 10px;
   font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
