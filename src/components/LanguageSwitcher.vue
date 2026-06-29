@@ -69,10 +69,10 @@ function switchLocale(code: string) {
 }
 
 .lang-switcher__btn {
-  padding: 4px 10px 6px 10px;
+  padding: 0 10px;
   font-size: 0.75rem;
   font-weight: 600;
-  text-align: center;
+  line-height: 26px;
   height: 26px;
   color: var(--color-text-muted);
   background: transparent;
@@ -81,6 +81,11 @@ function switchLocale(code: string) {
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
+}
+
+.lang-switcher__btn span {
+  display: inline-block;
+  line-height: 1;
 }
 
 .lang-switcher__btn:hover {
