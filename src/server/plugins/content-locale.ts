@@ -28,6 +28,11 @@ export default defineNitroPlugin((nitroApp) => {
       // Collapse the dot-suffix from _path so variants share one route.
       if (file._path) {
         file._path = file._path.replace(new RegExp(`\\.${escapeRegex(code)}$`, 'i'), '')
+        // `index.zh-CN.md` → after stripping → `.../index`, but the default
+        // `index.md` gets _path `.../` (Nuxt Content collapses index). Strip it.
+        if (file._path.endsWith('/index')) {
+          file._path = file._path.slice(0, -6) || '/'
+        }
       }
       // Strip a filename-derived auto-title. Nuxt Content's path-meta transformer
       // sets `title = content.title || generateTitle(basename)`, so a PARTIAL
