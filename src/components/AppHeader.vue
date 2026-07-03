@@ -22,9 +22,7 @@
           {{ item.label }}
         </NuxtLink>
         <div class="header__controls">
-          <ClientOnly>
-            <LanguageSwitcher />
-          </ClientOnly>
+          <LanguageSwitcher />
           <ColorModeToggle />
         </div>
       </nav>
@@ -57,9 +55,7 @@
           {{ item.label }}
         </NuxtLink>
         <div class="header__mobile-controls">
-          <ClientOnly>
-            <LanguageSwitcher />
-          </ClientOnly>
+          <LanguageSwitcher />
           <ColorModeToggle />
         </div>
       </nav>
