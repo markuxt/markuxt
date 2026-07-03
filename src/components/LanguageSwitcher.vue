@@ -1,15 +1,13 @@
 <template>
   <div class="lang-switcher">
     <button
-      v-for="loc in displayLocales"
+      v-for="loc in availableLocales"
       :key="loc.code"
       class="lang-switcher__btn"
-      :class="{ 'lang-switcher__btn--active': loc.code === currentLocale, 'lang-switcher__btn--placeholder': !loc.code }"
-      :disabled="!loc.code"
-      @click="loc.code && switchLocale(loc.code)"
+      :class="{ 'lang-switcher__btn--active': loc.code === activeLocale }"
+      @click="switchLocale(loc.code)"
     >
-      <span v-if="loc.name">{{ loc.name }}</span>
-      <span v-else class="lang-switcher__btn-text">...</span>
+      {{ loc.name }}
     </button>
   </div>
 </template>
@@ -22,37 +20,30 @@
 // back to) has switched. `nuxtApp.$i18n` is the global instance, so the
 // switcher's active state matches the locale actually being rendered.
 
-// Safely get i18n instance - may not be available during SSR
-let i18n: any = null
-try {
-  i18n = useNuxtApp().$i18n as {
-    locale: { value: string }
-    locales: { value: Array<{ code: string; name: string }> }
-    setLocale: (code: string) => void
-  }
-} catch {
-  // i18n not available during SSR
+const i18n = useNuxtApp().$i18n as {
+  locale: { value: string }
+  locales: { value: Array<{ code: string; name: string }> }
+  setLocale: (code: string) => void
 }
 
 const availableLocales = computed(() => i18n?.locales?.value ?? [])
 const currentLocale = computed(() => i18n?.locale?.value ?? '')
 
-// Display locales: show available if loaded, otherwise show 2 placeholder buttons
-const displayLocales = computed(() => {
-  if (availableLocales.value.length >= 2) {
-    return availableLocales.value
-  }
-  // Always show at least 2 buttons to prevent layout shift during loading
-  // Placeholder buttons have the same structure but no code
-  return availableLocales.value.length > 0
-    ? [...availableLocales.value, { code: '', name: null }]
-    : [{ code: '', name: null }, { code: '', name: null }]
+// Static HTML is prerendered in the default locale, but the visitor's saved
+// locale (i18n_locale cookie / ?lang=) isn't known until the client runs.
+// Rendering the default as "active" during SSR would flash the wrong
+// selection for non-default users. So NO button is active until the
+// component mounts on the client; by then the i18n-fouc plugin has applied
+// the saved locale and this computed reactivity lights up the right button.
+// SSR and the first client render both yield '' → no hydration mismatch.
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
 })
+const activeLocale = computed(() => (mounted.value ? currentLocale.value : ''))
 
 function switchLocale(code: string) {
-  if (i18n?.setLocale) {
-    i18n.setLocale(code)
-  }
+  i18n?.setLocale?.(code)
 }
 </script>
 
@@ -100,10 +91,5 @@ function switchLocale(code: string) {
 .lang-switcher__btn--active:hover {
   background: var(--surface-brand);
   color: var(--color-on-brand);
-}
-
-.lang-switcher__btn--placeholder {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>
