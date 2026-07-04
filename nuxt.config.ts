@@ -11,6 +11,18 @@ const __dirname = dirname(__filename)
 // Override via MARKUXT_ROOT_DIR env var; defaults to 'src/'.
 const ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
 
+// Public base URL the site is served from. Defaults to '/' (root) when unset —
+// e.g. EdgeOne, local dev, or a user/org *.github.io root site. Set
+// NUXT_PUBLIC_BASE_URL to '/<repo>/' for project Pages (the GitHub Actions
+// deploy workflow computes this). Nuxt requires app.baseURL/nitro.baseURL to
+// start AND end with '/', so a raw value like "markuxt" is normalized to
+// "/markuxt/".
+const PUBLIC_BASE_URL = (() => {
+    const raw = (process.env.NUXT_PUBLIC_BASE_URL || '/').trim()
+    if (!raw || raw === '/') return '/'
+    return '/' + raw.replace(/^\/+/, '').replace(/\/+$/, '') + '/'
+})()
+
 /**
  * Sync media/binary assets (images, video, audio, documents) from rootDir to
  * rootDir/public/_markuxt/. This lets authors place assets next to their
@@ -183,7 +195,7 @@ export default defineNuxtConfig({
             ],
         },
         pageTransition: { name: 'page', mode: 'out-in' },
-        baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
+        baseURL: PUBLIC_BASE_URL,
     },
 
     // CSS — resolve relative to layer root, not the consuming site
@@ -219,7 +231,7 @@ export default defineNuxtConfig({
 
     // Nitro configuration
     nitro: {
-        baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
+        baseURL: PUBLIC_BASE_URL,
         prerender: {
             // Don't fail the build on crawler 404s (locale-variant routes that
             // aren't public — the listing dedupe filters them out).
