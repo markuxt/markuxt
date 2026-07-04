@@ -24,7 +24,12 @@
               :key="index"
               class="carousel__slide"
             >
-              <img :src="slide.src" :alt="slide.alt" class="carousel__image" />
+              <ProgressiveImage
+                :src="slide.src"
+                :alt="slide.alt"
+                img-class="carousel__image"
+                :lazy="false"
+              />
               <div class="carousel__caption" v-if="slide.caption">
                 <span>{{ slide.caption }}</span>
               </div>

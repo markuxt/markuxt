@@ -19,7 +19,7 @@
       <!-- Project Header -->
       <div class="project-header animate-fade-in-up">
         <div class="project-header__image-wrapper" v-if="projectImage">
-          <img :src="projectImage" :alt="project.title" class="project-header__image" />
+          <ProgressiveImage :src="projectImage" :alt="project.title" mode="fluid" />
         </div>
         <div class="project-header__info">
           <span v-if="project.status" class="project-header__badge" :class="`badge-${project.status}`">

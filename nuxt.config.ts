@@ -2,6 +2,7 @@
 import { readdirSync, mkdirSync, existsSync, copyFileSync, rmSync } from 'fs'
 import { join, parse, extname, relative, resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { generateLqipManifest } from './src/build/generate-lqip'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -131,12 +132,18 @@ export default defineNuxtConfig({
         'content:context': (ctx: { transformers: string[] }) => {
             ctx.transformers.push(resolve(__dirname, 'src/content-transformers/binary-assets.ts'));
         },
-        'build:before': () => {
+        'build:before': async () => {
             const cwd = process.cwd();
             const rootDir = join(cwd, ROOT_DIR);
 
             // Sync assets to public/_markuxt/
             syncContentAssets(rootDir);
+
+            // Generate blurred LQIP thumbnails + dimensions for every raster
+            // image under public/ → public/_markuxt/lqip.json (used by
+            // <ProgressiveImage> / useLqip()). Runs after sync so content
+            // images (copied above) are included.
+            await generateLqipManifest(rootDir);
         },
     },
 
@@ -150,6 +157,12 @@ export default defineNuxtConfig({
                 { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,100;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800;1,9..144,900&display=swap' },
             ],
             script: [
+                // Mark <html> as JS-enabled before first paint. <ProgressiveImage>
+                // gates its blur-up fade-in on `.js` so that without JS the real
+                // image still shows (opacity defaults to 1).
+                {
+                    innerHTML: 'document.documentElement.classList.add("js")',
+                },
                 // Inline script to set data-color-mode before first paint.
                 // Reads localStorage ('markuxt-color-mode'), falls back to OS preference.
                 // This prevents the FOUC (flash of wrong color mode) that would occur

@@ -35,12 +35,12 @@
             <h3>{{ t('publications.abstract') }}</h3>
           </div>
           <div class="publication-section__body publication-section__body--content">
-            <img
+            <ProgressiveImage
               v-if="screenshotUrl"
               :src="screenshotUrl"
               :alt="publication.title"
-              class="publication-screenshot"
-              @error="($event.target as HTMLImageElement).style.display = 'none'"
+              wrapper-class="publication-screenshot"
+              mode="fluid"
             />
             <ContentRenderer v-if="publication.body?.children?.length" :value="publication" />
           </div>
@@ -443,11 +443,10 @@ useHead({
   background: var(--surface-raised);
 }
 
+/* Now the <ProgressiveImage> wrapper. width/overflow come from .prog-img;
+   keep the decorative + cap rules. */
 .publication-screenshot {
-  display: block;
-  width: 100%;
   max-height: 720px;
-  object-fit: contain;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background: var(--color-bg);

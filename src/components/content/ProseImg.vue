@@ -1,5 +1,11 @@
 <template>
-  <img :src="refinedSrc" :alt="alt" :width="width" :height="height" />
+  <ProgressiveImage
+    :src="refinedSrc"
+    :alt="alt"
+    :width="width"
+    :height="height"
+    mode="natural"
+  />
 </template>
 
 <script setup lang="ts">
