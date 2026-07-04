@@ -29,6 +29,7 @@
                 :alt="slide.alt"
                 img-class="carousel__image"
                 :lazy="false"
+                transparent
               />
               <div class="carousel__caption" v-if="slide.caption">
                 <span>{{ slide.caption }}</span>

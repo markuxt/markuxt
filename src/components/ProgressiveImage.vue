@@ -25,7 +25,7 @@
   -->
   <div
     class="prog-img"
-    :class="[wrapperClass, modeClass, { 'prog-img--loaded': loaded, 'prog-img--error': error, 'prog-img--borderless': !bordered }]"
+    :class="[wrapperClass, modeClass, { 'prog-img--loaded': loaded, 'prog-img--error': error, 'prog-img--borderless': !bordered, 'prog-img--transparent': transparent }]"
   >
     <div
       v-if="placeholder && !error"
@@ -47,7 +47,7 @@
       :loading="lazy ? 'lazy' : 'eager'"
       decoding="async"
       class="prog-img__img"
-      :class="imgClass"
+      :class="[imgClass, `prog-img__img--${fit}`]"
       @load="loaded = true"
       @error="loaded = true, error = true"
     />
@@ -67,10 +67,17 @@ const props = defineProps({
   width: { type: [String, Number], default: undefined },
   height: { type: [String, Number], default: undefined },
   mode: { type: String as () => Mode, default: 'fill' },
+  /** object-fit for fill-mode boxes. Defaults to `contain` (whole image, no
+   *  truncation). Use `cover` when the box should be filled and cropped (e.g.
+   *  MemberCard avatars at a fixed aspect ratio). */
+  fit: { type: String as () => 'cover' | 'contain', default: 'contain' },
   lazy: { type: Boolean, default: true },
   /** Draw the 1px frame around the image (default on). Turn off for images
    *  whose container already frames them (e.g. MemberCard avatars). */
   bordered: { type: Boolean, default: true },
+  /** Make the wrapper background transparent so a parent's own background (e.g.
+   *  the carousel gradient) shows through around a contained image. */
+  transparent: { type: Boolean, default: false },
 })
 
 const entry = useLqip(toRef(props, 'src'))
@@ -207,10 +214,28 @@ watch(
   max-height: 100vh;
   width: 100%;
   height: 100%;
-  /* contain: scale the image to fit entirely inside the box (no truncation);
-   * any leftover area shows the wrapper background. (fluid/natural use
-   * height/width auto, so this only affects fill-mode boxes.) */
+}
+
+/* object-fit is applied via a modifier class (set from the `fit` prop) so it
+ * reliably wins over any consumer img-class (which lives in a different scope
+ * and wouldn't otherwise reach this <img>). Only meaningful in fill mode. */
+.prog-img__img--contain {
   object-fit: contain;
+}
+
+.prog-img__img--cover {
+  object-fit: cover;
+}
+
+/* Let a parent's own background (e.g. the carousel gradient) show through
+ * around a contained image, instead of the wrapper's neutral fill. */
+.prog-img--transparent {
+  background: transparent;
+}
+
+.prog-img--transparent .prog-img__shimmer {
+  background: transparent;
+  animation: none;
 }
 
 /*

@@ -13,6 +13,7 @@
         :alt="member.name"
         img-class="member-card__image"
         :bordered="false"
+        fit="cover"
       />
       <div class="member-card__overlay">
         <a
@@ -144,6 +145,9 @@ const memberLink = computed(() => {
   border-color: var(--color-secondary);
 }
 
+/* Fixed 3/4 portrait box, cover-cropped and vertically centered (object-fit
+ * cover via the `fit` prop on <ProgressiveImage>; object-position defaults to
+ * center, so the crop is top-bottom centered). */
 .member-card__image-wrapper {
   position: relative;
   width: 100%;
@@ -152,15 +156,14 @@ const memberLink = computed(() => {
   background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
 }
 
-.member-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+/* Hover zoom on the real inner <img> (reached via :deep — the img lives inside
+ * <ProgressiveImage>'s scope, so a plain .member-card__image rule wouldn't
+ * match it). */
+.member-card__image-wrapper :deep(.prog-img__img) {
   transition: transform var(--transition-slow);
 }
 
-.member-card:hover .member-card__image {
+.member-card:hover .member-card__image-wrapper :deep(.prog-img__img) {
   transform: scale(1.05);
 }
 
