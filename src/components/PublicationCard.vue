@@ -1,12 +1,12 @@
 <template>
   <article class="publication-card">
-    <ProgressiveImage
-      v-if="screenshotUrl"
-      :src="screenshotUrl"
-      :alt="publication.title"
-      wrapper-class="publication-card__screenshot"
-      img-class="publication-card__screenshot-img"
-    />
+    <div class="publication-card__screenshot" v-if="screenshotUrl">
+      <ProgressiveImage
+        :src="screenshotUrl"
+        :alt="publication.title"
+        :bordered="false"
+      />
+    </div>
     <div class="publication-card__meta">
       <span class="publication-card__year">{{ publication.year }}</span>
       <span v-if="publication.venue" class="badge badge-accent">{{ publication.venue }}</span>
@@ -129,8 +129,8 @@ const moreKeywords = computed(() => {
   transform: translateY(-4px);
 }
 
-/* Screenshot is now the <ProgressiveImage> wrapper (fixed-height cover box);
-   the inner <img> gets -img for object-position. */
+/* Screenshot box (fixed 220px). The card controls the image sizing via :deep —
+   ProgressiveImage is passive by default. */
 .publication-card__screenshot {
   width: 100%;
   height: 220px;
@@ -138,9 +138,18 @@ const moreKeywords = computed(() => {
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   margin-bottom: var(--spacing-md);
+  overflow: hidden;
 }
-
-.publication-card__screenshot-img {
+.publication-card__screenshot :deep(.prog-img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.publication-card__screenshot :deep(.prog-img__img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   object-position: top;
 }
 

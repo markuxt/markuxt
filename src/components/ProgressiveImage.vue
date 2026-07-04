@@ -1,31 +1,31 @@
 <template>
   <!--
-    Progressive (blur-up) image.
+    Progressive (blur-up) image — a PASSIVE renderer.
 
     Shows a blurred LQIP thumbnail instantly (from the build-time manifest via
     useLqip), then lazy-loads the full image on top and fades it in. The real
     image's intrinsic dimensions come from the manifest and are bound as
-    width/height attrs, which reserves the box (no layout shift) even before
-    the bytes arrive.
+    width/height attrs, which reserves the box (no layout shift) even before the
+    bytes arrive.
 
-    Three sizing modes:
-      • fill (default) — wrapper is width:100%/height:100% + object-fit
-                          contain (whole image shown, no truncation), for images
-                          inside an already-sized container (cards, carousel).
-                          Pass the original img class via `img-class` so hover
-                          transforms keep working.
-      • fluid          — wrapper width:100%, height driven by the image's own
-                          aspect ratio (full-width responsive: detail headers,
-                          screenshots, the 180px profile photo).
-      • natural        — inline-block wrapper that shrinks to the image's natural
-                          size (max-width:100%), for free-flowing prose images.
+    By default this component imposes NO size of its own — the <img> renders at
+    its natural size, responsive (max-width:100%, height:auto), like a plain
+    <img>. Sizing/fit is opt-in so the CONSUMER stays in control of layout:
+
+      • mode="fill"   — fill the parent box (width/height 100%) + object-fit
+                         (via `fit`). Cards/carousel opt into this explicitly.
+      • mode="fluid"  — full-width responsive (width 100%, height auto).
+      • limitSize     — (markdown) cap the image to the viewport height, center
+                         it, and let it keep its natural size. The ONLY size
+                         restriction ProgressiveImage applies, and only when an
+                         explicit consumer (ProseImg) opts in.
 
     No-JS safe: the <img> is visible by default; the fade-in is gated on a `.js`
     class an inline head script sets, so without JS the image still paints.
   -->
   <div
     class="prog-img"
-    :class="[wrapperClass, modeClass, { 'prog-img--loaded': loaded, 'prog-img--error': error, 'prog-img--borderless': !bordered, 'prog-img--transparent': transparent }]"
+    :class="[wrapperClass, modeClass, { 'prog-img--loaded': loaded, 'prog-img--error': error, 'prog-img--borderless': !bordered, 'prog-img--transparent': transparent, 'prog-img--limit': limitSize }]"
   >
     <div
       v-if="placeholder && !error"
@@ -55,29 +55,34 @@
 </template>
 
 <script setup lang="ts">
-type Mode = 'fill' | 'fluid' | 'natural'
+type Mode = 'natural' | 'fill' | 'fluid'
 
 const props = defineProps({
   src: { type: String, required: true },
   alt: { type: String, default: '' },
-  /** Class applied to the real <img> (preserves object-fit / hover transforms). */
+  /** Class applied to the real <img> (preserves hover transforms). */
   imgClass: { type: String, default: '' },
   /** Extra class on the wrapper .prog-img. */
   wrapperClass: { type: String, default: '' },
   width: { type: [String, Number], default: undefined },
   height: { type: [String, Number], default: undefined },
-  mode: { type: String as () => Mode, default: 'fill' },
-  /** object-fit for fill-mode boxes. Defaults to `contain` (whole image, no
-   *  truncation). Use `cover` when the box should be filled and cropped (e.g.
-   *  MemberCard avatars at a fixed aspect ratio). */
+  /** Sizing mode. Defaults to `natural` (passive — natural size, responsive;
+   *  the component imposes no box). `fill` fills the parent box (+ object-fit
+   *  via `fit`); `fluid` is full-width responsive. */
+  mode: { type: String as () => Mode, default: 'natural' },
+  /** object-fit for `fill` mode. `contain` (default) shows the whole image;
+   *  `cover` crops to fill. */
   fit: { type: String as () => 'cover' | 'contain', default: 'contain' },
   lazy: { type: Boolean, default: true },
-  /** Draw the 1px frame around the image (default on). Turn off for images
-   *  whose container already frames them (e.g. MemberCard avatars). */
+  /** Draw the 1px frame (default on). Turn off when the container frames it. */
   bordered: { type: Boolean, default: true },
-  /** Make the wrapper background transparent so a parent's own background (e.g.
-   *  the carousel gradient) shows through around a contained image. */
+  /** Transparent wrapper so a parent's own backdrop shows through. */
   transparent: { type: Boolean, default: false },
+  /** MARKDOWN opt-in: cap the image to the viewport height, center it, keep its
+   *  natural size. The only size restriction this component applies, and only
+   *  when a consumer (ProseImg) explicitly opts in — cards/detail images are
+   *  never subject to it. */
+  limitSize: { type: Boolean, default: false },
 })
 
 const entry = useLqip(toRef(props, 'src'))
@@ -122,18 +127,20 @@ watch(
 <style scoped>
 .prog-img {
   position: relative;
-  display: block;
-  /* Never exceed the container; works on mobile + desktop. box-sizing keeps
-     the border inside the declared width so it can't cause overflow. */
+  /* PASSIVE by default: shrink-wraps the image (inline-block, natural size,
+     responsive). The component imposes NO box/fit — consumers opt in via `mode`
+     (fill/fluid) or override via :deep. Keeping the base low-specificity
+     (0,2,0) means a consumer's :deep (0,3,0) always wins. */
+  display: inline-block;
   max-width: 100%;
-  max-height: 100vh;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  vertical-align: middle;
   box-sizing: border-box;
   overflow: hidden;
   background: var(--color-bg-alt, #e9e9ec);
-  /* Frame every image. */
   border: 1px solid var(--color-border, #e2e2e7);
+  border-radius: var(--radius-md);
 }
 
 /* Opt out of the frame (e.g. when the card already provides its own). */
@@ -141,40 +148,40 @@ watch(
   border: none;
 }
 
-/* fluid: shrink-to-fit + centered. The image scales to fit within BOTH the
-   container width (max-width:100%) and the viewport height (max-height:100vh),
-   preserving aspect ratio — so a tall/square image reduces its width instead
-   of being clipped. The wrapper shrink-wraps the image so the border frames
-   the picture, not empty side space. */
-.prog-img--fluid {
+/* fill: explicit opt-in — fill the parent box (width/height 100%). */
+.prog-img--fill {
   display: block;
-  width: fit-content;
-  max-width: 100%;
-  height: auto;
-  margin-inline: auto;
-  border-radius: var(--radius-md);
+  width: 100%;
+  height: 100%;
 }
-.prog-img--fluid .prog-img__img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100vh;
+.prog-img--fill .prog-img__img {
+  width: 100%;
+  height: 100%;
 }
 
-/* natural: shrinks to the image's natural size, capped to the container width
-   and the viewport height (same fit-within-both rule), centered horizontally. */
-.prog-img--natural {
+/* fluid: full-width responsive (width 100%, height from the image's own ratio). */
+.prog-img--fluid {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.prog-img--fluid .prog-img__img {
+  width: 100%;
+  height: auto;
+}
+
+/* natural (DEFAULT): passive — uses the base styles above (no override needed). */
+
+/* limitSize: MARKDOWN opt-in (ProseImg) — the only size restriction this
+   component applies: cap to viewport height, center, keep natural size. Only
+   the explicit consumer that sets `limitSize` is affected. */
+.prog-img--limit {
   display: block;
   width: fit-content;
   max-width: 100%;
-  height: auto;
   margin-inline: auto;
-  border-radius: var(--radius-md);
 }
-.prog-img--natural .prog-img__img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
+.prog-img--limit .prog-img__img {
   max-height: 100vh;
 }
 
@@ -211,9 +218,8 @@ watch(
   z-index: 1;
   display: block;
   max-width: 100%;
-  max-height: 100vh;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
 }
 
 /* object-fit is applied via a modifier class (set from the `fit` prop) so it
@@ -233,9 +239,13 @@ watch(
   background: transparent;
 }
 
-.prog-img--transparent .prog-img__shimmer {
-  background: transparent;
-  animation: none;
+/* In transparent mode the parent supplies the backdrop, so suppress both
+ * fallback layers — the shimmer, AND the blurred LQIP placeholder (which is
+ * background-size:cover and would otherwise fill the box, re-covering the
+ * parent gradient). The real <img> (contain) still fades in on load. */
+.prog-img--transparent .prog-img__shimmer,
+.prog-img--transparent .prog-img__placeholder {
+  display: none;
 }
 
 /*

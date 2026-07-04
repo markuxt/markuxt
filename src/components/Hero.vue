@@ -27,9 +27,9 @@
               <ProgressiveImage
                 :src="slide.src"
                 :alt="slide.alt"
-                img-class="carousel__image"
                 :lazy="false"
                 transparent
+                :bordered="false"
               />
               <div class="carousel__caption" v-if="slide.caption">
                 <span>{{ slide.caption }}</span>
@@ -283,7 +283,14 @@ onUnmounted(() => {
   position: relative;
 }
 
-.carousel__image {
+/* Carousel controls its image sizing via :deep — ProgressiveImage is passive by
+   default. cover so the image fills the slide. */
+.carousel__slide :deep(.prog-img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.carousel__slide :deep(.prog-img__img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -295,7 +302,6 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   padding: var(--spacing-lg);
-  background: linear-gradient(transparent, var(--surface-overlay));
   color: var(--color-on-brand);
 }
 
@@ -303,6 +309,9 @@ onUnmounted(() => {
   font-size: 0.9375rem;
   font-weight: 500;
   letter-spacing: 0.02em;
+  /* No gradient overlay on the image — just a shadow so the text stays readable
+     over any photo. */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
 }
 
 .carousel__dots {

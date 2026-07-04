@@ -4,7 +4,7 @@
     :alt="alt"
     :width="width"
     :height="height"
-    mode="natural"
+    :limit-size="true"
   />
 </template>
 
