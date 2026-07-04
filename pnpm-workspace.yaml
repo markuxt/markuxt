@@ -7,6 +7,17 @@ packages:
 # here, newer pnpm ERRORS with ERR_PNPM_IGNORED_BUILDS and the install fails —
 # which is what broke the EdgeOne build (CI upgraded pnpm). The same settings
 # are mirrored in package.json's `pnpm` field so older pnpm (<10.16) still works.
+# Approve native/build-script deps. pnpm v11 renamed `onlyBuiltDependencies`
+# (a list, v10) to `allowBuilds` (a map, v11) — v11 IGNORES the old key, which is
+# why EdgeOne (pnpm v11) still errored on ERR_PNPM_IGNORED_BUILDS. Both keys are
+# kept so pnpm v10 and v11 both find an approval.
+allowBuilds:
+  '@parcel/watcher': true
+  better-sqlite3: true
+  esbuild: true
+  sharp: true
+  vue-demi: true
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - better-sqlite3
