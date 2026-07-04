@@ -52,23 +52,18 @@
         "@nuxt/schema": "^4.4.5"
       }
     },
+    "overrides": {
+      "archiver-utils>glob": "^13"
+    },
     "allowedDeprecatedVersions": {
-      "glob": "10.5.0",
       "prebuild-install": "7.1.3",
       "unplugin-vue-router": "0.19.2"
     },
     "onlyBuiltDependencies": [
       "@parcel/watcher",
-      "b",
       "better-sqlite3",
-      "d",
-      "e",
       "esbuild",
-      "i",
-      "l",
-      "s",
       "sharp",
-      "u",
       "vue-demi"
     ]
   }

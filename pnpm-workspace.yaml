@@ -1,3 +1,30 @@
 packages:
   - '.'
   - 'demo'
+
+# pnpm ≥10.16 reads these settings from pnpm-workspace.yaml and no longer reads
+# the `pnpm` field in package.json (it just warns). Without `onlyBuiltDependencies`
+# here, newer pnpm ERRORS with ERR_PNPM_IGNORED_BUILDS and the install fails —
+# which is what broke the EdgeOne build (CI upgraded pnpm). The same settings
+# are mirrored in package.json's `pnpm` field so older pnpm (<10.16) still works.
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - better-sqlite3
+  - esbuild
+  - sharp
+  - vue-demi
+
+peerDependencyRules:
+  allowedVersions:
+    '@nuxt/schema': '^4.4.5'
+
+# Bump the deprecated glob 10.x (security-deprecated) that archiver-utils pulls
+# in, to the non-deprecated glob 13. Scoped to that one edge so we don't disturb
+# the unrelated ancient glob 1.x–4.x copies elsewhere in the tree. archiver-utils
+# only uses glob.sync(), which is unchanged in 13.
+overrides:
+  'archiver-utils>glob': ^13
+
+allowedDeprecatedVersions:
+  prebuild-install: '7.1.3'
+  unplugin-vue-router: '0.19.2'
