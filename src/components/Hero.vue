@@ -302,7 +302,12 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   padding: var(--spacing-lg);
+  background: linear-gradient(transparent, var(--surface-overlay));
   color: var(--color-on-brand);
+  /* ProgressiveImage's <img> has z-index:1 — without this, the caption paints
+     behind the (cover) image and the gradient disappears. Sit above the image
+     but below the dots/arrows (z-index:10). */
+  z-index: 2;
 }
 
 .carousel__caption span {
