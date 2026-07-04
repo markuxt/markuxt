@@ -140,7 +140,6 @@ watch(
   overflow: hidden;
   background: var(--color-bg-alt, #e9e9ec);
   border: 1px solid var(--color-border, #e2e2e7);
-  border-radius: var(--radius-md);
 }
 
 /* Opt out of the frame (e.g. when the card already provides its own). */
@@ -174,12 +173,14 @@ watch(
 
 /* limitSize: MARKDOWN opt-in (ProseImg) — the only size restriction this
    component applies: cap to viewport height, center, keep natural size. Only
-   the explicit consumer that sets `limitSize` is affected. */
+   the explicit consumer that sets `limitSize` is affected. Markdown images are
+   also the only ones that get the rounded corners. */
 .prog-img--limit {
   display: block;
   width: fit-content;
   max-width: 100%;
   margin-inline: auto;
+  border-radius: var(--radius-md);
 }
 .prog-img--limit .prog-img__img {
   max-height: 100vh;
