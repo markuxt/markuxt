@@ -9,10 +9,11 @@
     the bytes arrive.
 
     Three sizing modes:
-      • fill (default) — wrapper is width:100%/height:100% + object-fit cover,
-                          for images inside an already-sized container (cards,
-                          carousel). Pass the original img class via `img-class`
-                          so object-fit / hover transforms keep working.
+      • fill (default) — wrapper is width:100%/height:100% + object-fit
+                          contain (whole image shown, no truncation), for images
+                          inside an already-sized container (cards, carousel).
+                          Pass the original img class via `img-class` so hover
+                          transforms keep working.
       • fluid          — wrapper width:100%, height driven by the image's own
                           aspect ratio (full-width responsive: detail headers,
                           screenshots, the 180px profile photo).
@@ -24,7 +25,7 @@
   -->
   <div
     class="prog-img"
-    :class="[wrapperClass, modeClass, { 'prog-img--loaded': loaded, 'prog-img--error': error }]"
+    :class="[wrapperClass, modeClass, { 'prog-img--loaded': loaded, 'prog-img--error': error, 'prog-img--borderless': !bordered }]"
   >
     <div
       v-if="placeholder && !error"
@@ -67,6 +68,9 @@ const props = defineProps({
   height: { type: [String, Number], default: undefined },
   mode: { type: String as () => Mode, default: 'fill' },
   lazy: { type: Boolean, default: true },
+  /** Draw the 1px frame around the image (default on). Turn off for images
+   *  whose container already frames them (e.g. MemberCard avatars). */
+  bordered: { type: Boolean, default: true },
 })
 
 const entry = useLqip(toRef(props, 'src'))
@@ -112,31 +116,59 @@ watch(
 .prog-img {
   position: relative;
   display: block;
+  /* Never exceed the container; works on mobile + desktop. box-sizing keeps
+     the border inside the declared width so it can't cause overflow. */
+  max-width: 100%;
+  max-height: 100vh;
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
   overflow: hidden;
   background: var(--color-bg-alt, #e9e9ec);
+  /* Frame every image. */
+  border: 1px solid var(--color-border, #e2e2e7);
 }
 
-/* fluid: full-width, height from the image's own aspect ratio. */
+/* Opt out of the frame (e.g. when the card already provides its own). */
+.prog-img--borderless {
+  border: none;
+}
+
+/* fluid: shrink-to-fit + centered. The image scales to fit within BOTH the
+   container width (max-width:100%) and the viewport height (max-height:100vh),
+   preserving aspect ratio — so a tall/square image reduces its width instead
+   of being clipped. The wrapper shrink-wraps the image so the border frames
+   the picture, not empty side space. */
 .prog-img--fluid {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   height: auto;
+  margin-inline: auto;
+  border-radius: var(--radius-md);
 }
 .prog-img--fluid .prog-img__img {
-  height: auto;
-}
-
-/* natural: inline-block, shrinks to the image's natural size. */
-.prog-img--natural {
-  display: inline-block;
   width: auto;
   height: auto;
-  vertical-align: middle;
+  max-width: 100%;
+  max-height: 100vh;
+}
+
+/* natural: shrinks to the image's natural size, capped to the container width
+   and the viewport height (same fit-within-both rule), centered horizontally. */
+.prog-img--natural {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  border-radius: var(--radius-md);
 }
 .prog-img--natural .prog-img__img {
   width: auto;
-  max-width: 100%;
   height: auto;
+  max-width: 100%;
+  max-height: 100vh;
 }
 
 /* Blurred low-res placeholder. Inset + scale hide the blur's transparent edge. */
@@ -171,9 +203,14 @@ watch(
   position: relative;
   z-index: 1;
   display: block;
+  max-width: 100%;
+  max-height: 100vh;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* contain: scale the image to fit entirely inside the box (no truncation);
+   * any leftover area shows the wrapper background. (fluid/natural use
+   * height/width auto, so this only affects fill-mode boxes.) */
+  object-fit: contain;
 }
 
 /*

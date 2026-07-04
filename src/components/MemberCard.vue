@@ -12,6 +12,7 @@
         :src="imageUrl"
         :alt="member.name"
         img-class="member-card__image"
+        :bordered="false"
       />
       <div class="member-card__overlay">
         <a
