@@ -32,7 +32,7 @@
             class="project-card"
           >
             <div class="project-card__image-wrapper" v-if="project.image">
-              <img :src="getProjectImage(project.image, project._id)" :alt="project.title" class="project-card__image" />
+              <ProgressiveImage :src="getProjectImage(project.image, project._id)" :alt="project.title" img-class="project-card__image" />
             </div>
             <div class="project-card__image-placeholder" v-else>
               <component :is="getStatusIcon(project.status)" class="icon-inline" theme="outline" :size="48" fill="currentColor" :stroke-width="1.5" />

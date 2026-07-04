@@ -14,6 +14,8 @@ We are excited to introduce **Markuxt** — a Markdown-first academic portal fra
 
 Markuxt provides a complete theme layer — layouts, pages, components, content transformers, and i18n — so that your site only needs to provide **content** and **configuration**.
 
+![logo](/images/logo.png)
+
 ### Key Features
 
 - **Markdown-driven content** — Members, publications, projects, positions, and news are all authored in Markdown with YAML frontmatter

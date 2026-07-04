@@ -1,12 +1,11 @@
 <template>
   <article class="publication-card">
-    <img
+    <ProgressiveImage
       v-if="screenshotUrl"
       :src="screenshotUrl"
       :alt="publication.title"
-      class="publication-card__screenshot"
-      loading="lazy"
-      @error="($event.target as HTMLImageElement).style.display = 'none'"
+      wrapper-class="publication-card__screenshot"
+      img-class="publication-card__screenshot-img"
     />
     <div class="publication-card__meta">
       <span class="publication-card__year">{{ publication.year }}</span>
@@ -130,15 +129,19 @@ const moreKeywords = computed(() => {
   transform: translateY(-4px);
 }
 
+/* Screenshot is now the <ProgressiveImage> wrapper (fixed-height cover box);
+   the inner <img> gets -img for object-position. */
 .publication-card__screenshot {
   width: 100%;
-  max-height: 220px;
-  object-fit: cover;
-  object-position: top;
+  height: 220px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   margin-bottom: var(--spacing-md);
+}
+
+.publication-card__screenshot-img {
+  object-position: top;
 }
 
 .publication-card__meta {

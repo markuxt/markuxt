@@ -20,11 +20,12 @@
       <div class="profile-header animate-fade-in-up">
         <div class="profile-header__image-wrapper">
           <div class="profile-header__image-inner">
-            <img
+            <ProgressiveImage
               v-if="memberImage"
               :src="memberImage"
               :alt="member.name"
-              class="profile-header__image"
+              img-class="profile-header__image"
+              mode="fluid"
             />
             <div class="profile-header__actions">
               <a v-if="member.email" :href="`mailto:${member.email}`" class="profile-header__action" :aria-label="t('members.email')">                <Mail class="icon-inline" theme="outline" :size="18" fill="currentColor" :stroke-width="3" />

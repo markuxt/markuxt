@@ -7,12 +7,12 @@
          member cards / mismatched photo-vs-name on refresh). -->
     <NuxtLink :to="memberLink" class="member-card__link" :aria-label="member.name" />
     <div class="member-card__image-wrapper">
-      <img
+      <ProgressiveImage
         v-if="imageUrl"
         :src="imageUrl"
         :alt="member.name"
-        class="member-card__image"
-        loading="lazy"
+        img-class="member-card__image"
+        :bordered="false"
       />
       <div class="member-card__overlay">
         <a
