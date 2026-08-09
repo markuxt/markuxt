@@ -18,9 +18,9 @@ const ROOT_DIR = process.env.MARKUXT_ROOT_DIR || 'src/'
 // start AND end with '/', so a raw value like "markuxt" is normalized to
 // "/markuxt/".
 const PUBLIC_BASE_URL = (() => {
-    const raw = (process.env.NUXT_PUBLIC_BASE_URL || '/').trim()
-    if (!raw || raw === '/') return '/'
-    return '/' + raw.replace(/^\/+/, '').replace(/\/+$/, '') + '/'
+  const raw = (process.env.NUXT_PUBLIC_BASE_URL || '/').trim()
+  if (!raw || raw === '/') return '/'
+  return '/' + raw.replace(/^\/+/, '').replace(/\/+$/, '') + '/'
 })()
 
 /**
@@ -91,164 +91,180 @@ function syncContentAssets(rootDir: string) {
 }
 
 export default defineNuxtConfig({
-    compatibilityDate: '2024-11-01',
-    devtools: { enabled: true },
+  compatibilityDate: '2024-11-01',
+  devtools: { enabled: true },
 
-    // Source directory
-    srcDir: 'src/',
+  // Source directory
+  srcDir: 'src/',
 
-    // Nuxt Content module + i18n.
-    // The local markuxt-i18n-locales module auto-detects locales from the
-    // consumer's src/i18n/*.json and registers them via i18n:registerModule, so
-    // consumers don't need to declare locales/langDir themselves.
-    //
-    // Nuxt does NOT auto-discover modules under src/modules/, so the module
-    // must be listed in `modules` with a resolvable reference. We alias the
-    // file to its bare name so the array reads cleanly; module resolution goes
-    // through nuxt.options.alias (kit's _resolvePathGranularly).
-    modules: ['@nuxt/content', 'markuxt-i18n-locales', '@nuxtjs/i18n'],
+  // Nuxt Content module + i18n.
+  // The local markuxt-i18n-locales module auto-detects locales from the
+  // consumer's src/i18n/*.json and registers them via i18n:registerModule, so
+  // consumers don't need to declare locales/langDir themselves.
+  //
+  // Nuxt does NOT auto-discover modules under src/modules/, so the module
+  // must be listed in `modules` with a resolvable reference. We alias the
+  // file to its bare name so the array reads cleanly; module resolution goes
+  // through nuxt.options.alias (kit's _resolvePathGranularly).
+  modules: ['@nuxt/content', 'markuxt-i18n-locales', '@nuxtjs/i18n'],
 
-    alias: {
-        'markuxt-i18n-locales': resolve(__dirname, 'src/modules/markuxt-i18n-locales.ts'),
+  alias: {
+    'markuxt-i18n-locales': resolve(__dirname, 'src/modules/markuxt-i18n-locales.ts'),
+  },
+
+  // i18n — the layer sets strategy + defaults ONLY. Locales are auto-detected
+  // and registered by the markuxt-i18n-locales module (from the consumer's
+  // src/i18n/*.json), so neither this layer nor consumers declare `locales` or
+  // `langDir`. (@nuxtjs/i18n v10 resolves each layer's locale files against
+  // that layer's own rootDir; this layer ships none, so declaring locales here
+  // would ENOENT under markuxt/locales/. The module sidesteps this by
+  // registering with an absolute langDir via i18n:registerModule.)
+  // defaultLocale can be set:
+  //   1. In the consumer's nuxt.config:   i18n: { defaultLocale: 'zh' }
+  //   2. Via env var:                     MARKUXT_DEFAULT_LOCALE=zh
+  //   3. Falls back to 'en' if neither is set.
+  i18n: {
+    defaultLocale: process.env.MARKUXT_DEFAULT_LOCALE || 'en',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_locale',
+      redirectOn: 'root',
     },
-
-    // i18n — the layer sets strategy + defaults ONLY. Locales are auto-detected
-    // and registered by the markuxt-i18n-locales module (from the consumer's
-    // src/i18n/*.json), so neither this layer nor consumers declare `locales` or
-    // `langDir`. (@nuxtjs/i18n v10 resolves each layer's locale files against
-    // that layer's own rootDir; this layer ships none, so declaring locales here
-    // would ENOENT under markuxt/locales/. The module sidesteps this by
-    // registering with an absolute langDir via i18n:registerModule.)
-    // defaultLocale can be set:
-    //   1. In the consumer's nuxt.config:   i18n: { defaultLocale: 'zh' }
-    //   2. Via env var:                     MARKUXT_DEFAULT_LOCALE=zh
-    //   3. Falls back to 'en' if neither is set.
-    i18n: {
-        defaultLocale: process.env.MARKUXT_DEFAULT_LOCALE || 'en',
-        strategy: 'no_prefix',
-        detectBrowserLanguage: {
-            useCookie: true,
-            cookieKey: 'i18n_locale',
-            redirectOn: 'root',
-        },
-        // Preserve SSR-detected locale through hydration.
-        experimental: {
-            nitroContextDetection: true,
-        },
+    // Preserve SSR-detected locale through hydration.
+    experimental: {
+      nitroContextDetection: true,
     },
+  },
 
-    // Build-time hooks
-    hooks: {
-        // Register a custom transformer for binary assets (images, videos, etc.)
-        // so @nuxt/content does not warn about unsupported file extensions.
-        'content:context': (ctx: { transformers: string[] }) => {
-            ctx.transformers.push(resolve(__dirname, 'src/content-transformers/binary-assets.ts'));
-        },
-        'build:before': async () => {
-            const cwd = process.cwd();
-            const rootDir = join(cwd, ROOT_DIR);
+  // Build-time hooks
+  hooks: {
+    'build:before': async () => {
+      const cwd = process.cwd();
+      const rootDir = join(cwd, ROOT_DIR);
 
-            // Sync assets to public/_markuxt/
-            syncContentAssets(rootDir);
+      // Sync assets to public/_markuxt/
+      syncContentAssets(rootDir);
 
-            // Generate blurred LQIP thumbnails + dimensions for every raster
-            // image under public/ → public/_markuxt/lqip.json (used by
-            // <ProgressiveImage> / useLqip()). Runs after sync so content
-            // images (copied above) are included.
-            await generateLqipManifest(rootDir);
-        },
+      // Generate blurred LQIP thumbnails + dimensions for every raster
+      // image under public/ → public/_markuxt/lqip.json (used by
+      // <ProgressiveImage> / useLqip()). Runs after sync so content
+      // images (copied above) are included.
+      await generateLqipManifest(rootDir);
     },
+  },
 
-    app: {
-        head: {
-            meta: [{ charset: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }],
-            link: [
-                { rel: 'icon', type: 'image/png', href: '/images/logo.png' },
-                { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-                { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-                { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,100;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800;1,9..144,900&display=swap' },
-            ],
-            script: [
-                // Mark <html> as JS-enabled before first paint. <ProgressiveImage>
-                // gates its blur-up fade-in on `.js` so that without JS the real
-                // image still shows (opacity defaults to 1).
-                {
-                    innerHTML: 'document.documentElement.classList.add("js")',
-                },
-                // Inline script to set data-color-mode before first paint.
-                // Reads localStorage ('markuxt-color-mode'), falls back to OS preference.
-                // This prevents the FOUC (flash of wrong color mode) that would occur
-                // if we waited for Vue hydration in the ColorModeToggle component.
-                {
-                    innerHTML: '!function(){var e=localStorage.getItem("markuxt-color-mode");document.documentElement.setAttribute("data-color-mode",e==="light"||e==="dark"?e:matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}()',
-                },
-                // Inline script to prevent a flash of the default language on static
-                // hosting. Static HTML is prerendered in the default locale (en), but
-                // i18n switches to the user's saved locale (i18n_locale cookie) during
-                // client hydration. If the saved locale differs from the prerendered
-                // <html lang>, hide the page until i18n applies the correct locale —
-                // avoiding both the language flash and the layout reflow that shifts
-                // the language switcher. Revealed by plugins/i18n-fouc.client.ts.
-                {
-                    innerHTML: '!function(){try{var d=document.documentElement,p=d.lang||"en",c=document.cookie.match(/(?:^|; )i18n_locale=([^;]+)/),s=c?decodeURIComponent(c[1]):"";if(s&&s!==p){d.style.visibility="hidden";setTimeout(function(){d.style.visibility=""},2e3)}}catch(e){}}()',
-                },
-            ],
+  app: {
+    head: {
+      meta: [{ charset: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/images/logo.png' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,100;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800;1,9..144,900&display=swap' },
+      ],
+      script: [
+        // Mark <html> as JS-enabled before first paint. <ProgressiveImage>
+        // gates its blur-up fade-in on `.js` so that without JS the real
+        // image still shows (opacity defaults to 1).
+        {
+          innerHTML: 'document.documentElement.classList.add("js")',
         },
-        pageTransition: { name: 'page', mode: 'out-in' },
-        baseURL: PUBLIC_BASE_URL,
+        // Inline script to set data-color-mode before first paint.
+        // Reads localStorage ('markuxt-color-mode'), falls back to OS preference.
+        // This prevents the FOUC (flash of wrong color mode) that would occur
+        // if we waited for Vue hydration in the ColorModeToggle component.
+        {
+          innerHTML: '!function(){var e=localStorage.getItem("markuxt-color-mode");document.documentElement.setAttribute("data-color-mode",e==="light"||e==="dark"?e:matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}()',
+        },
+        // Inline script to prevent a flash of the default language on static
+        // hosting. Static HTML is prerendered in the default locale (en), but
+        // i18n switches to the user's saved locale (i18n_locale cookie) during
+        // client hydration. If the saved locale differs from the prerendered
+        // <html lang>, hide the page until i18n applies the correct locale —
+        // avoiding both the language flash and the layout reflow that shifts
+        // the language switcher. Revealed by plugins/i18n-fouc.client.ts.
+        {
+          innerHTML: '!function(){try{var d=document.documentElement,p=d.lang||"en",c=document.cookie.match(/(?:^|; )i18n_locale=([^;]+)/),s=c?decodeURIComponent(c[1]):"";if(s&&s!==p){d.style.visibility="hidden";setTimeout(function(){d.style.visibility=""},2e3)}}catch(e){}}()',
+        },
+      ],
     },
+    pageTransition: { name: 'page', mode: 'out-in' },
+    baseURL: PUBLIC_BASE_URL,
+  },
 
-    // CSS — resolve relative to layer root, not the consuming site
-    css: [resolve(__dirname, 'src/styles/main.css'), resolve(__dirname, 'src/styles/theme.css')],
+  // CSS — resolve relative to layer root, not the consuming site
+  css: [resolve(__dirname, 'src/styles/main.css'), resolve(__dirname, 'src/styles/theme.css')],
 
-    // Content module configuration
-    content: {
-        highlight: {
-            theme: {
-                default: 'github-light',
-                dusk: 'github-dark',
-            },
-        },
-        navigation: {
-            fields: ['icon', 'title', 'description'],
-        },
-        markdown: {
-            tags: {
-                img: 'ProseImg',
-                video: 'ProseVideo',
-            },
-            remarkPlugins: {
-                'remark-math': {},
-            },
-            rehypePlugins: {
-                'rehype-katex': {
-                    output: 'htmlAndMathml',
-                    strict: false,
-                },
-            },
-        },
+  // Content module configuration
+  content: {
+    // Binary asset files (images, videos, …) live next to their markdown and
+    // are served as static files from /_markuxt/ (synced by
+    // syncContentAssets above). They must NEVER be ingested by @nuxt/content:
+    // the old binary-assets transformer stored each file's raw bytes as
+    // `body`, base64-bloating the generated api/_content/cache.*.json enough
+    // to exceed static hosts' single-file size limits (e.g. GitHub Pages'
+    // 25 MiB). Ignoring them keeps the cache tiny AND suppresses the
+    // ".X files are not supported … falling back to raw content" warnings
+    // the transformer existed to silence. Entries are RegExp source strings
+    // @nuxt/content tests against the normalized key path (its ':' → '/'),
+    // so we anchor on extension at end-of-string.
+    ignores: [
+      // images
+      '\\.(png|jpe?g|gif|webp|avif|bmp|ico|svg|tiff)$',
+      // video
+      '\\.(mp4|webm|mov|avi|mkv|m4v|wmv)$',
+      // audio
+      '\\.(mp3|ogg|wav|flac|m4a|aac)$',
+      // documents / archives / fonts
+      '\\.(pdf|zip|tar|gz|docx?|xlsx?|pptx?|woff2?|ttf|eot)$',
+    ],
+    highlight: {
+      theme: {
+        default: 'github-light',
+        dusk: 'github-dark',
+      },
     },
-
-    // Nitro configuration
-    nitro: {
-        baseURL: PUBLIC_BASE_URL,
-        prerender: {
-            // Don't fail the build on crawler 404s (locale-variant routes that
-            // aren't public — the listing dedupe filters them out).
-            failOnError: false,
+    navigation: {
+      fields: ['icon', 'title', 'description'],
+    },
+    markdown: {
+      tags: {
+        img: 'ProseImg',
+        video: 'ProseVideo',
+      },
+      remarkPlugins: {
+        'remark-math': {},
+      },
+      rehypePlugins: {
+        'rehype-katex': {
+          output: 'htmlAndMathml',
+          strict: false,
         },
+      },
     },
+  },
 
-    // TypeScript
-    typescript: {
-        strict: true,
-        typeCheck: false,
+  // Nitro configuration
+  nitro: {
+    baseURL: PUBLIC_BASE_URL,
+    prerender: {
+      // Don't fail the build on crawler 404s (locale-variant routes that
+      // aren't public — the listing dedupe filters them out).
+      failOnError: false,
     },
+  },
 
-    // Vite
-    vite: {
-        optimizeDeps: {
-            include: ['@nuxt/content', 'mermaid'],
-        },
+  // TypeScript
+  typescript: {
+    strict: true,
+    typeCheck: false,
+  },
+
+  // Vite
+  vite: {
+    optimizeDeps: {
+      include: ['@nuxt/content', 'mermaid'],
     },
+  },
 });
