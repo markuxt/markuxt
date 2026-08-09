@@ -27,8 +27,9 @@
               <ProgressiveImage
                 :src="slide.src"
                 :alt="slide.alt"
-                img-class="carousel__image"
                 :lazy="false"
+                transparent
+                :bordered="false"
               />
               <div class="carousel__caption" v-if="slide.caption">
                 <span>{{ slide.caption }}</span>
@@ -126,48 +127,49 @@ const carouselImages = computed((): CarouselImage[] => {
   }))
 })
 
+// Auto-play: advance every AUTOPLAY_MS. Any manual interaction (arrows/dots)
+// RESETS the countdown and adds MANUAL_EXTRA_MS before the next advance, so a
+// user clicking through isn't immediately fought by the timer.
+const AUTOPLAY_MS = 5000
+const MANUAL_EXTRA_MS = 3000
+
 const currentSlide = ref(0)
-const autoPlayInterval = ref<ReturnType<typeof setInterval> | null>(null)
-const isAutoPlaying = ref(false)
+let autoTimer: ReturnType<typeof setTimeout> | null = null
+
+const scheduleNext = (delay: number = AUTOPLAY_MS) => {
+  if (autoTimer) clearTimeout(autoTimer)
+  autoTimer = null
+  if (carouselImages.value.length <= 1) return
+  autoTimer = setTimeout(() => {
+    // Auto-advance — reschedule at the normal interval.
+    currentSlide.value = (currentSlide.value + 1) % carouselImages.value.length
+    scheduleNext(AUTOPLAY_MS)
+  }, delay)
+}
 
 const nextSlide = () => {
   if (carouselImages.value.length === 0) return
   currentSlide.value = (currentSlide.value + 1) % carouselImages.value.length
+  scheduleNext(AUTOPLAY_MS + MANUAL_EXTRA_MS)
 }
 
 const prevSlide = () => {
   if (carouselImages.value.length === 0) return
   currentSlide.value = currentSlide.value === 0 ? carouselImages.value.length - 1 : currentSlide.value - 1
+  scheduleNext(AUTOPLAY_MS + MANUAL_EXTRA_MS)
 }
 
 const goToSlide = (index: number) => {
   currentSlide.value = index
-  stopAutoPlay()
-}
-
-const startAutoPlay = () => {
-  if (carouselImages.value.length > 1 && !isAutoPlaying.value) {
-    isAutoPlaying.value = true
-    autoPlayInterval.value = setInterval(() => {
-      nextSlide()
-    }, 5000)
-  }
-}
-
-const stopAutoPlay = () => {
-  if (autoPlayInterval.value) {
-    clearInterval(autoPlayInterval.value)
-    autoPlayInterval.value = null
-  }
-  isAutoPlaying.value = false
+  scheduleNext(AUTOPLAY_MS + MANUAL_EXTRA_MS)
 }
 
 onMounted(() => {
-  startAutoPlay()
+  scheduleNext()
 })
 
 onUnmounted(() => {
-  stopAutoPlay()
+  if (autoTimer) clearTimeout(autoTimer)
 })
 </script>
 
@@ -282,7 +284,14 @@ onUnmounted(() => {
   position: relative;
 }
 
-.carousel__image {
+/* Carousel controls its image sizing via :deep — ProgressiveImage is passive by
+   default. cover so the image fills the slide. */
+.carousel__slide :deep(.prog-img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.carousel__slide :deep(.prog-img__img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -296,12 +305,19 @@ onUnmounted(() => {
   padding: var(--spacing-lg);
   background: linear-gradient(transparent, var(--surface-overlay));
   color: var(--color-on-brand);
+  /* ProgressiveImage's <img> has z-index:1 — without this, the caption paints
+     behind the (cover) image and the gradient disappears. Sit above the image
+     but below the dots/arrows (z-index:10). */
+  z-index: 2;
 }
 
 .carousel__caption span {
   font-size: 0.9375rem;
   font-weight: 500;
   letter-spacing: 0.02em;
+  /* No gradient overlay on the image — just a shadow so the text stays readable
+     over any photo. */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
 }
 
 .carousel__dots {

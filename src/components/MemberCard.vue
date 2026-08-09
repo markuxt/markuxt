@@ -144,6 +144,7 @@ const memberLink = computed(() => {
   border-color: var(--color-secondary);
 }
 
+/* Fixed 3/4 portrait box. The image is contain-fit (whole photo visible). */
 .member-card__image-wrapper {
   position: relative;
   width: 100%;
@@ -152,15 +153,22 @@ const memberLink = computed(() => {
   background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
 }
 
-.member-card__image {
+/* The card fully controls its image sizing via :deep — ProgressiveImage is a
+ * passive renderer by default (no imposed box/fit), so the 3/4 fill + contain
+ * + hover zoom are all defined here, in the card's own CSS. */
+.member-card__image-wrapper :deep(.prog-img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.member-card__image-wrapper :deep(.prog-img__img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
   transition: transform var(--transition-slow);
 }
 
-.member-card:hover .member-card__image {
+.member-card:hover .member-card__image-wrapper :deep(.prog-img__img) {
   transform: scale(1.05);
 }
 

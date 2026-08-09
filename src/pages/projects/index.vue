@@ -32,7 +32,7 @@
             class="project-card"
           >
             <div class="project-card__image-wrapper" v-if="project.image">
-              <ProgressiveImage :src="getProjectImage(project.image, project._id)" :alt="project.title" img-class="project-card__image" />
+              <ProgressiveImage :src="getProjectImage(project.image, project._id)" :alt="project.title" :bordered="false" />
             </div>
             <div class="project-card__image-placeholder" v-else>
               <component :is="getStatusIcon(project.status)" class="icon-inline" theme="outline" :size="48" fill="currentColor" :stroke-width="1.5" />
@@ -269,7 +269,14 @@ useHead({
   background: linear-gradient(135deg, var(--surface-brand) 0%, var(--surface-brand-strong) 100%);
 }
 
-.project-card__image {
+/* Card controls its image sizing via :deep — ProgressiveImage is passive by
+   default. Whole image shown (contain). */
+.project-card__image-wrapper :deep(.prog-img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.project-card__image-wrapper :deep(.prog-img__img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
