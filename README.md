@@ -132,7 +132,7 @@ The groups on the Members page are configurable via `members.categories`. Each e
 
 **Category routes** — every category gets its own URL: `/members/<key>` (plus `/members/all`). The filter bar entries are links, so visitors can share or bookmark a direct link to a category. `/members` itself redirects to the **first** category in the list; on static hosting the redirect is prerendered as a meta-refresh page. Category routes are registered for prerendering automatically.
 
-**Role sub-sections** — set `groupByRole: true` on a category to split its listing into sub-sections headed by each member's `role:` frontmatter value (e.g. "Senior Research Assistant" vs "Research Assistant"). Sections follow the first appearance of each role in the display order; members without a `role` are grouped last under no heading.
+**Role sub-sections** — set `groupByRole: true` on a category to split its listing into sub-sections headed by each member's `role:` frontmatter value (e.g. "Senior Research Assistant" vs "Research Assistant"). Sections are ordered by the canonical member sort (`order` field): a section sits where its lowest-`order` member falls. Members without a `role` always form the final, unheaded section.
 
 ## Icons
 

@@ -87,7 +87,7 @@ const processedMembers = computed<Member[]>(() => {
 // Categories come from `appConfig.markuxt.members.categories` (nuxt.config.ts),
 // with a built-in fallback. The "all" pseudo-category is appended for the
 // filter only.
-const { categories: memberCategories } = useMemberCategories()
+const { categories: memberCategories, categoryKeys } = useMemberCategories()
 
 const filterCategories = computed(() => [
   ...memberCategories.value,
@@ -102,14 +102,16 @@ const filteredMembers = computed(() => {
 })
 
 // When the active category opts in via `groupByRole: true`, split its members
-// into sub-sections by `role` frontmatter. Section order follows the first
-// appearance of each role in the sorted member order; members without a role
-// collect in a final, unheaded section.
+// into sub-sections by `role` frontmatter. Members are sorted by the canonical
+// rule FIRST (sortMembers — same as the grid), then sections follow the first
+// appearance of each role in that sequence: a section's position is set by the
+// smallest `order` among its members. Members without a role always form the
+// final, unheaded section.
 const roleGroups = computed(() => {
   const config = memberCategories.value.find(c => c.key === props.activeCategory)
   if (!config?.groupByRole || props.activeCategory === 'all') return []
   const groups: { role: string; members: Member[] }[] = []
-  for (const member of filteredMembers.value) {
+  for (const member of sortMembers(filteredMembers.value, categoryKeys.value)) {
     const role = (member.role || '').trim()
     let group = groups.find(g => g.role === role)
     if (!group) {
@@ -117,6 +119,10 @@ const roleGroups = computed(() => {
       groups.push(group)
     }
     group.members.push(member)
+  }
+  const unroled = groups.find(g => g.role === '')
+  if (unroled) {
+    return [...groups.filter(g => g.role !== ''), unroled]
   }
   return groups
 })

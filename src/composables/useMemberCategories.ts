@@ -37,3 +37,35 @@ export function useMemberCategories() {
   return { categories, categoryKeys, categoryName }
 }
 
+/**
+ * Canonical member sort: by category rank (config array order; unknown
+ * categories last), then by the numeric `order` frontmatter field (missing or
+ * 0 = last), then by `_path`/`_id` as a deterministic SSR↔client tiebreaker.
+ *
+ * Shared by MembersGrid (grid display) and MembersListing (role grouping) so
+ * both derive the exact same sequence — grouping MUST sort first, otherwise
+ * role-section order silently follows the raw content-query order (≈ file
+ * name order) instead of `order`.
+ */
+export function sortMembers<T extends {
+  category?: string
+  order?: number | string
+  _path?: string
+  _id?: string
+}>(members: T[], categoryKeys: string[]): T[] {
+  const rank = (cat: string | undefined) => {
+    const i = categoryKeys.indexOf(cat || '')
+    return i === -1 ? categoryKeys.length : i
+  }
+  return [...members].sort((a, b) => {
+    const catRankA = rank(a.category)
+    const catRankB = rank(b.category)
+    if (catRankA !== catRankB) {
+      return catRankA - catRankB
+    }
+    const byOrder = (Number(a.order) || 999) - (Number(b.order) || 999)
+    if (byOrder !== 0) return byOrder
+    return String(a._path || a._id || '').localeCompare(String(b._path || b._id || ''))
+  })
+}
+
