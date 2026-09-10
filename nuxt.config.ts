@@ -106,10 +106,11 @@ export default defineNuxtConfig({
   // must be listed in `modules` with a resolvable reference. We alias the
   // file to its bare name so the array reads cleanly; module resolution goes
   // through nuxt.options.alias (kit's _resolvePathGranularly).
-  modules: ['@nuxt/content', 'markuxt-i18n-locales', '@nuxtjs/i18n'],
+  modules: ['@nuxt/content', 'markuxt-i18n-locales', 'markuxt-member-routes', '@nuxtjs/i18n'],
 
   alias: {
     'markuxt-i18n-locales': resolve(__dirname, 'src/modules/markuxt-i18n-locales.ts'),
+    'markuxt-member-routes': resolve(__dirname, 'src/modules/markuxt-member-routes.ts'),
   },
 
   // i18n — the layer sets strategy + defaults ONLY. Locales are auto-detected

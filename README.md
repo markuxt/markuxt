@@ -108,11 +108,13 @@ export default defineNuxtConfig({
 
       // Member categories — `key` is referenced from each member's
       // `category:` frontmatter; `labelKey` is an i18n key. Array order is
-      // the display / filter / sort order. No built-in defaults — declare
+      // the display / filter / sort order. `groupByRole: true` splits a
+      // category into role sub-sections. No built-in defaults — declare
       // your own.
       members: {
         categories: [
           { key: 'staff', labelKey: 'members.staff' },
+          { key: 'research-assistants', labelKey: 'members.researchAssistants', groupByRole: true },
         ],
       },
     },
@@ -127,6 +129,10 @@ Pages defined in `navigation` are accessible. Any markuxt section page (`/member
 ### Member Categories
 
 The groups on the Members page are configurable via `members.categories`. Each entry's `key` matches the `category:` field in a member's Markdown frontmatter, and `labelKey` is resolved against the consuming site's i18n files. The array order is the display, filter, and sort order; a filter bar appears automatically when there are 2+ categories, plus an **All** option. There are **no built-in defaults** — every consuming site declares its own categories. With none configured, the Members page simply lists everyone (no filter bar).
+
+**Category routes** — every category gets its own URL: `/members/<key>` (plus `/members/all`). The filter bar entries are links, so visitors can share or bookmark a direct link to a category. `/members` itself redirects to the **first** category in the list; on static hosting the redirect is prerendered as a meta-refresh page. Category routes are registered for prerendering automatically.
+
+**Role sub-sections** — set `groupByRole: true` on a category to split its listing into sub-sections headed by each member's `role:` frontmatter value (e.g. "Senior Research Assistant" vs "Research Assistant"). Sections follow the first appearance of each role in the display order; members without a `role` are grouped last under no heading.
 
 ## Icons
 

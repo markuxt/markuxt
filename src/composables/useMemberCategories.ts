@@ -20,7 +20,12 @@ export function useMemberCategories() {
   const raw = computed(() => appConfig.markuxt?.members?.categories ?? [])
 
   const categories = computed(() =>
-    raw.value.map((c) => ({ key: c.key, labelKey: c.labelKey, name: t(c.labelKey) })),
+    raw.value.map((c) => ({
+      key: c.key,
+      labelKey: c.labelKey,
+      groupByRole: c.groupByRole ?? false,
+      name: t(c.labelKey),
+    })),
   )
 
   const categoryKeys = computed(() => raw.value.map((c) => c.key))
