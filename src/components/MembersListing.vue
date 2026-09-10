@@ -66,11 +66,13 @@ const { data: allMembers } = await useAsyncData(`members-${_locale.value}`, asyn
   const docs = await queryContent('/members')
     .where({ _hidden: { $ne: true } })
     .where({ _extension: 'md' }).find()
-  return mergeByPath(docs, _locale.value, _defaultLocale.value, _localeOrder.value)
+  // NOTE: useDefaultLocale() returns a plain string (unlike the other two,
+  // which are computed refs) — no `.value` here.
+  return mergeByPath(docs, _locale.value, _defaultLocale, _localeOrder.value)
 }, { watch: [_locale] })
 
-const processedMembers = computed(() => {
-  const members = (allMembers.value || []).map(member => {
+const processedMembers = computed<Member[]>(() => {
+  const members = (allMembers.value || []).map((member): Member => {
     const processed = {
       ...member,
       name: member.name || member.title || t('members.unknown'),
@@ -114,7 +116,7 @@ const roleGroups = computed(() => {
       group = { role, members: [] }
       groups.push(group)
     }
-    group.members.push(member as Member)
+    group.members.push(member)
   }
   return groups
 })
