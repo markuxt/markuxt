@@ -46,27 +46,9 @@ const { t } = useI18n()
 // Categories + ordering come from appConfig (nuxt.config.ts), with a fallback.
 const { categoryKeys, categoryName } = useMemberCategories()
 
-// Sort members by category order (unknown categories last), then by order field
-const sortedMembers = computed(() => {
-  const order = categoryKeys.value
-  const rank = (cat: string | undefined) => {
-    const i = order.indexOf(cat || '')
-    return i === -1 ? order.length : i
-  }
-  return [...props.members].sort((a, b) => {
-    const catRankA = rank(a.category)
-    const catRankB = rank(b.category)
-    if (catRankA !== catRankB) {
-      return catRankA - catRankB
-    }
-    const byOrder = (a.order || 999) - (b.order || 999)
-    if (byOrder !== 0) return byOrder
-    // Deterministic tiebreaker (same category + same order) so the grid's
-    // order is byte-identical SSR ↔ client — any difference forces a
-    // hydration re-render that can shuffle cards.
-    return String(a._path || a._id || '').localeCompare(String(b._path || b._id || ''))
-  })
-})
+// Sort members by category order (unknown categories last), then by order
+// field — canonical rule shared with MembersListing (see sortMembers).
+const sortedMembers = computed(() => sortMembers(props.members, categoryKeys.value))
 
 const categorizedMembers = computed(() => {
   if (!props.groupBy) {
