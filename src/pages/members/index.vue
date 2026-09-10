@@ -17,14 +17,28 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-// With categories configured, `/members` redirects to the first one so the
-// URL always reflects what is shown and each category has a shareable route
-// (`/members/<key>`). On the server this renders as a 302 (prerendered as a
-// meta-refresh page for static hosting); on the client it pushes the route.
-const { categories } = useMemberCategories()
-if (categories.value.length > 0) {
-  await navigateTo(`/members/${categories.value[0].key}`, { redirectCode: 302 })
-}
+// Redirect `/members` to the first configured category so the URL always
+// reflects what is shown and each category has a shareable route.
+// Done in a route MIDDLEWARE, not setup: middleware intercepts client-side
+// navigation (navbar → /members) BEFORE this page mounts — a navigateTo in
+// setup aborts the component mid-suspense on the client and leaves a blank
+// page. On the server both forms prerender identically (302 → meta-refresh
+// for static hosting).
+definePageMeta({
+  middleware: [
+    () => {
+      // Read appConfig directly — NOT useMemberCategories(): its useI18n()
+      // needs a component instance, which route middleware doesn't have
+      // (throws "must be called at the top of a setup function"). Only the
+      // key is needed here, never the translated label.
+      const appConfig = useAppConfig() as { markuxt?: { members?: { categories?: Array<{ key: string }> } } }
+      const categories = appConfig?.markuxt?.members?.categories ?? []
+      if (categories.length > 0) {
+        return navigateTo(`/members/${categories[0].key}`, { redirectCode: 302 })
+      }
+    },
+  ],
+})
 
 useHead({
   title: t('members.pageTitle'),
